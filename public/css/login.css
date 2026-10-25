@@ -1,0 +1,29 @@
+/* Estilos propios del login. Los base viven en register.css */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.row .check { align-items: center; }
+
+.form-error {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid #F3C4C4;
+  border-radius: var(--radius);
+  background: #FDF2F2;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.form-error[hidden] { display: none; }
+
+.submit.loading { background: var(--soft); cursor: progress; }
