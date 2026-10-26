@@ -28,18 +28,22 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $usuario = obtener_usuario_por_email($email);
 
 // 3. Verificar contraseña cifrada
-if ($usuario && password_verify($password, $usuario['contrasena'])) {
-    // Credenciales correctas: Iniciar sesión
-    $_SESSION['user_id']     = $usuario['id'];
-    $_SESSION['user_nombre'] = $usuario['nombre'];
-    $_SESSION['user_email']  = $usuario['email'];
 
-    // Redirigir al dashboard/resumen
-    // ===================================================CORREGIR==================================
-    header("Location: ../views/users/dashboard.php");
+if ($usuario && password_verify($password, $usuario['contrasena'])) {
+
+    // Renovar el identificador de sesión.
+    session_regenerate_id(true);
+
+    // Guardar los datos del usuario autenticado.
+    $_SESSION['user_id'] = $usuario['id_usuario'];
+    $_SESSION['user_nombre'] = $usuario['nombre'];
+    $_SESSION['user_email'] = $usuario['correo'];
+
+    // Abrir el Dashboard mediante su controlador.
+    header('Location: dashboardController.php');
     exit;
+
 } else {
-    // Credenciales incorrectas
-    header("Location: ../views/auth/login.php?error=credenciales");
+    header('Location: ../views/auth/login.php?error=credenciales');
     exit;
 }

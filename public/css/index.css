@@ -1,0 +1,364 @@
+/* public/css/index.css
+   Estilos propios de la página de inicio. Las variables, botones base,
+   navbar y footer viven en layout.css. */
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Botones propios del index */
+.btn-gold { background: var(--gold); color: var(--deep); }
+.btn-gold:hover { background: #F59E0B; }
+
+.btn-outline-light { border-color: rgba(255, 255, 255, 0.4); color: #fff; }
+.btn-outline-light:hover { border-color: #fff; background: rgba(255, 255, 255, 0.1); }
+
+.btn-white { background: #fff; color: var(--primary); }
+.btn-white:hover { background: var(--tint); }
+
+/* ---------- Portada ---------- */
+.hero {
+  background: var(--deep);
+  color: var(--soft-2);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 64px;
+  align-items: center;
+  padding-top: 80px;
+  padding-bottom: 96px;
+}
+
+.hero h1 {
+  margin: 0 0 20px;
+  color: #fff;
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero-lead {
+  max-width: 46ch;
+  margin: 0 0 32px;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.hero-note { margin: 16px 0 0; font-size: 13px; color: var(--soft); }
+
+.hero-caption { margin: 14px 0 0; font-size: 12px; color: var(--soft); text-align: center; }
+
+/* Tarjeta de presupuesto (el elemento protagonista) */
+.plan {
+  padding: 28px;
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.plan-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-title { margin: 0; font-size: 16px; font-weight: 800; }
+.plan-period { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+.plan-total { margin: 0; text-align: right; }
+.plan-total strong { display: block; font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+.plan-total span { font-size: 12px; color: var(--muted); }
+
+.plan-list { margin: 0; padding: 0; list-style: none; }
+
+.plan-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
+
+.plan-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.plan-name { font-weight: 700; }
+.plan-amounts { color: var(--muted); }
+
+.plan-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--tint);
+  overflow: hidden;
+}
+
+.plan-fill {
+  width: var(--w);
+  height: 100%;
+  border-radius: 4px;
+  background: var(--primary);
+  transform-origin: left;
+  animation: plan-grow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+.plan-status { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+
+.plan-item.is-over .plan-fill { background: var(--danger); }
+.plan-item.is-over .plan-status { color: var(--danger); font-weight: 700; }
+
+.plan-free { margin: 16px 0 0; font-size: 13px; color: var(--muted); }
+
+.plan-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.plan-totals dt { font-size: 12px; color: var(--muted); }
+.plan-totals dd { margin: 4px 0 0; font-size: 16px; font-weight: 800; }
+.plan-totals .is-in { color: var(--success); }
+.plan-totals .is-out { color: var(--danger); }
+
+@keyframes plan-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ---------- Funciones ---------- */
+.features { padding: 96px 0; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 64px;
+}
+
+.features-intro { position: sticky; top: 112px; align-self: start; }
+
+.section-title {
+  margin: 0 0 16px;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.section-lead {
+  max-width: 40ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature { padding: 28px 0; border-top: 1px solid var(--border); }
+
+.feature-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  background: var(--tint);
+  color: var(--primary);
+}
+
+.feature h3 { margin: 0 0 8px; font-size: 17px; font-weight: 800; }
+.feature p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
+
+/* ---------- Cómo funciona ---------- */
+.steps {
+  padding: 96px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.steps-head { max-width: 560px; margin-bottom: 48px; }
+
+.step-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step { position: relative; }
+
+.step-num {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+}
+
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: 52px;
+  right: -28px;
+  height: 2px;
+  background: var(--border);
+}
+
+.step h3 { margin: 0 0 8px; font-size: 17px; font-weight: 800; }
+.step p { max-width: 32ch; margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
+
+
+/* ---------- Equipo de desarrollo ---------- */
+.team {
+  padding: 88px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.team-head {
+  max-width: 680px;
+  margin-bottom: 36px;
+}
+
+.team-eyebrow {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.team-card {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--background, #fff);
+}
+
+.team-symbol {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: var(--tint);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.team-card h3 {
+  margin: 0 0 9px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.team-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.team-note {
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+
+/* ---------- Llamado final ---------- */
+.cta { padding: 80px 0; background: var(--primary); color: #fff; }
+
+.cta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.cta h2 {
+  max-width: 22ch;
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.cta p { max-width: 44ch; margin: 0; color: var(--tint); line-height: 1.6; }
+
+.cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.cta .btn:focus-visible { outline-color: #fff; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; padding-top: 56px; padding-bottom: 64px; }
+
+  .features { padding: 64px 0; }
+  .features-grid { grid-template-columns: 1fr; gap: 32px; }
+  .features-intro { position: static; }
+
+  .steps { padding: 64px 0; }
+  .step-list { grid-template-columns: 1fr; gap: 32px; }
+  .step:not(:last-child)::after { display: none; }
+
+  .cta { padding: 56px 0; }
+}
+
+@media (max-width: 560px) {
+  .feature-list { grid-template-columns: 1fr; }
+  .plan { padding: 20px; }
+  .plan-row { flex-direction: column; gap: 2px; }
+  .plan-totals dd { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-fill { animation: none; }
+}
+
+.team {
+  padding: 64px 0;
+}
+
+.team-grid {
+  grid-template-columns: 1fr;
+}

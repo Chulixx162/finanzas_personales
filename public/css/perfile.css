@@ -1,0 +1,313 @@
+/* public/css/perfile.css
+   Estilos de la página de perfil. Sigue el mismo diseño del panel y la portada.
+   Variables, botones (.btn), navbar y footer viven en layout.css. */
+
+.profile { padding: 40px 0 72px; }
+
+/* Mismo contenedor que .wrap del panel */
+.profile-wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Encabezado ---------- */
+.profile-head { margin-bottom: 28px; }
+
+.profile-head h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.profile-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+
+/* ---------- Mensajes ---------- */
+.alert {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.alert-success { border-color: #BBE5C8; background: #F0FAF3; color: var(--success); }
+.alert-error   { border-color: #F3C4C4; background: #FDF2F2; color: var(--danger); }
+
+/* ---------- Rejilla 4/8 (como la sección de funciones) ---------- */
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.profile-stack { display: grid; gap: 16px; min-width: 0; }
+
+/* ---------- Resumen de cuenta (fondo oscuro, como la tarjeta de saldo) ---------- */
+.profile-id {
+  position: sticky;
+  top: 100px;
+  padding: 24px;
+  border: 1px solid var(--deep);
+  border-radius: 16px;
+  background: var(--deep);
+  color: var(--soft-2);
+}
+
+.profile-id-main { display: flex; flex-direction: column; gap: 16px; }
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
+}
+
+.profile-id-name {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.profile-id-mail { margin: 4px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+
+.profile-id-note {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--soft);
+}
+
+/* ---------- Tarjetas (mismas medidas que .panel-card del panel) ---------- */
+.profile-card {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.card-head { margin-bottom: 20px; }
+.card-head h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.card-head p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+
+/* ---------- Formulario ---------- */
+.profile-form { display: flex; flex-direction: column; gap: 18px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+  align-items: start;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="password"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: 400 14px "Plus Jakarta Sans", system-ui, sans-serif;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input:hover { border-color: var(--soft); }
+
+.field input:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--tint);
+}
+
+.hint { margin: 8px 0 0; font-size: 12px; line-height: 1.4; color: var(--muted); }
+
+/* Botón Mostrar / Ocultar dentro del campo de contraseña */
+.input-wrap { position: relative; }
+
+.input-wrap input[type="text"],
+.input-wrap input[type="password"] { padding-right: 84px; }
+
+.toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--primary);
+  font: 700 13px "Plus Jakarta Sans", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.toggle:hover { color: var(--primary-dark); }
+.toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.check input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: var(--danger);
+}
+
+.form-actions { margin-top: 4px; }
+
+/* ---------- Eliminar cuenta (rojo, como el aviso de límite excedido) ---------- */
+.danger-card { border-color: #F3C4C4; }
+.danger-card .card-head h2 { color: var(--danger); }
+.danger-card .field { max-width: 360px; }
+
+.danger-card .field input:hover { border-color: #E9A0A0; }
+
+.danger-card .field input:focus-visible {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.15);
+}
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #991B1B; }
+.btn-danger:focus-visible { outline-color: var(--danger); }
+
+/* ---------- Enlace de regreso (igual que .panel-link) ---------- */
+.back-link {
+  justify-self: start;
+  padding: 4px 2px;
+  border-radius: 6px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover { text-decoration: underline; }
+.back-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* ---------- Botón mientras se guarda ---------- */
+.profile-form .btn-primary:disabled { background: var(--soft); cursor: progress; }
+
+/* ---------- Avisos (toast) ---------- */
+.toast-region {
+  position: fixed;
+  top: 84px;
+  right: 24px;
+  z-index: 60;
+  display: grid;
+  gap: 8px;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 12px 14px 16px;
+  border: 1px solid;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(30, 27, 75, 0.15);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  animation: toast-in 0.25s ease-out both;
+}
+
+.toast::before {
+  content: "\2713";
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.toast-success { border-color: #BBE5C8; background: #F0FAF3; color: var(--success); }
+.toast-success::before { background: var(--success); }
+
+.toast-error { border-color: #F3C4C4; background: #FDF2F2; color: var(--danger); }
+.toast-error::before { content: "!"; background: var(--danger); }
+
+.toast-text { flex: 1; min-width: 0; }
+
+.toast-close {
+  flex-shrink: 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1.2;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.toast-close:hover { opacity: 1; }
+.toast-close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; opacity: 1; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 920px) {
+  .profile-grid { grid-template-columns: 1fr; }
+  .profile-id { position: static; }
+  .profile-id-main { flex-direction: row; align-items: center; }
+}
+
+@media (max-width: 640px) {
+  .toast-region { top: 76px; right: 16px; left: 16px; width: auto; }
+  .profile { padding: 28px 0 56px; }
+  .profile-card { padding: 20px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-actions .btn { width: 100%; }
+}

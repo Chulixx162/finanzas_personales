@@ -1,0 +1,193 @@
+/* public/css/dashboard.css
+   Estilos del panel principal. Variables, navbar y footer viven en layout.css. */
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.dash { padding: 40px 0 72px; }
+
+/* ---------- Encabezado ---------- */
+.dash-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 28px;
+}
+
+.dash-head h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.dash-sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+
+.demo-note {
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- Resumen ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.stat h2 { margin: 0 0 12px; font-size: 14px; font-weight: 700; color: var(--muted); }
+
+.stat-value {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-note { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+
+.is-in { color: var(--success); }
+.is-out { color: var(--danger); }
+
+/* El saldo es el dato que resume todo: va sobre fondo oscuro */
+.stat-balance {
+  border-color: var(--deep);
+  background: var(--deep);
+}
+
+.stat-balance h2,
+.stat-balance .stat-note { color: var(--soft-2); }
+.stat-balance .stat-value { color: #fff; }
+
+/* ---------- Paneles ---------- */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.span-8 { grid-column: span 8; }
+.span-6 { grid-column: span 6; }
+.span-4 { grid-column: span 4; }
+
+.panel-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  min-width: 0;
+}
+
+.panel-head { margin-bottom: 20px; }
+.panel-head h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.panel-head p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+.panel-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panel-link {
+  flex-shrink: 0;
+  padding: 4px 2px;
+  border-radius: 6px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.panel-link:hover { text-decoration: underline; }
+.panel-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.chart-box { position: relative; height: 290px; }
+
+/* ---------- Tabla de movimientos ---------- */
+.table-wrap { overflow-x: auto; }
+
+.mov-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+.mov-table th {
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--muted);
+}
+
+.mov-table td {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.mov-table tbody tr:last-child td { border-bottom: 0; padding-bottom: 0; }
+
+.mov-date { width: 64px; padding-right: 12px; color: var(--muted); white-space: nowrap; }
+
+.mov-desc { display: block; font-weight: 600; }
+.mov-cat { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+
+.num { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mov-table th.num { font-weight: 700; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .span-8,
+  .span-6,
+  .span-4 { grid-column: span 12; }
+}
+
+@media (max-width: 640px) {
+  .dash { padding: 28px 0 56px; }
+  .stats { grid-template-columns: 1fr; }
+  .stat-value { font-size: 26px; }
+  .panel-card { padding: 20px; }
+  .chart-box { height: 260px; }
+}
+
+/* Ajustes adicionales para los gráficos en móviles */
+@media (max-width: 640px) {
+    .chart-box {
+        height: 250px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .chart-box canvas {
+        max-width: 100%;
+    }
+
+    .panel-card {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .dash-head h1 {
+        font-size: 24px;
+        overflow-wrap: anywhere;
+    }
+}

@@ -3,6 +3,35 @@
 
 require_once __DIR__ . '/../config/connection.php';
 
+function obtener_usuario_por_id(int $id): ?array
+{
+    global $conn;
+
+    $sql = 'SELECT id_usuario, nombre, correo, fecha_registro
+            FROM usuarios
+            WHERE id_usuario = ?
+            LIMIT 1';
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log('No se pudo preparar la consulta del perfil: ' . mysqli_error($conn));
+        return null;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log('No se pudo consultar el perfil: ' . mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        return null;
+    }
+
+    $resultado = mysqli_stmt_get_result($stmt);
+    $usuario = $resultado ? mysqli_fetch_assoc($resultado) : null;
+    mysqli_stmt_close($stmt);
+
+    return $usuario ?: null;
+}
 
 function obtener_usuario_por_email($email) {
     global $conn;

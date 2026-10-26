@@ -1,0 +1,286 @@
+
+<?php
+// ============================================================
+// ARCHIVO: views/users/dashboard.php
+// PROYECTO: Finanzas personales
+// ============================================================
+
+// Esta vista debe abrirse desde dashboardController.php.
+if (!defined('DASHBOARD_CONTROLLER_ACCESS')) {
+    header('Location: ../../controllers/dashboardController.php');
+    exit;
+}
+
+// Ruta base para CSS, JavaScript e imágenes.
+$base = '../';
+$active = 'inicio';
+
+// Escapar contenido HTML.
+$h = static function ($texto): string {
+    return htmlspecialchars(
+        (string) $texto,
+        ENT_QUOTES,
+        'UTF-8'
+    );
+};
+
+// Usuario autenticado.
+$nombre = $_SESSION['user_nombre'] ?? '';
+$primerNombre = explode(' ', trim($nombre))[0] ?? '';
+
+// Formatear dinero en pesos colombianos.
+$cop = static function ($valor): string {
+    return '$' . number_format(
+        (float) $valor,
+        0,
+        ',',
+        '.'
+    ) . ' COP';
+};
+
+// Valores recibidos del controlador.
+// Se usan variables temporales para evitar avisos.
+$ingresos = (float) ($ingresos ?? 0);
+$gastos = (float) ($gastos ?? 0);
+$saldo = (float) ($saldo ?? ($ingresos - $gastos));
+
+$movimientosRecibidos = $movimientos ?? [];
+$movimientos = is_array($movimientosRecibidos)
+    ? $movimientosRecibidos
+    : [];
+
+$datosGraficosRecibidos = $datosGraficos ?? [];
+
+$datosGraficos = is_array($datosGraficosRecibidos)
+    ? $datosGraficosRecibidos
+    : [];
+
+$datosGraficos = array_replace_recursive(
+    [
+        'meses' => [
+            'labels' => [],
+            'ingresos' => [],
+            'gastos' => [],
+        ],
+        'categorias' => [
+            'labels' => [],
+            'valores' => [],
+        ],
+        'presupuesto' => [
+            'labels' => [],
+            'presupuestado' => [],
+            'gastado' => [],
+        ],
+    ],
+    $datosGraficos
+);
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Finanzas personales</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
+    <link rel="stylesheet" href="<?= $h($base) ?>public/css/dashboard.css">
+    <link rel="icon" type="image/webp" href="<?= $h($base) ?>public/img/icon.webp">
+</head>
+
+<body class="layout">
+
+    <?php require __DIR__ . '/../layouts/navbar.php'; ?>
+
+    <main class="dash">
+        <div class="wrap">
+
+            <header class="dash-head">
+                <div>
+                    <h1>
+                        Hola,
+                        <?= $h($primerNombre !== '' ? $primerNombre : 'usuario') ?>
+                    </h1>
+
+                    <p class="dash-sub">
+                        Resumen financiero de <?= $h(date('F Y')) ?>
+                    </p>
+                </div>
+            </header>
+
+            <section class="stats" aria-label="Resumen financiero">
+
+                <article class="stat">
+                    <h2>Ingresos</h2>
+                    <p class="stat-value is-in">
+                        <?= $cop($ingresos) ?>
+                    </p>
+                    <p class="stat-note">Total recibido en el periodo</p>
+                </article>
+
+                <article class="stat">
+                    <h2>Gastos</h2>
+                    <p class="stat-value is-out">
+                        <?= $cop($gastos) ?>
+                    </p>
+                    <p class="stat-note">Total gastado en el periodo</p>
+                </article>
+
+                <article class="stat stat-balance">
+                    <h2>Saldo</h2>
+                    <p class="stat-value">
+                        <?= $cop($saldo) ?>
+                    </p>
+                    <p class="stat-note">Ingresos menos gastos</p>
+                </article>
+
+            </section>
+
+            <div class="dash-grid">
+
+                <section class="panel-card span-8">
+                    <header class="panel-head">
+                        <h2>Ingresos y gastos por mes</h2>
+                        <p>Comparación de los últimos seis meses</p>
+                    </header>
+
+                    <div class="chart-box">
+                        <canvas
+                            id="chart-meses"
+                            role="img"
+                            aria-label="Comparación mensual de ingresos y gastos"
+                        ></canvas>
+                    </div>
+                </section>
+
+                <section class="panel-card span-4">
+                    <header class="panel-head">
+                        <h2>Gastos por categoría</h2>
+                        <p>Distribución de los gastos del mes</p>
+                    </header>
+
+                    <div class="chart-box">
+                        <canvas
+                            id="chart-categorias"
+                            role="img"
+                            aria-label="Distribución de gastos por categoría"
+                        ></canvas>
+                    </div>
+                </section>
+
+                <section class="panel-card span-6">
+                    <header class="panel-head">
+                        <h2>Presupuesto contra gasto real</h2>
+                        <p>Comparación por categoría</p>
+                    </header>
+
+                    <div class="chart-box">
+                        <canvas
+                            id="chart-presupuesto"
+                            role="img"
+                            aria-label="Comparación del presupuesto y los gastos"
+                        ></canvas>
+                    </div>
+                </section>
+
+                <section class="panel-card span-6">
+                    <header class="panel-head panel-head-row">
+                        <div>
+                            <h2>Últimos movimientos</h2>
+                            <p>Movimientos registrados</p>
+                        </div>
+                    </header>
+
+                    <div class="table-wrap">
+                        <table class="mov-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col" class="num">Monto</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php if ($movimientos !== []): ?>
+
+                                    <?php foreach ($movimientos as $movimiento): ?>
+                                        <?php
+                                        $fecha = $movimiento[0] ?? '';
+                                        $descripcion = $movimiento[1] ?? '';
+                                        $categoria = $movimiento[2] ?? '';
+                                        $tipo = $movimiento[3] ?? '';
+                                        $monto = (float) ($movimiento[4] ?? 0);
+
+                                        $esIngreso = $tipo === 'ingreso';
+                                        ?>
+
+                                        <tr>
+                                            <td class="mov-date">
+                                                <?= $h($fecha) ?>
+                                            </td>
+
+                                            <td>
+                                                <span class="mov-desc">
+                                                    <?= $h($descripcion) ?>
+                                                </span>
+
+                                                <span class="mov-cat">
+                                                    <?= $h($categoria) ?>
+                                                </span>
+                                            </td>
+
+                                            <td class="num <?= $esIngreso ? 'is-in' : 'is-out' ?>">
+                                                <?= $esIngreso ? '+' : '−' ?><?= $cop($monto) ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="3">
+                                            Todavía no hay movimientos registrados.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+    <script id="dashboard-data" type="application/json"><?=
+        json_encode(
+            $datosGraficos,
+            JSON_HEX_TAG
+            | JSON_HEX_APOS
+            | JSON_HEX_AMP
+            | JSON_HEX_QUOT
+            | JSON_UNESCAPED_UNICODE
+        )
+    ?></script>
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+        defer
+    ></script>
+
+    <script src="<?= $h($base) ?>public/js/dashboard.js" defer></script>
+
+</body>
+</html>

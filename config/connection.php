@@ -26,10 +26,7 @@ $conn = mysqli_connect(
 if (!$conn) {
     error_log(mysqli_connect_error());
     die('Error al conectar con la base de datos.');
-} else{
-    echo "Conexión exitosa a la base de datos.";
-}
-
+} 
 // Configurar la codificación
 mysqli_set_charset($conn, 'utf8mb4');
 ?>
