@@ -1,16 +1,36 @@
 <?php
 // controllers/perfileController.php
-// Procesa el formulario de perfil: actualizar datos y eliminar la cuenta.
+// Controlador único del perfil. Solo decide qué ruta seguir y qué función del
+// modelo llamar; todas las consultas están en models/usersModel.php.
+//
+// Se usa de dos maneras:
+//   - La vista views/users/perfile.php lo incluye (GET) y recibe $usuario y $csrf.
+//   - Los formularios de esa vista le envían (POST) las acciones
+//     "actualizar" y "eliminar".
 //
 // Si la petición viene de fetch() (cabecera X-Requested-With) responde JSON y
 // la página no se recarga. Sin JavaScript, el formulario sigue funcionando con
 // redirecciones normales.
 
-// Retiene cualquier texto suelto (un echo olvidado, un aviso de PHP) para que no
-// se mezcle con la respuesta JSON ni impida las redirecciones.
-ob_start();
+// ¿Se abrió este archivo directamente (formulario o fetch) o lo incluyó la vista?
+$accesoDirecto = basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__);
 
-session_start();
+if ($accesoDirecto) {
+    // Retiene cualquier texto suelto (un echo olvidado, un aviso de PHP) para que no
+    // se mezcle con la respuesta JSON ni impida las redirecciones.
+    ob_start();
+}
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../models/usersModel.php';
+
+// Ruta hacia las vistas según desde dónde se ejecute este archivo:
+//   directo (formulario o fetch) -> estamos en controllers/ -> ../views/
+//   incluido por la vista        -> estamos en views/users/ -> ../
+define('RUTA_VISTAS', $accesoDirecto ? '../views/' : '../');
 
 $esAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
@@ -35,7 +55,7 @@ function responder(array $datos, int $estado = 200)
         $sobrante .= (string) ob_get_clean();
     }
     if (trim($sobrante) !== '') {
-        error_log('perfile.php: salida inesperada antes del JSON: ' . $sobrante);
+        error_log('perfileController.php: salida inesperada antes del JSON: ' . $sobrante);
     }
 
     http_response_code($estado);
@@ -53,7 +73,7 @@ function fallar(string $codigo)
         responder(['ok' => false, 'error' => $codigo], ESTADOS_ERROR[$codigo] ?? 400);
     }
 
-    header('Location: ../views/users/perfile.php?error=' . $codigo);
+    header('Location: ' . RUTA_VISTAS . 'users/perfile.php?error=' . $codigo);
     exit;
 }
 
@@ -76,18 +96,6 @@ function cerrar_sesion()
     session_destroy();
 }
 
-// Ejecuta una sentencia con un único parámetro entero y devuelve las filas afectadas.
-function ejecutar(mysqli $conn, string $sql, int $id): int
-{
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $filas = $stmt->affected_rows;
-    $stmt->close();
-
-    return $filas;
-}
-
 // Lee un campo de $_POST como texto; si no es texto (por ejemplo un arreglo) devuelve ''.
 function campo(string $nombre): string
 {
@@ -95,180 +103,166 @@ function campo(string $nombre): string
     return is_string($valor) ? $valor : '';
 }
 
-/* ---------- Comprobaciones iniciales ---------- */
+/* ---------- Acciones ---------- */
 
-if (!isset($_SESSION['user_id'])) {
+function actualizar_perfil(int $idUsuario)
+{
+    global $esAjax;
+
+    $nombre = trim(campo('nombre'));
+    $correo = strtolower(trim(campo('correo')));
+    $nueva  = campo('contrasena_nueva');
+
+    // Límites iguales a las columnas: nombre VARCHAR(50), correo VARCHAR(100).
+    if (
+        mb_strlen($nombre) < 2 ||
+        mb_strlen($nombre) > 50 ||
+        !filter_var($correo, FILTER_VALIDATE_EMAIL) ||
+        mb_strlen($correo) > 100 ||
+        ($nueva !== '' && strlen($nueva) < 8)
+    ) {
+        fallar('datos');
+    }
+
+    // El correo no puede pertenecer a otro usuario.
+    if (correo_en_uso($correo, $idUsuario)) {
+        fallar('correo');
+    }
+
+    if (!actualizar_usuario($idUsuario, $nombre, $correo, $nueva)) {
+        fallar('actualizacion');
+    }
+
+    // Mantener la sesión al día con los datos nuevos.
+    $_SESSION['user_nombre'] = $nombre;
+    $_SESSION['user_email']  = $correo;
+
+    if ($nueva !== '') {
+        session_regenerate_id(true);
+    }
+
+    if ($esAjax) {
+        responder(['ok' => true, 'nombre' => $nombre, 'correo' => $correo]);
+    }
+
+    header('Location: ' . RUTA_VISTAS . 'users/perfile.php?mensaje=actualizado');
+    exit;
+}
+
+function eliminar_cuenta(int $idUsuario)
+{
+    if (campo('confirmar_eliminacion') !== 'si') {
+        fallar('datos');
+    }
+
+    if (!eliminar_usuario($idUsuario)) {
+        fallar('eliminacion');
+    }
+
+    cerrar_sesion();
+    header('Location: ' . RUTA_VISTAS . 'auth/login.php');
+    exit;
+}
+
+/* ---------- Sesión ---------- */
+
+if (
+    !isset($_SESSION['user_id']) ||
+    !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
+) {
     if ($esAjax) {
         responder(['ok' => false, 'error' => 'sesion'], 401);
     }
 
-    header('Location: ../views/auth/login.php');
+    header('Location: ' . RUTA_VISTAS . 'auth/login.php?error=sesion');
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+$idUsuario = (int) $_SESSION['user_id'];
+
+/* ---------- Ruta POST: acciones del formulario ---------- */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = campo('accion');
+
+    // Protección CSRF.
+    $tokenSesion = $_SESSION['csrf_token'] ?? '';
+
+    if ($tokenSesion === '' || !hash_equals($tokenSesion, campo('csrf_token'))) {
+        fallar('csrf');
+    }
+
+    try {
+        // El usuario debe seguir existiendo en la base de datos.
+        $credenciales = obtener_credenciales_usuario($idUsuario);
+
+        if (!$credenciales) {
+            cerrar_sesion();
+
+            if ($esAjax) {
+                responder(['ok' => false, 'error' => 'sesion'], 401);
+            }
+
+            header('Location: ' . RUTA_VISTAS . 'auth/login.php');
+            exit;
+        }
+
+        // Ambas acciones exigen la contraseña actual.
+        $passwordActual = campo('contrasena_actual');
+
+        if (
+            $passwordActual === '' ||
+            !password_verify($passwordActual, $credenciales['contrasena'])
+        ) {
+            fallar('contrasena');
+        }
+
+        if ($accion === 'actualizar') {
+            actualizar_perfil($idUsuario);
+        }
+
+        if ($accion === 'eliminar') {
+            eliminar_cuenta($idUsuario);
+        }
+
+        fallar('datos');
+    } catch (Throwable $e) {
+        error_log('perfileController.php: ' . $e->getMessage());
+
+        // 1062 = correo duplicado (otro usuario lo registró en el mismo instante).
+        if ($e instanceof mysqli_sql_exception && (int) $e->getCode() === 1062) {
+            fallar('correo');
+        }
+
+        fallar($accion === 'eliminar' ? 'eliminacion' : 'actualizacion');
+    }
+}
+
+/* ---------- Ruta GET: la vista incluyó este archivo ---------- */
+
+if ($accesoDirecto) {
+    // Escribieron la dirección del controlador: llevarlos a la vista.
     header('Location: ../views/users/perfile.php');
     exit;
 }
 
-require_once __DIR__ . '/../config/connection.php';
+$usuario = obtener_usuario_por_id($idUsuario);
 
-// Hace que mysqli lance excepciones en cualquier versión de PHP,
-// así los errores de la base de datos se capturan abajo con try/catch.
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// Si el usuario ya no existe, cerrar la sesión.
+if (!$usuario) {
+    cerrar_sesion();
 
-/* ---------- Protección CSRF ---------- */
-
-$tokenSesion = $_SESSION['csrf_token'] ?? '';
-
-if ($tokenSesion === '' || !hash_equals($tokenSesion, campo('csrf_token'))) {
-    fallar('csrf');
+    header('Location: ' . RUTA_VISTAS . 'auth/login.php?error=sesion');
+    exit;
 }
 
-/* ---------- Datos comunes ---------- */
+// Mantener la sesión al día con los datos guardados.
+$_SESSION['user_nombre'] = $usuario['nombre'];
+$_SESSION['user_email']  = $usuario['correo'];
 
-$id             = (int) $_SESSION['user_id'];
-$accion         = campo('accion');
-$passwordActual = campo('contrasena_actual');
-
-try {
-    // El usuario debe seguir existiendo en la base de datos.
-    $stmt = $conn->prepare(
-        'SELECT id_usuario, contrasena FROM usuarios WHERE id_usuario = ? LIMIT 1'
-    );
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $usuario = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
-
-    if (!$usuario) {
-        cerrar_sesion();
-
-        if ($esAjax) {
-            responder(['ok' => false, 'error' => 'sesion'], 401);
-        }
-
-        header('Location: ../views/auth/login.php');
-        exit;
-    }
-
-    // Ambas acciones exigen la contraseña actual.
-    if ($passwordActual === '' || !password_verify($passwordActual, $usuario['contrasena'])) {
-        fallar('contrasena');
-    }
-
-    /* ---------- Guardar cambios ---------- */
-    if ($accion === 'actualizar') {
-        $nombre = trim(campo('nombre'));
-        $correo = strtolower(trim(campo('correo')));
-        $nueva  = campo('contrasena_nueva');
-
-        // Límites iguales a las columnas: nombre VARCHAR(50), correo VARCHAR(100).
-        if (
-            mb_strlen($nombre) < 2 ||
-            mb_strlen($nombre) > 50 ||
-            !filter_var($correo, FILTER_VALIDATE_EMAIL) ||
-            mb_strlen($correo) > 100 ||
-            ($nueva !== '' && strlen($nueva) < 8)
-        ) {
-            fallar('datos');
-        }
-
-        // El correo no puede pertenecer a otro usuario.
-        $stmt = $conn->prepare(
-            'SELECT 1 FROM usuarios WHERE correo = ? AND id_usuario <> ? LIMIT 1'
-        );
-        $stmt->bind_param('si', $correo, $id);
-        $stmt->execute();
-        $ocupado = $stmt->get_result()->num_rows > 0;
-        $stmt->close();
-
-        if ($ocupado) {
-            fallar('correo');
-        }
-
-        if ($nueva !== '') {
-            $hash = password_hash($nueva, PASSWORD_BCRYPT);
-            $stmt = $conn->prepare(
-                'UPDATE usuarios SET nombre = ?, correo = ?, contrasena = ? WHERE id_usuario = ?'
-            );
-            $stmt->bind_param('sssi', $nombre, $correo, $hash, $id);
-        } else {
-            $stmt = $conn->prepare(
-                'UPDATE usuarios SET nombre = ?, correo = ? WHERE id_usuario = ?'
-            );
-            $stmt->bind_param('ssi', $nombre, $correo, $id);
-        }
-
-        $stmt->execute();
-        $stmt->close();
-
-        // Mantener la sesión al día con los datos nuevos.
-        $_SESSION['user_nombre'] = $nombre;
-        $_SESSION['user_email']  = $correo;
-
-        if ($nueva !== '') {
-            session_regenerate_id(true);
-        }
-
-        if ($esAjax) {
-            responder(['ok' => true, 'nombre' => $nombre, 'correo' => $correo]);
-        }
-
-        header('Location: ../views/users/perfile.php?mensaje=actualizado');
-        exit;
-    }
-
-    /* ---------- Eliminar cuenta ---------- */
-    if ($accion === 'eliminar') {
-        if (campo('confirmar_eliminacion') !== 'si') {
-            fallar('datos');
-        }
-
-        // Las claves foráneas son ON DELETE RESTRICT, así que primero se borran
-        // los datos del usuario, de los más internos a los más externos.
-        $conn->begin_transaction();
-
-        try {
-            ejecutar($conn,
-                'DELETE m FROM movimientos m
-                 JOIN rubros r ON r.id_rubro = m.id_rubro
-                 JOIN categorias c ON c.id_categoria = r.id_categoria
-                 WHERE c.id_usuario = ?', $id);
-
-            ejecutar($conn,
-                'DELETE r FROM rubros r
-                 JOIN categorias c ON c.id_categoria = r.id_categoria
-                 WHERE c.id_usuario = ?', $id);
-
-            ejecutar($conn, 'DELETE FROM categorias WHERE id_usuario = ?', $id);
-            ejecutar($conn, 'DELETE FROM historial_presupuesto WHERE id_usuario = ?', $id);
-
-            $borrados = ejecutar($conn, 'DELETE FROM usuarios WHERE id_usuario = ?', $id);
-
-            if ($borrados !== 1) {
-                throw new RuntimeException('No se eliminó el usuario.');
-            }
-
-            $conn->commit();
-        } catch (Throwable $e) {
-            $conn->rollback();
-            throw $e;
-        }
-
-        cerrar_sesion();
-        header('Location: ../views/auth/login.php');
-        exit;
-    }
-
-    fallar('datos');
-} catch (Throwable $e) {
-    error_log('perfile.php: ' . $e->getMessage());
-
-    // 1062 = correo duplicado (otro usuario lo registró en el mismo instante).
-    if ($e instanceof mysqli_sql_exception && (int) $e->getCode() === 1062) {
-        fallar('correo');
-    }
-
-    fallar($accion === 'eliminar' ? 'eliminacion' : 'actualizacion');
+// Token CSRF que la vista pone en los formularios.
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+$csrf = $_SESSION['csrf_token'];

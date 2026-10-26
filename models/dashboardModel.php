@@ -1,8 +1,20 @@
-
 <?php
 // models/dashboardModel.php
 
 require_once __DIR__ . '/../config/connection.php';
+
+/**
+ * Libera los resultados pendientes que deja un CALL
+ * para poder ejecutar otro procedimiento en la misma conexión.
+ */
+function dashboard_liberar_resultados(): void
+{
+    global $conn;
+
+    while (mysqli_more_results($conn) && mysqli_next_result($conn)) {
+        // Solo se consumen los resultados restantes.
+    }
+}
 
 /**
  * Resumen de ingresos y gastos del usuario.
@@ -15,35 +27,27 @@ function dashboard_resumen_mensual(
 ): array {
     global $conn;
 
-    $sql = "
-        SELECT
-            COALESCE(SUM(
-                CASE WHEN m.tipo = 'ingreso'
-                THEN m.monto ELSE 0 END
-            ), 0) AS ingresos,
-            COALESCE(SUM(
-                CASE WHEN m.tipo = 'gasto'
-                THEN m.monto ELSE 0 END
-            ), 0) AS gastos
-        FROM movimientos m
-        INNER JOIN rubros r ON r.id_rubro = m.id_rubro
-        INNER JOIN categorias c ON c.id_categoria = r.id_categoria
-        WHERE c.id_usuario = ?
-          AND m.fecha >= ?
-          AND m.fecha < ?
-    ";
-
+    $sql = 'CALL sp_dashboard_resumen(?, ?, ?)';
     $stmt = mysqli_prepare($conn, $sql);
+
     if (!$stmt) {
         error_log(mysqli_error($conn));
         return ['ingresos' => 0, 'gastos' => 0];
     }
 
     mysqli_stmt_bind_param($stmt, 'iss', $idUsuario, $inicio, $fin);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        dashboard_liberar_resultados();
+        return ['ingresos' => 0, 'gastos' => 0];
+    }
+
     $resultado = mysqli_stmt_get_result($stmt);
-    $fila = mysqli_fetch_assoc($resultado) ?: [];
+    $fila = $resultado ? (mysqli_fetch_assoc($resultado) ?: []) : [];
     mysqli_stmt_close($stmt);
+    dashboard_liberar_resultados();
 
     return [
         'ingresos' => (float) ($fila['ingresos'] ?? 0),
@@ -58,33 +62,27 @@ function dashboard_movimientos_recientes(
 ): array {
     global $conn;
 
-    $sql = "
-        SELECT
-            DATE_FORMAT(m.fecha, '%d/%m/%Y') AS fecha,
-            COALESCE(m.descripcion, r.nombre) AS descripcion,
-            c.nombre AS categoria,
-            m.tipo,
-            m.monto
-        FROM movimientos m
-        INNER JOIN rubros r ON r.id_rubro = m.id_rubro
-        INNER JOIN categorias c ON c.id_categoria = r.id_categoria
-        WHERE c.id_usuario = ?
-        ORDER BY m.fecha DESC, m.id_movimiento DESC
-        LIMIT ?
-    ";
-
+    $sql = 'CALL sp_dashboard_movimientos_recientes(?, ?)';
     $stmt = mysqli_prepare($conn, $sql);
+
     if (!$stmt) {
         error_log(mysqli_error($conn));
         return [];
     }
 
     mysqli_stmt_bind_param($stmt, 'ii', $idUsuario, $limite);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        dashboard_liberar_resultados();
+        return [];
+    }
+
     $resultado = mysqli_stmt_get_result($stmt);
 
     $filas = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
         $filas[] = [
             $fila['fecha'],
             $fila['descripcion'],
@@ -95,6 +93,8 @@ function dashboard_movimientos_recientes(
     }
 
     mysqli_stmt_close($stmt);
+    dashboard_liberar_resultados();
+
     return $filas;
 }
 
@@ -106,40 +106,33 @@ function dashboard_balance_mensual(
 ): array {
     global $conn;
 
-    $sql = "
-        SELECT
-            YEAR(m.fecha) AS anio,
-            MONTH(m.fecha) AS mes,
-            SUM(CASE WHEN m.tipo = 'ingreso'
-                THEN m.monto ELSE 0 END) AS ingresos,
-            SUM(CASE WHEN m.tipo = 'gasto'
-                THEN m.monto ELSE 0 END) AS gastos
-        FROM movimientos m
-        INNER JOIN rubros r ON r.id_rubro = m.id_rubro
-        INNER JOIN categorias c ON c.id_categoria = r.id_categoria
-        WHERE c.id_usuario = ?
-          AND m.fecha >= ?
-          AND m.fecha < ?
-        GROUP BY YEAR(m.fecha), MONTH(m.fecha)
-        ORDER BY anio, mes
-    ";
-
+    $sql = 'CALL sp_dashboard_balance_mensual(?, ?, ?)';
     $stmt = mysqli_prepare($conn, $sql);
+
     if (!$stmt) {
         error_log(mysqli_error($conn));
         return [];
     }
 
     mysqli_stmt_bind_param($stmt, 'iss', $idUsuario, $inicio, $fin);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        dashboard_liberar_resultados();
+        return [];
+    }
+
     $resultado = mysqli_stmt_get_result($stmt);
 
     $filas = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
         $filas[] = $fila;
     }
 
     mysqli_stmt_close($stmt);
+    dashboard_liberar_resultados();
+
     return $filas;
 }
 
@@ -151,33 +144,27 @@ function dashboard_gastos_por_categoria(
 ): array {
     global $conn;
 
-    $sql = "
-        SELECT
-            c.nombre AS categoria,
-            SUM(m.monto) AS total
-        FROM movimientos m
-        INNER JOIN rubros r ON r.id_rubro = m.id_rubro
-        INNER JOIN categorias c ON c.id_categoria = r.id_categoria
-        WHERE c.id_usuario = ?
-          AND m.tipo = 'gasto'
-          AND m.fecha >= ?
-          AND m.fecha < ?
-        GROUP BY c.id_categoria, c.nombre
-        ORDER BY total DESC
-    ";
-
+    $sql = 'CALL sp_dashboard_gastos_categoria(?, ?, ?)';
     $stmt = mysqli_prepare($conn, $sql);
+
     if (!$stmt) {
         error_log(mysqli_error($conn));
         return [];
     }
 
     mysqli_stmt_bind_param($stmt, 'iss', $idUsuario, $inicio, $fin);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        dashboard_liberar_resultados();
+        return [];
+    }
+
     $resultado = mysqli_stmt_get_result($stmt);
 
     $filas = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
         $filas[] = [
             'categoria' => $fila['categoria'],
             'total' => (float) $fila['total'],
@@ -185,6 +172,8 @@ function dashboard_gastos_por_categoria(
     }
 
     mysqli_stmt_close($stmt);
+    dashboard_liberar_resultados();
+
     return $filas;
 }
 
@@ -196,51 +185,27 @@ function dashboard_presupuesto_por_categoria(
 ): array {
     global $conn;
 
-    $sql = "
-        SELECT
-            c.nombre AS categoria,
-            COALESCE(SUM(r.monto_proyectado), 0) AS presupuestado,
-            COALESCE(SUM(g.gastado), 0) AS gastado
-        FROM categorias c
-        INNER JOIN rubros r ON r.id_categoria = c.id_categoria
-        LEFT JOIN (
-            SELECT
-                m.id_rubro,
-                SUM(m.monto) AS gastado
-            FROM movimientos m
-            WHERE m.tipo = 'gasto'
-              AND m.fecha >= ?
-              AND m.fecha < ?
-            GROUP BY m.id_rubro
-        ) g ON g.id_rubro = r.id_rubro
-        WHERE c.id_usuario = ?
-          AND r.fecha_inicio < ?
-          AND r.fecha_fin >= ?
-        GROUP BY c.id_categoria, c.nombre
-        ORDER BY c.nombre
-    ";
-
+    $sql = 'CALL sp_dashboard_presupuesto_categoria(?, ?, ?)';
     $stmt = mysqli_prepare($conn, $sql);
+
     if (!$stmt) {
         error_log(mysqli_error($conn));
         return [];
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        'ssiss',
-        $inicio,
-        $fin,
-        $idUsuario,
-        $fin,
-        $inicio
-    );
+    mysqli_stmt_bind_param($stmt, 'iss', $idUsuario, $inicio, $fin);
 
-    mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        dashboard_liberar_resultados();
+        return [];
+    }
+
     $resultado = mysqli_stmt_get_result($stmt);
 
     $filas = [];
-    while ($fila = mysqli_fetch_assoc($resultado)) {
+    while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
         $filas[] = [
             'categoria' => $fila['categoria'],
             'presupuestado' => (float) $fila['presupuestado'],
@@ -249,5 +214,7 @@ function dashboard_presupuesto_por_categoria(
     }
 
     mysqli_stmt_close($stmt);
+    dashboard_liberar_resultados();
+
     return $filas;
 }

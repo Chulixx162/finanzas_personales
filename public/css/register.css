@@ -1,3 +1,41 @@
+/* Separador */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Botón secundario */
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--primary);
+  font: 700 15px "Plus Jakarta Sans", system-ui, sans-serif;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: var(--tint);
+  text-decoration: none;
+}
+
 :root {
   --primary: #6D28D9;
   --deep: #1E1B4B;
@@ -50,6 +88,8 @@ body {
 }
 
 .logo-mark {
+  display: grid;
+  place-items: center;
   width: 32px;
   height: 32px;
   border-radius: 10px;

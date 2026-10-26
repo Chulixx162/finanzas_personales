@@ -16,16 +16,12 @@ $primerNombre = explode(' ', trim($nombre))[0] ?? '';
 $inicial      = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 
 $enlacesInternos = [
-    'inicio'       => ['Inicio', 'controllers/dashboardController.php'],
-    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
+    'inicio'       => ['Inicio', 'views/users/dashboard.php'],    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
     'categorias'   => ['Categorías', 'views/categorias/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
 ];
 
 $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
-$logoDestino = $logueado
-    ? 'controllers/dashboardController.php'
-    : 'public/index.php';
 ?>
 <header class="site-header">
     <nav class="navbar" aria-label="Navegación principal">

@@ -39,9 +39,8 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
     $_SESSION['user_nombre'] = $usuario['nombre'];
     $_SESSION['user_email'] = $usuario['correo'];
 
-    // Abrir el Dashboard mediante su controlador.
-    header('Location: dashboardController.php');
-    exit;
+    // Abrir el Dashboard (la vista llama al controlador).
+    header('Location: ../views/users/dashboard.php');
 
 } else {
     header('Location: ../views/auth/login.php?error=credenciales');
