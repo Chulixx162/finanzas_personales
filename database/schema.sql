@@ -497,6 +497,246 @@ BEGIN
     WHERE id_rubro = p_id_rubro;
 END$$
 
+-- 8.7 Obtener usuario por id
+
+CREATE PROCEDURE sp_obtener_usuario_por_id(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT id_usuario, nombre, correo, fecha_registro
+    FROM usuarios
+    WHERE id_usuario = p_id_usuario
+    LIMIT 1;
+END$$
+
+
+-- 8.8 Dashboard: resumen de ingresos y gastos (fecha final exclusiva)
+
+CREATE PROCEDURE sp_dashboard_resumen(
+    IN p_id_usuario INT,
+    IN p_inicio DATE,
+    IN p_fin DATE
+)
+BEGIN
+    SELECT
+        COALESCE(SUM(CASE WHEN m.tipo = 'ingreso'
+            THEN m.monto ELSE 0 END), 0) AS ingresos,
+        COALESCE(SUM(CASE WHEN m.tipo = 'gasto'
+            THEN m.monto ELSE 0 END), 0) AS gastos
+    FROM movimientos m
+    INNER JOIN rubros r ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+      AND m.fecha >= p_inicio
+      AND m.fecha < p_fin;
+END$$
+
+
+-- 8.9 Dashboard: ultimos movimientos del usuario
+
+CREATE PROCEDURE sp_dashboard_movimientos_recientes(
+    IN p_id_usuario INT,
+    IN p_limite INT
+)
+BEGIN
+    SELECT
+        DATE_FORMAT(m.fecha, '%d/%m/%Y') AS fecha,
+        COALESCE(m.descripcion, r.nombre) AS descripcion,
+        c.nombre AS categoria,
+        m.tipo,
+        m.monto
+    FROM movimientos m
+    INNER JOIN rubros r ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+    ORDER BY m.fecha DESC, m.id_movimiento DESC
+    LIMIT p_limite;
+END$$
+
+
+-- 8.10 Dashboard: ingresos y gastos agrupados por mes
+
+CREATE PROCEDURE sp_dashboard_balance_mensual(
+    IN p_id_usuario INT,
+    IN p_inicio DATE,
+    IN p_fin DATE
+)
+BEGIN
+    SELECT
+        YEAR(m.fecha) AS anio,
+        MONTH(m.fecha) AS mes,
+        SUM(CASE WHEN m.tipo = 'ingreso'
+            THEN m.monto ELSE 0 END) AS ingresos,
+        SUM(CASE WHEN m.tipo = 'gasto'
+            THEN m.monto ELSE 0 END) AS gastos
+    FROM movimientos m
+    INNER JOIN rubros r ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+      AND m.fecha >= p_inicio
+      AND m.fecha < p_fin
+    GROUP BY YEAR(m.fecha), MONTH(m.fecha)
+    ORDER BY anio, mes;
+END$$
+
+
+-- 8.11 Dashboard: gastos del periodo por categoria
+
+CREATE PROCEDURE sp_dashboard_gastos_categoria(
+    IN p_id_usuario INT,
+    IN p_inicio DATE,
+    IN p_fin DATE
+)
+BEGIN
+    SELECT
+        c.nombre AS categoria,
+        SUM(m.monto) AS total
+    FROM movimientos m
+    INNER JOIN rubros r ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+      AND m.tipo = 'gasto'
+      AND m.fecha >= p_inicio
+      AND m.fecha < p_fin
+    GROUP BY c.id_categoria, c.nombre
+    ORDER BY total DESC;
+END$$
+
+
+-- 8.12 Dashboard: presupuesto proyectado vs gasto real por categoria
+
+CREATE PROCEDURE sp_dashboard_presupuesto_categoria(
+    IN p_id_usuario INT,
+    IN p_inicio DATE,
+    IN p_fin DATE
+)
+BEGIN
+    SELECT
+        c.nombre AS categoria,
+        COALESCE(SUM(r.monto_proyectado), 0) AS presupuestado,
+        COALESCE(SUM(g.gastado), 0) AS gastado
+    FROM categorias c
+    INNER JOIN rubros r ON r.id_categoria = c.id_categoria
+    LEFT JOIN (
+        SELECT m.id_rubro, SUM(m.monto) AS gastado
+        FROM movimientos m
+        WHERE m.tipo = 'gasto'
+          AND m.fecha >= p_inicio
+          AND m.fecha < p_fin
+        GROUP BY m.id_rubro
+    ) g ON g.id_rubro = r.id_rubro
+    WHERE c.id_usuario = p_id_usuario
+      AND r.fecha_inicio < p_fin
+      AND r.fecha_fin >= p_inicio
+    GROUP BY c.id_categoria, c.nombre
+    ORDER BY c.nombre;
+END$$
+
+
+-- 8.13 Obtener usuario por correo (inicio de sesion y registro)
+
+CREATE PROCEDURE sp_obtener_usuario_por_email(
+    IN p_correo VARCHAR(100)
+)
+BEGIN
+    SELECT id_usuario, nombre, correo, contrasena
+    FROM usuarios
+    WHERE correo = p_correo
+    LIMIT 1;
+END$$
+
+
+-- 8.14 Obtener credenciales por id (validar la contrasena actual)
+
+CREATE PROCEDURE sp_obtener_credenciales_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT id_usuario, contrasena
+    FROM usuarios
+    WHERE id_usuario = p_id_usuario
+    LIMIT 1;
+END$$
+
+
+-- 8.15 Saber si un correo pertenece a otro usuario
+
+CREATE PROCEDURE sp_correo_en_uso(
+    IN p_correo VARCHAR(100),
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM usuarios
+        WHERE correo = LOWER(TRIM(p_correo))
+          AND id_usuario <> p_id_usuario
+    ) AS en_uso;
+END$$
+
+
+-- 8.16 Actualizar usuario (contrasena NULL = conservar la actual)
+
+CREATE PROCEDURE sp_actualizar_usuario(
+    IN p_id_usuario INT,
+    IN p_nombre VARCHAR(50),
+    IN p_correo VARCHAR(100),
+    IN p_contrasena VARCHAR(255)
+)
+BEGIN
+    UPDATE usuarios
+    SET nombre = TRIM(p_nombre),
+        correo = LOWER(TRIM(p_correo)),
+        contrasena = COALESCE(p_contrasena, contrasena)
+    WHERE id_usuario = p_id_usuario;
+END$$
+
+
+-- 8.17 Eliminar usuario y todos sus datos
+-- Las claves foraneas son ON DELETE RESTRICT: se borra de lo mas
+-- interno a lo mas externo y, si algo falla, se deshace todo.
+
+CREATE PROCEDURE sp_eliminar_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+    DECLARE v_eliminados INT DEFAULT 0;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    DELETE m
+    FROM movimientos m
+    INNER JOIN rubros r ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario;
+
+    DELETE r
+    FROM rubros r
+    INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario;
+
+    DELETE FROM categorias
+    WHERE id_usuario = p_id_usuario;
+
+    DELETE FROM historial_presupuesto
+    WHERE id_usuario = p_id_usuario;
+
+    DELETE FROM usuarios
+    WHERE id_usuario = p_id_usuario;
+
+    SET v_eliminados = ROW_COUNT();
+
+    COMMIT;
+
+    SELECT v_eliminados AS eliminados;
+END$$
+
 DELIMITER ;
 
 

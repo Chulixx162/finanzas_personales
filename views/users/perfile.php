@@ -1,58 +1,17 @@
 <?php
 // views/users/perfile.php
 // Perfil del usuario: editar datos de la cuenta y eliminarla.
-
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../auth/login.php');
-    exit;
-}
-
 $base   = '../../';   // desde views/users/ hasta la raíz del proyecto
 $active = '';         // el perfil no está en el menú principal
 
-require_once __DIR__ . '/../../models/usersModel.php';
-
-$h = fn($texto) => htmlspecialchars(
-    (string) $texto,
-    ENT_QUOTES,
-    'UTF-8'
-);
-
-$idUsuario = filter_var(
-    $_SESSION['user_id'],
-    FILTER_VALIDATE_INT
-);
-
-$usuario = $idUsuario
-    ? obtener_usuario_por_id((int) $idUsuario)
-    : null;
-
-if (!$usuario) {
-    $_SESSION = [];
-    session_destroy();
-
-    header('Location: ../auth/login.php?error=sesion');
-    exit;
-}
-
-$_SESSION['user_nombre'] = $usuario['nombre'];
-$_SESSION['user_email'] = $usuario['correo'];
-
-$nombre = $usuario['nombre'];
-$correo = $usuario['correo'];
+// La vista se abre primero y llama al controlador: este valida la sesión
+// (redirige al login si hace falta) y deja listos $usuario y $csrf.
+require_once __DIR__ . '/../../controllers/perfileController.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
-// Token CSRF: el controlador lo exige en cada envío
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrf = $_SESSION['csrf_token'];
-
-$nombre  = $_SESSION['user_nombre'] ?? '';
-$correo  = $_SESSION['user_email'] ?? '';
+$nombre  = $usuario['nombre'];
+$correo  = $usuario['correo'];
 $inicial = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 $mensaje = is_string($_GET['mensaje'] ?? null) ? $_GET['mensaje'] : '';
 $error   = is_string($_GET['error'] ?? null) ? $_GET['error'] : '';
@@ -208,9 +167,6 @@ $errores = [
                             </div>
                         </form>
                     </section>
-
-                    <a class="back-link" href="<?= $base ?>public/index.php">Volver al inicio</a>
-
                 </div>
             </div>
 

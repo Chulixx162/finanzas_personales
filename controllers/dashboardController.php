@@ -1,4 +1,3 @@
-
 <?php
 // controllers/dashboardController.php
 
@@ -11,7 +10,7 @@ if (
     !isset($_SESSION['user_id']) ||
     !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
 ) {
-    header('Location: ../views/auth/login.php?error=sesion');
+    header('Location: ../auth/login.php?error=sesion');
     exit;
 }
 
@@ -38,14 +37,15 @@ $_SESSION['user_email'] = $usuario['correo'];
 require_once __DIR__ . '/../models/dashboardModel.php';
 
 // Periodo actual y últimos seis meses.
-$hoy = new DateTimeImmutable('today');
-$inicioMes = $hoy->modify('first day of this month')->format('Y-m-d');
-$finMes = $hoy->modify('first day of next month')->format('Y-m-d');
-$inicioSeisMeses = $hoy
-    ->modify('first day of this month')
-    ->modify('-5 months')
-    ->format('Y-m-d');
+$hoy = date('Y-m-d');
 
+$inicioMes = date('Y-m-01');
+$finMes = date('Y-m-01', strtotime('first day of next month'));
+
+$inicioSeisMeses = date(
+    'Y-m-01',
+    strtotime('-5 months', strtotime($inicioMes))
+);
 // Resumen y movimientos reales.
 $resumen = dashboard_resumen_mensual(
     $idUsuario,
@@ -90,16 +90,16 @@ $etiquetasMeses = [];
 $ingresosMeses = [];
 $gastosMeses = [];
 
-$cursor = new DateTimeImmutable($inicioSeisMeses);
+$cursor = strtotime($inicioSeisMeses);
 
 for ($i = 0; $i < 6; $i++) {
-    $clave = $cursor->format('Y-m');
-    $etiquetasMeses[] = $cursor->format('M');
+    $clave = date('Y-m', $cursor);
+    $etiquetasMeses[] = date('M', $cursor);
 
     $ingresosMeses[] = (float) ($mapaMeses[$clave]['ingresos'] ?? 0);
     $gastosMeses[] = (float) ($mapaMeses[$clave]['gastos'] ?? 0);
 
-    $cursor = $cursor->modify('+1 month');
+    $cursor = strtotime('+1 month', $cursor);
 }
 
 $datosGraficos = [
@@ -118,9 +118,3 @@ $datosGraficos = [
         'gastado' => array_column($filasPresupuesto, 'gastado'),
     ],
 ];
-
-
-// 5. Autorizar la carga de la vista.
-define('DASHBOARD_CONTROLLER_ACCESS', true);
-
-require __DIR__ . '/../views/users/dashboard.php';

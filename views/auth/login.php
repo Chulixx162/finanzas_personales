@@ -30,7 +30,18 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
 <body>
     <div class="page">
         <aside class="brand">
-            <div class="logo"><span class="logo-mark" aria-hidden="true"></i></span>Finanzas</div>
+
+            <div class="logo">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <rect x="4" y="12" width="4" height="8" rx="1" fill="#fff" />
+                        <rect x="10" y="8" width="4" height="12" rx="1" fill="#fff" />
+                        <rect x="16" y="4" width="4" height="16" rx="1" fill="#FBBF24" />
+                    </svg>
+                </span>
+                Finanzas
+            </div>
+
             <div class="brand-body">
                 <h2>Tu dinero, claro y bajo control.</h2>
                 <p>Entra para ver tu saldo, tus movimientos del mes y el avance de tus metas.</p>
@@ -75,7 +86,12 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                     </div>
 
                     <button type="submit" class="submit" id="submit">Iniciar sesión</button>
+
                     <p class="login">¿Aún no tienes cuenta? <a href="register.php">Crear cuenta</a></p>
+
+
+                    <a class="submit link-btn" href="../../public/index.php">Volver al inicio</a>
+
                 </form>
             </div>
         </main>
