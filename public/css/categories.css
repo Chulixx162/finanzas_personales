@@ -1,0 +1,392 @@
+/* public/css/categories.css - Estilos completos del sistema */
+
+:root {
+    --bg-main: #121214;
+    --bg-card: #1e1e24;
+    --bg-sidebar: #18181c;
+    --border-color: #2b2b36;
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
+    --accent-primary: #6366f1;
+    --accent-hover: #4f46e5;
+    --danger-color: #ef4444;
+}
+
+/* Reset Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --------------------------------------------------
+   1. ESTILOS DE NAVBAR (navbar.php)
+-------------------------------------------------- */
+.site-header {
+    background-color: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link[aria-current="page"] {
+    color: var(--text-main);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.75rem 0.25rem 0.35rem;
+    border-radius: 20px;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    background-color: var(--accent-primary);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.user-name {
+    color: var(--text-main);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--danger-color);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 0.4rem 0.80rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+    background-color: rgba(239, 68, 68, 0.15);
+}
+
+/* --------------------------------------------------
+   2. CONTENIDO Y VISTA DE CATEGORÍAS
+-------------------------------------------------- */
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    background-color: var(--border-color);
+    color: #ffffff;
+}
+
+.btn-secondary:hover {
+    background-color: #3b3b4a;
+}
+
+.table-toolbar {
+    margin-bottom: 1rem;
+}
+
+.search-box input {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.6rem 1rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-main);
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: var(--accent-primary);
+}
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.form-card {
+    padding: 1.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.65rem;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 6px;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus {
+    border-color: var(--accent-primary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.data-table th, .data-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background-color: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.empty-row td {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+
+.btn-action {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-left: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-edit {
+    background-color: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+}
+
+.btn-edit:hover {
+    background-color: rgba(99, 102, 241, 0.3);
+}
+
+.btn-delete {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+.btn-delete:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+}
+
+/* --------------------------------------------------
+   3. ESTILOS DE FOOTER (footer.php)
+-------------------------------------------------- */
+.site-footer {
+    background-color: var(--bg-sidebar);
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    padding: 2.5rem 1.5rem 1.5rem;
+    color: var(--text-muted);
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-brand p {
+    font-size: 0.88rem;
+    margin-top: 0.8rem;
+    line-height: 1.5;
+}
+
+.footer-col h2 {
+    color: var(--text-main);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col li {
+    margin-bottom: 0.5rem;
+    font-size: 0.88rem;
+}
+
+.footer-col a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: var(--text-main);
+}
+
+.footer-bottom {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 0.82rem;
+}
+
+@media (max-width: 768px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+    }
+}
