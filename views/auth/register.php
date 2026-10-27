@@ -102,9 +102,13 @@ if (!empty($error) && isset($error_messages[$error])) {
                     <div class="field">
                         <label class="check" for="terms">
                             <input id="terms" name="terms" type="checkbox" required>
-                            <span>Acepto los <a href="#">términos de uso</a> y la <a href="#">política de privacidad</a>.</span>
+                            <span>Acepto los
+                                <a href="../legal/terms_of_use.php" target="_blank">términos de uso</a>
+                                y la
+                            
+                                <a href="../legal/privacy_policies.php" target="_blank" >política de privacidad</a>.
+                            </span>
                         </label>
-                        <p class="error" id="terms-error" role="alert"></p>
                     </div>
 
                     <button type="submit" class="submit">Crear cuenta</button>

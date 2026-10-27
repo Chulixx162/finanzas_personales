@@ -125,16 +125,16 @@ CREATE TABLE IF NOT EXISTS recuperacion_contrasena (
 INSERT INTO usuarios
 (nombre, correo, contrasena, fecha_registro, presupuesto_mensual)
 VALUES
-('Julio Casanova', 'julio@gmail.com', 'clave123', '2026-01-05 08:30:00', 1500000),
-('Ana Martinez', 'ana@gmail.com', 'clave123', '2026-01-06 09:15:00', 1200000),
-('Carlos Perez', 'carlos@gmail.com', 'clave123', '2026-01-07 10:00:00', 1800000),
-('Laura Gomez', 'laura@gmail.com', 'clave123', '2026-01-08 11:20:00', 1400000),
-('Andres Torres', 'andres@gmail.com', 'clave123', '2026-01-09 14:10:00', 1600000),
-('Sofia Ramirez', 'sofia@gmail.com', 'clave123', '2026-01-10 15:45:00', 1300000),
-('Daniel Rojas', 'daniel@gmail.com', 'clave123', '2026-01-11 08:00:00', 2000000),
-('Camila Diaz', 'camila@gmail.com', 'clave123', '2026-01-12 12:30:00', 1700000),
-('Miguel Castro', 'miguel@gmail.com', 'clave123', '2026-01-13 16:00:00', 1100000),
-('Valentina Silva', 'valentina@gmail.com', 'clave123', '2026-01-14 17:15:00', 1900000);
+('Julio Casanova', 'julioacr8@gmail.com',        'clave123', '2026-01-05 08:30:00', 1500000),
+('Jaime Ladino', 'ladinomontealegre07@gmail.com', 'clave123', '2026-01-06 09:15:00', 1200000),
+('Laura Isanoa', 'danielaisanoa255@gmail.com',                'clave123', '2026-01-07 10:00:00', 1800000),
+('Juan Barreiro', 'barreiropolojuanmanuel@gmail.com',                  'clave123', '2026-01-08 11:20:00', 1400000),
+('Karoll Coronado', 'karollcoronado91@gmail.com',               'clave123', '2026-01-09 14:10:00', 1600000),
+('Sofia Ramirez', 'sofia@gmail.com',                'clave123', '2026-01-10 15:45:00', 1300000),
+('Pepe Rodríguez', 'pepe@gmail.com',                'clave123', '2026-01-11 08:00:00', 2000000),
+('Camila Diaz', 'camila@gmail.com',                 'clave123', '2026-01-12 12:30:00', 1700000),
+('Miguel Castro', 'miguel@gmail.com',               'clave123', '2026-01-13 16:00:00', 1100000),
+('Valentina Silva', 'valentina@gmail.com',          'clave123', '2026-01-14 17:15:00', 1900000);
 
 
 -- ============================================================

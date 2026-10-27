@@ -37,9 +37,10 @@ $cop = static function ($valor): string {
 };
 
 // Valores recibidos del controlador.
-// Se usan variables temporales para evitar avisos.
 $ingresos = (float) ($ingresos ?? 0);
 $gastos = (float) ($gastos ?? 0);
+
+// Cálculo del balance / saldo (Ingresos menos Gastos) con datos reales
 $saldo = (float) ($saldo ?? ($ingresos - $gastos));
 
 $movimientosRecibidos = $movimientos ?? [];
@@ -88,8 +89,7 @@ $datosGraficos = array_replace_recursive(
 
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/dashboard.css">
@@ -110,14 +110,41 @@ $datosGraficos = array_replace_recursive(
                         <?= $h($primerNombre !== '' ? $primerNombre : 'usuario') ?>
                     </h1>
 
-                    <p class="dash-sub">
-                        Resumen financiero de <?= $h(date('F Y')) ?>
-                    </p>
+<?php
+$meses = [
+    1 => 'enero',
+    2 => 'febrero',
+    3 => 'marzo',
+    4 => 'abril',
+    5 => 'mayo',
+    6 => 'junio',
+    7 => 'julio',
+    8 => 'agosto',
+    9 => 'septiembre',
+    10 => 'octubre',
+    11 => 'noviembre',
+    12 => 'diciembre'
+];
+
+$fechaActual = new DateTimeImmutable('today');
+
+$mesActual = $meses[(int) $fechaActual->format('n')];
+
+$periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
+?>
+
+<p class="dash-sub">
+    Resumen financiero de <?= $h($periodoActual) ?>
+</p>
                 </div>
             </header>
 
+            <!-- ========================================================== -->
+            <!-- AQUÍ SE IMPLEMENTA EL RESUMEN FINANCIERO (TARJETAS)          -->
+            <!-- ========================================================== -->
             <section class="stats" aria-label="Resumen financiero">
 
+                <!-- 1. Total de Ingresos -->
                 <article class="stat">
                     <h2>Ingresos</h2>
                     <p class="stat-value is-in">
@@ -126,6 +153,7 @@ $datosGraficos = array_replace_recursive(
                     <p class="stat-note">Total recibido en el periodo</p>
                 </article>
 
+                <!-- 2. Total de Gastos -->
                 <article class="stat">
                     <h2>Gastos</h2>
                     <p class="stat-value is-out">
@@ -134,6 +162,7 @@ $datosGraficos = array_replace_recursive(
                     <p class="stat-note">Total gastado en el periodo</p>
                 </article>
 
+                <!-- 3. Balance / Saldo General -->
                 <article class="stat stat-balance">
                     <h2>Saldo</h2>
                     <p class="stat-value">
@@ -143,6 +172,7 @@ $datosGraficos = array_replace_recursive(
                 </article>
 
             </section>
+            <!-- ========================================================== -->
 
             <div class="dash-grid">
 
@@ -156,8 +186,7 @@ $datosGraficos = array_replace_recursive(
                         <canvas
                             id="chart-meses"
                             role="img"
-                            aria-label="Comparación mensual de ingresos y gastos"
-                        ></canvas>
+                            aria-label="Comparación mensual de ingresos y gastos"></canvas>
                     </div>
                 </section>
 
@@ -171,8 +200,7 @@ $datosGraficos = array_replace_recursive(
                         <canvas
                             id="chart-categorias"
                             role="img"
-                            aria-label="Distribución de gastos por categoría"
-                        ></canvas>
+                            aria-label="Distribución de gastos por categoría"></canvas>
                     </div>
                 </section>
 
@@ -186,8 +214,7 @@ $datosGraficos = array_replace_recursive(
                         <canvas
                             id="chart-presupuesto"
                             role="img"
-                            aria-label="Comparación del presupuesto y los gastos"
-                        ></canvas>
+                            aria-label="Comparación del presupuesto y los gastos"></canvas>
                     </div>
                 </section>
 
@@ -262,23 +289,25 @@ $datosGraficos = array_replace_recursive(
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
-    <script id="dashboard-data" type="application/json"><?=
+    <script id="dashboard-data" type="application/json">
+        <?=
         json_encode(
             $datosGraficos,
             JSON_HEX_TAG
-            | JSON_HEX_APOS
-            | JSON_HEX_AMP
-            | JSON_HEX_QUOT 
-            | JSON_UNESCAPED_UNICODE
+                | JSON_HEX_APOS
+                | JSON_HEX_AMP
+                | JSON_HEX_QUOT
+                | JSON_UNESCAPED_UNICODE
         )
-    ?></script>
+        ?>
+    </script>
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
-        defer
-    ></script>
+        defer></script>
 
     <script src="<?= $h($base) ?>public/js/dashboard.js" defer></script>
 
 </body>
+
 </html>
