@@ -17,7 +17,7 @@ $inicial      = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
-    'categorias'   => ['Categorías', 'views/categorias/index.php'],
+    'categorias'   => ['Categorías', 'views/categories/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
 ];
 

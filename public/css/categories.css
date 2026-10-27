@@ -1,16 +1,5 @@
 /* public/css/categories.css - Estilos completos del sistema */
 
-:root {
-    --bg-main: #121214;
-    --bg-card: #1e1e24;
-    --bg-sidebar: #18181c;
-    --border-color: #2b2b36;
-    --text-main: #ffffff;
-    --text-muted: #a1a1aa;
-    --accent-primary: #6366f1;
-    --accent-hover: #4f46e5;
-    --danger-color: #ef4444;
-}
 
 /* Reset Base */
 * {

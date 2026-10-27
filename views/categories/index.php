@@ -11,6 +11,8 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Categorías - Finanzas</title>
     <link rel="stylesheet" href="/finanzas_personales/public/css/categories.css">
+    <link rel="icon" type="image/webp" href="/finanzas_personales/public/img/icon.webp">
+    <link rel="stylesheet" href="../../public/css/layout.css">
 </head>
 <body>
 
