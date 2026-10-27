@@ -1,6 +1,7 @@
 <?php
 // login.php (parte superior)
-$error = $_GET['error'] ?? '';
+$error  = $_GET['error'] ?? '';
+$status = $_GET['status'] ?? '';
 
 $error_messages = [
     'email_invalido' => ['field' => 'email', 'msg' => 'Formato de correo no válido.'],
@@ -60,6 +61,12 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                     <h1>Inicia sesión</h1>
                     <p class="sub">Qué bueno verte de nuevo.</p>
 
+                    <?php if ($status === 'restablecido'): ?>
+                        <p role="status" style="background:#ede9fe;color:#3b1d8f;border-radius:8px;padding:12px 14px;margin:0 0 16px;">
+                            Tu contraseña fue actualizada. Ya puedes iniciar sesión.
+                        </p>
+                    <?php endif; ?>
+
                     <p class="form-error" id="form-error" role="alert" hidden></p>
 
                     <div class="field">
@@ -77,30 +84,38 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                         <p class="error" id="password-error" role="alert"></p>
                     </div>
 
-                    <div class="row">
-                        <label class="check" for="remember">
-                            <input id="remember" name="remember" type="checkbox">
+
+                    <div class="login-options">
+
+                        <label class="check">
+                            <input type="checkbox" name="remember">
                             <span>Recordarme</span>
                         </label>
-                        <a href="#">¿Olvidaste tu contraseña?</a>
+
+                        <a href="forgot-password.php" class="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+
                     </div>
+
 
                     <button type="submit" class="submit" id="submit">Iniciar sesión</button>
 
+                    <a class="btn-secondary" href="../../public/index.php">Volver al inicio</a>
+
                     <p class="login">¿Aún no tienes cuenta? <a href="register.php">Crear cuenta</a></p>
-
-
-                    <a class="submit link-btn" href="../../public/index.php">Volver al inicio</a>
 
                 </form>
             </div>
         </main>
     </div>
+
     <script>
-        window.SERVER_DATA = {
-            errorField: "<?php echo $server_error_field; ?>",
-            errorMessage: "<?php echo $server_error_msg; ?>"
-        };
+        window.SERVER_DATA = <?= json_encode([
+            'errorField'   => $server_error_field,
+            'errorMessage' => $server_error_msg,
+        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+   
     </script>
     <script src="../../public/js/login.js"></script>
 </body>

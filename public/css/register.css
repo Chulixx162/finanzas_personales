@@ -1,40 +1,7 @@
-/* Separador */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-  font-size: 12px;
-  color: var(--muted);
-}
 
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* Botón secundario */
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 48px;
-  border: 1.5px solid var(--primary);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--primary);
-  font: 700 15px "Plus Jakarta Sans", system-ui, sans-serif;
-  transition: background 0.15s;
-}
-
-.btn-secondary:hover {
-  background: var(--tint);
-  text-decoration: none;
-}
+/* ========================================
+   CONFIGURACIÓN GENERAL
+======================================== */
 
 :root {
   --primary: #6D28D9;
@@ -52,7 +19,9 @@
   --radius: 12px;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -62,13 +31,20 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ========================================
+   ESTRUCTURA PRINCIPAL
+======================================== */
+
 .page {
   display: grid;
   grid-template-columns: minmax(320px, 5fr) 7fr;
   min-height: 100vh;
 }
 
-/* Panel de marca */
+/* ========================================
+   PANEL DE MARCA
+======================================== */
+
 .brand {
   background: var(--deep);
   color: var(--tint);
@@ -96,7 +72,9 @@ body {
   background: var(--primary);
 }
 
-.brand-body { max-width: 380px; }
+.brand-body {
+  max-width: 380px;
+}
 
 .brand h2 {
   margin: 0 0 16px;
@@ -141,12 +119,16 @@ body {
   background: var(--gold);
 }
 
-/* Formulario */
+/* ========================================
+   PANEL DEL FORMULARIO
+======================================== */
+
 .panel {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 24px;
+  min-width: 0;
 }
 
 .card {
@@ -170,7 +152,13 @@ h1 {
   color: var(--muted);
 }
 
-.field { margin-bottom: 18px; }
+/* ========================================
+   CAMPOS DEL FORMULARIO
+======================================== */
+
+.field {
+  margin-bottom: 18px;
+}
 
 label {
   display: block;
@@ -193,7 +181,9 @@ input[type="password"] {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-input:hover { border-color: var(--soft); }
+input:hover {
+  border-color: var(--soft);
+}
 
 input:focus-visible,
 button:focus-visible,
@@ -210,8 +200,17 @@ input[type="password"]:focus-visible {
   box-shadow: 0 0 0 3px var(--tint);
 }
 
-.input-wrap { position: relative; }
-.input-wrap input { padding-right: 84px; }
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap input {
+  padding-right: 84px;
+}
+
+/* ========================================
+   MOSTRAR / OCULTAR CONTRASEÑA
+======================================== */
 
 .toggle {
   position: absolute;
@@ -227,6 +226,14 @@ input[type="password"]:focus-visible {
   border-radius: var(--radius);
 }
 
+.toggle:hover {
+  background: var(--tint);
+}
+
+/* ========================================
+   MENSAJES
+======================================== */
+
 .hint,
 .error {
   margin: 8px 0 0;
@@ -234,15 +241,30 @@ input[type="password"]:focus-visible {
   line-height: 1.4;
 }
 
-.hint { color: var(--muted); }
-.error { color: var(--danger); font-weight: 600; min-height: 0; }
-.error:empty { display: none; }
+.hint {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 600;
+  min-height: 0;
+}
+
+.error:empty {
+  display: none;
+}
 
 .field.invalid input[type="text"],
 .field.invalid input[type="email"],
-.field.invalid input[type="password"] { border-color: var(--danger); }
+.field.invalid input[type="password"] {
+  border-color: var(--danger);
+}
 
-/* Fuerza de contraseña */
+/* ========================================
+   INDICADOR DE SEGURIDAD DE CONTRASEÑA
+======================================== */
+
 .strength {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -257,17 +279,31 @@ input[type="password"]:focus-visible {
   transition: background 0.2s;
 }
 
-.strength[data-level="1"] span:nth-child(-n+1) { background: var(--danger); }
-.strength[data-level="2"] span:nth-child(-n+2) { background: #B45309; }
-.strength[data-level="3"] span:nth-child(-n+3) { background: var(--primary); }
-.strength[data-level="4"] span { background: var(--primary); }
+.strength[data-level="1"] span:nth-child(-n+1) {
+  background: var(--danger);
+}
 
-/* Checkbox */
+.strength[data-level="2"] span:nth-child(-n+2) {
+  background: #B45309;
+}
+
+.strength[data-level="3"] span:nth-child(-n+3) {
+  background: var(--primary);
+}
+
+.strength[data-level="4"] span {
+  background: var(--primary);
+}
+
+/* ========================================
+   CASILLAS DE VERIFICACIÓN
+======================================== */
+
 .check {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin: 0;
+  margin: 0 0 18px;
   font-weight: 400;
   font-size: 13px;
   line-height: 1.5;
@@ -283,40 +319,139 @@ input[type="password"]:focus-visible {
   flex-shrink: 0;
 }
 
-a { color: var(--primary); font-weight: 600; text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* ========================================
+   ENLACES
+======================================== */
 
-/* Botón principal */
+a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   BOTÓN PRINCIPAL
+======================================== */
+
 .submit {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 48px;
-  margin-top: 8px;
+
+  /* Separación respecto al botón secundario */
+  margin: 0 0 12px 0;
+
   border: 0;
   border-radius: var(--radius);
   background: var(--primary);
   color: #fff;
   font: 700 15px "Plus Jakarta Sans", system-ui, sans-serif;
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
   transition: background 0.15s;
 }
 
-.submit:hover { background: #5B21B6; text-decoration: none; }
-.submit:disabled { background: var(--soft); cursor: not-allowed; }
+.submit:hover {
+  background: #5B21B6;
+  text-decoration: none;
+}
 
-.login {
-  margin: 20px 0 0;
+.submit:disabled {
+  background: var(--soft);
+  cursor: not-allowed;
+}
+
+/* ========================================
+   BOTÓN SECUNDARIO
+======================================== */
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+
+  /* Espacio entre los botones */
+  margin: 0 0 10px 0;
+
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--primary);
+  font: 700 15px "Plus Jakarta Sans", system-ui, sans-serif;
+  cursor: pointer;
   text-align: center;
-  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: var(--tint);
+  text-decoration: none;
+}
+
+/* Refuerza la separación si están uno después del otro */
+.submit + .btn-secondary {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* ========================================
+   SEPARADOR CON LÍNEAS
+======================================== */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 12px;
   color: var(--muted);
 }
 
-/* Éxito */
-.success { text-align: center; }
-.success[hidden] { display: none; }
-.success:focus { outline: none; }
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ========================================
+   ENLACE PARA INICIAR SESIÓN
+======================================== */
+
+.login {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ========================================
+   MENSAJE DE ÉXITO
+======================================== */
+
+.success {
+  text-align: center;
+}
+
+.success[hidden] {
+  display: none;
+}
+
+.success:focus {
+  outline: none;
+}
 
 .success-icon {
   width: 56px;
@@ -330,17 +465,65 @@ a:hover { text-decoration: underline; }
   justify-content: center;
 }
 
-.link-btn { color: #fff; }
-.link-btn:hover { color: #fff; }
-
-/* Responsive */
-@media (max-width: 860px) {
-  .page { grid-template-columns: 1fr; }
-  .brand { padding: 24px; gap: 24px; }
-  .brand-body { display: none; }
-  .card { padding: 28px 22px; }
+.link-btn {
+  color: #fff;
 }
 
+.link-btn:hover {
+  color: #fff;
+}
+
+/* ========================================
+   DISEÑO RESPONSIVE
+======================================== */
+
+@media (max-width: 860px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .brand {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .brand-body {
+    display: none;
+  }
+
+  .panel {
+    padding: 28px 20px;
+  }
+
+  .card {
+    padding: 28px 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .panel {
+    padding: 20px 12px;
+  }
+
+  .card {
+    padding: 24px 18px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}
+
+/* ========================================
+   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+======================================== */
+
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }

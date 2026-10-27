@@ -108,10 +108,10 @@ if (!empty($error) && isset($error_messages[$error])) {
                     </div>
 
                     <button type="submit" class="submit">Crear cuenta</button>
+
+                    <a class="btn-secondary" href="../../public/index.php">Volver al inicio</a>
+
                     <p class="login">¿Ya tienes cuenta? <a href="./login.php">Inicia sesión</a></p>
-
-
-                    <a class="submit link-btn" href="../../public/index.php">Volver al inicio</a>
                 </form>
 
                 <div id="success" class="success" hidden tabindex="-1">

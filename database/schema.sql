@@ -101,7 +101,23 @@ CREATE TABLE historial_presupuesto (
         ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- Tabla: solo se guarda el HASH del token, nunca el token.
+-- ON DELETE CASCADE: al borrar un usuario se borran sus tokens,
+-- asi sp_eliminar_usuario sigue funcionando sin modificarlo.
+CREATE TABLE IF NOT EXISTS recuperacion_contrasena (
+    id_recuperacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expira_en DATETIME NOT NULL,
+    usado_en DATETIME NULL,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+    INDEX idx_recuperacion_usuario (id_usuario, creado_en),
+
+    CONSTRAINT fk_recuperacion_usuario
+        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
 -- ============================================================
 -- 2. INSERTAR USUARIOS
 -- ============================================================
@@ -735,6 +751,101 @@ BEGIN
     COMMIT;
 
     SELECT v_eliminados AS eliminados;
+END$$
+
+-- 8.18 Crear token de recuperacion
+-- La fecha de expiracion se calcula con la hora de MySQL (NOW()),
+-- la misma con la que se valida, para evitar desfases de zona horaria.
+-- Maximo 3 solicitudes por usuario cada hora. Devuelve creado = 1 o 0.
+DROP PROCEDURE IF EXISTS sp_crear_token_recuperacion$$
+CREATE PROCEDURE sp_crear_token_recuperacion(
+    IN p_id_usuario INT,
+    IN p_token_hash CHAR(64),
+    IN p_minutos INT
+)
+BEGIN
+    DECLARE v_recientes INT DEFAULT 0;
+
+    -- Limpieza de tokens viejos.
+    DELETE FROM recuperacion_contrasena
+    WHERE expira_en < DATE_SUB(NOW(), INTERVAL 1 DAY);
+
+    SELECT COUNT(*) INTO v_recientes
+    FROM recuperacion_contrasena
+    WHERE id_usuario = p_id_usuario
+      AND creado_en > DATE_SUB(NOW(), INTERVAL 1 HOUR);
+
+    IF v_recientes >= 3 THEN
+        SELECT 0 AS creado;
+    ELSE
+        -- Invalida los enlaces anteriores que no se hayan usado.
+        UPDATE recuperacion_contrasena
+        SET usado_en = NOW()
+        WHERE id_usuario = p_id_usuario
+          AND usado_en IS NULL;
+
+        INSERT INTO recuperacion_contrasena (id_usuario, token_hash, expira_en)
+        VALUES (p_id_usuario, p_token_hash, DATE_ADD(NOW(), INTERVAL p_minutos MINUTE));
+
+        SELECT 1 AS creado;
+    END IF;
+END$$
+
+-- 8.19 Validar token (sin usarlo)
+DROP PROCEDURE IF EXISTS sp_validar_token_recuperacion$$
+CREATE PROCEDURE sp_validar_token_recuperacion(
+    IN p_token_hash CHAR(64)
+)
+BEGIN
+    SELECT id_usuario
+    FROM recuperacion_contrasena
+    WHERE token_hash = p_token_hash
+      AND usado_en IS NULL
+      AND expira_en > NOW()
+    LIMIT 1;
+END$$
+
+-- 8.20 Restablecer contrasena con el token (un solo uso, transaccional)
+DROP PROCEDURE IF EXISTS sp_restablecer_contrasena$$
+CREATE PROCEDURE sp_restablecer_contrasena(
+    IN p_token_hash CHAR(64),
+    IN p_contrasena VARCHAR(255)
+)
+BEGIN
+    DECLARE v_id_usuario INT DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    SELECT id_usuario INTO v_id_usuario
+    FROM recuperacion_contrasena
+    WHERE token_hash = p_token_hash
+      AND usado_en IS NULL
+      AND expira_en > NOW()
+    LIMIT 1
+    FOR UPDATE;
+
+    IF v_id_usuario IS NULL THEN
+        ROLLBACK;
+        SELECT 0 AS restablecido;
+    ELSE
+        UPDATE usuarios
+        SET contrasena = p_contrasena
+        WHERE id_usuario = v_id_usuario;
+
+        UPDATE recuperacion_contrasena
+        SET usado_en = NOW()
+        WHERE id_usuario = v_id_usuario
+          AND usado_en IS NULL;
+
+        COMMIT;
+        SELECT 1 AS restablecido;
+    END IF;
 END$$
 
 DELIMITER ;
