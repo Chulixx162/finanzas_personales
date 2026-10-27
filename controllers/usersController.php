@@ -1,13 +1,11 @@
 <?php
-// controllers/userController.php
+require_once __DIR__ . '/../models/usersModel.php';
 
 // Verificar que la petición llegue por el método POST tradicional
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../views/auth/register.php");
     exit;
 }
-
-require_once __DIR__ . '/../models/usersModel.php';
 
 // Capturar los valores enviados desde $_POST
 $nombre   = trim($_POST['name'] ?? '');
