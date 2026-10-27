@@ -2,6 +2,17 @@
 
 
 /* Reset Base */
+:root {
+    --bg-main: #F5F3FF;
+    --bg-sidebar: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --border-color: #221e1e8c;
+    --text-main: #1F1B3A;
+    --text-muted: #5B5580;
+    --accent-primary: #6D28D9;
+    --accent-hover: #5B21B6;
+    --danger-color: #B91C1C;
+}
 * {
     box-sizing: border-box;
     margin: 0;
@@ -93,9 +104,9 @@ body {
     align-items: center;
     gap: 0.5rem;
     background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
     padding: 0.25rem 0.75rem 0.25rem 0.35rem;
-    border-radius: 20px;
+    /* border-radius: 20px; */
 }
 
 .user-avatar {
@@ -208,7 +219,7 @@ body {
 
 .card {
     background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
     border-radius: 8px;
     overflow: hidden;
 }
@@ -260,7 +271,7 @@ body {
 
 .data-table th, .data-table td {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--border-color);
+    /* border-bottom: 1px solid var(--border-color); */
 }
 
 .data-table th {

@@ -11,7 +11,9 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Categoría - Finanzas</title>
-    <link rel="stylesheet" href="/finanzas_personales/public/css/categories.css">
+    <link rel="stylesheet" href="../../public/css/categories.css">
+    <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="../../public/css/layout.css">
 </head>
 <body>
 
