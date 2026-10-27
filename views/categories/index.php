@@ -10,7 +10,9 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Categorías - Finanzas</title>
-    <link rel="stylesheet" href="/finanzas_personales/public/css/categories.css">
+    <link rel="stylesheet" href="../../public/css/categories.css">
+    <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="../../public/css/layout.css">
 </head>
 <body>
 
@@ -74,8 +76,8 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/finanzas_personales/public/js/alertas.js"></script>
-<script src="/finanzas_personales/public/js/categories.js"></script>
+<script src="../../public/js/alertas.js"></script>
+<script src="../../public/js/categories.js"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
