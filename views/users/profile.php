@@ -1,58 +1,17 @@
 <?php
-// views/users/perfile.php
+// views/users/profile.php
 // Perfil del usuario: editar datos de la cuenta y eliminarla.
-
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../auth/login.php');
-    exit;
-}
-
 $base   = '../../';   // desde views/users/ hasta la raíz del proyecto
 $active = '';         // el perfil no está en el menú principal
 
-require_once __DIR__ . '/../../models/usersModel.php';
-
-$h = fn($texto) => htmlspecialchars(
-    (string) $texto,
-    ENT_QUOTES,
-    'UTF-8'
-);
-
-$idUsuario = filter_var(
-    $_SESSION['user_id'],
-    FILTER_VALIDATE_INT
-);
-
-$usuario = $idUsuario
-    ? obtener_usuario_por_id((int) $idUsuario)
-    : null;
-
-if (!$usuario) {
-    $_SESSION = [];
-    session_destroy();
-
-    header('Location: ../auth/login.php?error=sesion');
-    exit;
-}
-
-$_SESSION['user_nombre'] = $usuario['nombre'];
-$_SESSION['user_email'] = $usuario['correo'];
-
-$nombre = $usuario['nombre'];
-$correo = $usuario['correo'];
+// La vista se abre primero y llama al controlador: este valida la sesión
+// (redirige al login si hace falta) y deja listos $usuario y $csrf.
+require_once __DIR__ . '/../../controllers/profileController.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
-// Token CSRF: el controlador lo exige en cada envío
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-$csrf = $_SESSION['csrf_token'];
-
-$nombre  = $_SESSION['user_nombre'] ?? '';
-$correo  = $_SESSION['user_email'] ?? '';
+$nombre  = $usuario['nombre'];
+$correo  = $usuario['correo'];
 $inicial = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 $mensaje = is_string($_GET['mensaje'] ?? null) ? $_GET['mensaje'] : '';
 $error   = is_string($_GET['error'] ?? null) ? $_GET['error'] : '';
@@ -81,7 +40,7 @@ $errores = [
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
-    <link rel="stylesheet" href="<?= $base ?>public/css/perfile.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/profile.css">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
 </head>
 
@@ -130,7 +89,7 @@ $errores = [
                             <p>Por seguridad, confirma tu contraseña actual para guardar cambios.</p>
                         </header>
 
-                        <form class="profile-form" id="form-perfil" action="../../controllers/perfileController.php" method="POST"
+                        <form class="profile-form" id="form-profile" action="../../controllers/profileController.php" method="POST"
                             data-login="<?= $h($base) ?>views/auth/login.php">
                             <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
                             <input type="hidden" name="accion" value="actualizar">
@@ -183,7 +142,7 @@ $errores = [
                             <p>Esta acción puede borrar permanentemente tus datos y no se puede deshacer.</p>
                         </header>
 
-                        <form class="profile-form" action="../../controllers/perfileController.php" method="POST"
+                        <form class="profile-form" action="../../controllers/profileController.php" method="POST"
                             onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
                             <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
                             <input type="hidden" name="accion" value="eliminar">
@@ -208,9 +167,6 @@ $errores = [
                             </div>
                         </form>
                     </section>
-
-                    <a class="back-link" href="<?= $base ?>public/index.php">Volver al inicio</a>
-
                 </div>
             </div>
 
@@ -222,11 +178,11 @@ $errores = [
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
-    <script type="application/json" id="perfil-mensajes"><?= json_encode(
+    <script type="application/json" id="profile-mensajes"><?= json_encode(
         ['exito' => $textoExito, 'errores' => $errores],
         JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
     ) ?></script>
-    <script src="<?= $base ?>public/js/perfile.js" defer></script>
+    <script src="<?= $base ?>public/js/profile.js" defer></script>
 </body>
 
 </html>

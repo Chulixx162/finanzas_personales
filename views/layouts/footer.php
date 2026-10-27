@@ -8,11 +8,11 @@ $logueado = isset($_SESSION['user_id']);
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
 $logoDestino = $logueado
-    ? 'controllers/dashboardController.php'
+    ? 'views/users/dashboard.php'
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
-        ['Inicio', 'controllers/dashboardController.php'],
+        ['Inicio', 'views/users/dashboard.php'],
         ['Movimientos',  'views/movimientos/index.php'],
         ['Categorías',   'views/categorias/index.php'],
         ['Presupuestos', 'views/presupuestos/index.php'],
@@ -66,4 +66,5 @@ if ($logueado) {
     <div class="footer-bottom">
         <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </footer>

@@ -37,7 +37,18 @@ if (!empty($error) && isset($error_messages[$error])) {
 <body>
     <div class="page">
         <aside class="brand">
-            <div class="logo"><span class="logo-mark" aria-hidden="true"></span>Finanzas</div>
+
+            <div class="logo">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <rect x="4" y="12" width="4" height="8" rx="1" fill="#fff" />
+                        <rect x="10" y="8" width="4" height="12" rx="1" fill="#fff" />
+                        <rect x="16" y="4" width="4" height="16" rx="1" fill="#FBBF24" />
+                    </svg>
+                </span>
+                Finanzas
+            </div>
+
             <div class="brand-body">
                 <h2>Ordena tu dinero sin complicarte.</h2>
                 <p>Registra tus movimientos, define metas y mira cuánto te falta para alcanzarlas.</p>
@@ -97,6 +108,9 @@ if (!empty($error) && isset($error_messages[$error])) {
                     </div>
 
                     <button type="submit" class="submit">Crear cuenta</button>
+
+                    <a class="btn-secondary" href="../../public/index.php">Volver al inicio</a>
+
                     <p class="login">¿Ya tienes cuenta? <a href="./login.php">Inicia sesión</a></p>
                 </form>
 

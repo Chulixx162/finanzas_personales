@@ -4,14 +4,13 @@
 // PROYECTO: Finanzas personales
 // ============================================================
 
-// Esta vista debe abrirse desde dashboardController.php.
-if (!defined('DASHBOARD_CONTROLLER_ACCESS')) {
-    header('Location: ../../controllers/dashboardController.php');
-    exit;
-}
+// La vista se abre primero y llama al controlador, que valida la sesión
+// (redirige al login si hace falta) y entrega los datos.
+require_once __DIR__ . '/../../controllers/dashboardController.php';
+
 
 // Ruta base para CSS, JavaScript e imágenes.
-$base = '../';
+$base = '../../';
 $active = 'inicio';
 
 // Escapar contenido HTML.
@@ -300,7 +299,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
             JSON_HEX_TAG
             | JSON_HEX_APOS
             | JSON_HEX_AMP
-            | JSON_HEX_QUOT
+            | JSON_HEX_QUOT 
             | JSON_UNESCAPED_UNICODE
         )
     ?></script>

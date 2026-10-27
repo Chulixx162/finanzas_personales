@@ -1,6 +1,7 @@
 <?php
 // login.php (parte superior)
-$error = $_GET['error'] ?? '';
+$error  = $_GET['error'] ?? '';
+$status = $_GET['status'] ?? '';
 
 $error_messages = [
     'email_invalido' => ['field' => 'email', 'msg' => 'Formato de correo no válido.'],
@@ -30,7 +31,18 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
 <body>
     <div class="page">
         <aside class="brand">
-            <div class="logo"><span class="logo-mark" aria-hidden="true"></i></span>Finanzas</div>
+
+            <div class="logo">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <rect x="4" y="12" width="4" height="8" rx="1" fill="#fff" />
+                        <rect x="10" y="8" width="4" height="12" rx="1" fill="#fff" />
+                        <rect x="16" y="4" width="4" height="16" rx="1" fill="#FBBF24" />
+                    </svg>
+                </span>
+                Finanzas
+            </div>
+
             <div class="brand-body">
                 <h2>Tu dinero, claro y bajo control.</h2>
                 <p>Entra para ver tu saldo, tus movimientos del mes y el avance de tus metas.</p>
@@ -49,6 +61,12 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                     <h1>Inicia sesión</h1>
                     <p class="sub">Qué bueno verte de nuevo.</p>
 
+                    <?php if ($status === 'restablecido'): ?>
+                        <p role="status" style="background:#ede9fe;color:#3b1d8f;border-radius:8px;padding:12px 14px;margin:0 0 16px;">
+                            Tu contraseña fue actualizada. Ya puedes iniciar sesión.
+                        </p>
+                    <?php endif; ?>
+
                     <p class="form-error" id="form-error" role="alert" hidden></p>
 
                     <div class="field">
@@ -66,25 +84,38 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                         <p class="error" id="password-error" role="alert"></p>
                     </div>
 
-                    <div class="row">
-                        <label class="check" for="remember">
-                            <input id="remember" name="remember" type="checkbox">
+
+                    <div class="login-options">
+
+                        <label class="check">
+                            <input type="checkbox" name="remember">
                             <span>Recordarme</span>
                         </label>
-                        <a href="#">¿Olvidaste tu contraseña?</a>
+
+                        <a href="forgot-password.php" class="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+
                     </div>
 
+
                     <button type="submit" class="submit" id="submit">Iniciar sesión</button>
+
+                    <a class="btn-secondary" href="../../public/index.php">Volver al inicio</a>
+
                     <p class="login">¿Aún no tienes cuenta? <a href="register.php">Crear cuenta</a></p>
+
                 </form>
             </div>
         </main>
     </div>
+
     <script>
-        window.SERVER_DATA = {
-            errorField: "<?php echo $server_error_field; ?>",
-            errorMessage: "<?php echo $server_error_msg; ?>"
-        };
+        window.SERVER_DATA = <?= json_encode([
+            'errorField'   => $server_error_field,
+            'errorMessage' => $server_error_msg,
+        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+   
     </script>
     <script src="../../public/js/login.js"></script>
 </body>

@@ -1,0 +1,12 @@
+# Secretos: nunca se suben
+.env
+
+# Dependencias (se reinstalan con: composer install)
+/vendor/
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

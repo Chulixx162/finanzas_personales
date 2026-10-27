@@ -36,11 +36,12 @@
         texto: color('--muted', '#687386'),
     };
 
-    const dinero = new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        maximumFractionDigits: 0,
-    });
+    const dinero = {
+        format: function (valor) {
+            return '$' + Math.round(Number(valor) || 0)
+                .toLocaleString('es-CO');
+        }
+    };
 
     const dineroCorto = (valor) => {
         if (valor >= 1000000) {

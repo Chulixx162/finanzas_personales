@@ -1,4 +1,4 @@
-// public/js/perfile.js
+// public/js/profile.js
 // Guarda los cambios del perfil sin salir de la página y muestra un aviso.
 // Si algo impide usar fetch, el formulario se envía de la forma tradicional.
 
@@ -34,9 +34,9 @@
   }
 
   /* ---------- Guardado por fetch ---------- */
-  var form = document.getElementById('form-perfil');
+  var form = document.getElementById('form-profile');
   var region = document.getElementById('toast-region');
-  var datos = document.getElementById('perfil-mensajes');
+  var datos = document.getElementById('profile-mensajes');
 
   if (!form || !region || !datos || !window.fetch) return;
 
