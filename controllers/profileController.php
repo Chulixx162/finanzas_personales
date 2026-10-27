@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         fallar('datos');
     } catch (Throwable $e) {
-        error_log('perfileController.php: ' . $e->getMessage());
+        error_log('profileController.php: ' . $e->getMessage());
 
         // 1062 = correo duplicado (otro usuario lo registró en el mismo instante).
         if ($e instanceof mysqli_sql_exception && (int) $e->getCode() === 1062) {
