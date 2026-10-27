@@ -13,10 +13,11 @@
 
     let datos;
 
+   //traer los datos del dashboard desde el modelo de datos
     try {
         datos = JSON.parse(elementoDatos.textContent);
     } catch (error) {
-        console.error('No se pudieron leer los datos del Dashboard.', error);
+        console.error('Error al parsear los datos del Dashboard:', error);
         return;
     }
 

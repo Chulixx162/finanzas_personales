@@ -1,4 +1,3 @@
-
 <?php
 // controllers/dashboardController.php
 
@@ -46,15 +45,17 @@ $inicioSeisMeses = $hoy
     ->modify('-5 months')
     ->format('Y-m-d');
 
-// Resumen y movimientos reales.
+// Resumen y movimientos reales obtenidos desde el modelo.
 $resumen = dashboard_resumen_mensual(
     $idUsuario,
     $inicioMes,
     $finMes
 );
 
-$ingresos = $resumen['ingresos'];
-$gastos = $resumen['gastos'];
+$ingresos = (float) ($resumen['ingresos'] ?? 0);
+$gastos = (float) ($resumen['gastos'] ?? 0);
+
+// Cálculo corregido del saldo (Ingresos menos Gastos)
 $saldo = $ingresos - $gastos;
 
 $movimientos = dashboard_movimientos_recientes($idUsuario, 5);
@@ -118,7 +119,6 @@ $datosGraficos = [
         'gastado' => array_column($filasPresupuesto, 'gastado'),
     ],
 ];
-
 
 // 5. Autorizar la carga de la vista.
 define('DASHBOARD_CONTROLLER_ACCESS', true);
