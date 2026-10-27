@@ -178,10 +178,12 @@ $errores = [
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
-    <script type="application/json" id="perfil-mensajes"><?= json_encode(
-        ['exito' => $textoExito, 'errores' => $errores],
-        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
-    ) ?></script>
+    <script type="application/json" id="perfil-mensajes">
+        <?= json_encode(
+            ['exito' => $textoExito, 'errores' => $errores],
+            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
+        ) ?>
+    </script>
     <script src="<?= $base ?>public/js/perfile.js" defer></script>
 </body>
 

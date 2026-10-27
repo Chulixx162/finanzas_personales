@@ -25,6 +25,8 @@
   justify-content: center;
   width: 100%;
   min-height: 48px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border: 1.5px solid var(--primary);
   border-radius: var(--radius);
   background: transparent;
@@ -72,3 +74,63 @@
 .form-error[hidden] { display: none; }
 
 .submit.loading { background: var(--soft); cursor: progress; }
+
+
+/* ========================================
+   OPCIONES DE INICIO DE SESIÓN
+======================================== */
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 14px 0 20px;
+  flex-wrap: wrap;
+}
+
+/* Opción Recordarme */
+.login-options .check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Enlace para recuperar contraseña */
+.forgot-password {
+  display: inline-block;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.forgot-password:hover {
+  color: #5B21B6;
+  text-decoration: underline;
+}
+
+.forgot-password:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Ajustes para celulares */
+@media (max-width: 380px) {
+  .login-options {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .login-options .check,
+  .forgot-password {
+    font-size: 12px;
+  }
+}
