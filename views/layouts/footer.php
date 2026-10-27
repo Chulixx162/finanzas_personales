@@ -49,6 +49,8 @@ if ($logueado) {
             <ul>
                 <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
                     <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
+                    <li><a href="<?= $h($base) ?>views/legal/terms_of_use.php">Términos de uso</a></li>
+                    <li><a href="<?= $h($base) ?>views/legal/privacy_policies.php">Política de privacidad</a></li>
                 <?php endforeach; ?>
             </ul>
         </nav>
