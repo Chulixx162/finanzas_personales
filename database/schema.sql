@@ -848,6 +848,29 @@ BEGIN
     END IF;
 END$$
 
+
+-- 8.21 Listar rubros de un usuario
+
+CREATE PROCEDURE sp_listar_rubros_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT
+        r.id_rubro,
+        r.nombre            AS rubro,
+        r.monto_proyectado,
+        r.fecha_inicio,
+        r.fecha_fin,
+        c.id_categoria,
+        c.nombre            AS categoria
+    FROM rubros r
+    INNER JOIN categorias c
+        ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+    ORDER BY c.nombre, r.nombre;
+END$$
+ 
+
 DELIMITER ;
 
 
