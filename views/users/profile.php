@@ -104,8 +104,10 @@ $errores = [
 
                                 <div class="field">
                                     <label for="correo">Correo electrónico</label>
-                                    <input id="correo" name="correo" type="email" maxlength="100" required
-                                        value="<?= $h($correo) ?>">
+                                    <input id="correo" name="correo" type="email" maxlength="100"
+                                        value="<?= $h($correo) ?>" readonly aria-readonly="true"
+                                        aria-describedby="correo-ayuda" tabindex="-1">
+                                    <p class="hint" id="correo-ayuda">El correo no se puede cambiar.</p>
                                 </div>
 
                                 <div class="field">

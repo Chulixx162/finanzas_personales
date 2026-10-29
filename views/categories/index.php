@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <link rel="stylesheet" href="../../public/css/categories.css?v=<?= filemtime(__DIR__ . '/../../public/css/categories.css') ?>">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
-    <link rel="stylesheet" href="../../public/css/alertas.css?v=<?= filemtime(__DIR__ . '/../../public/css/alertas.css') ?>">
+    <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
 </head>
 <body>
 
@@ -83,7 +83,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../../public/js/alertas.js?v=<?= filemtime(__DIR__ . '/../../public/js/alertas.js') ?>"></script>
+<script src="../../public/js/alerts.js?v=<?= filemtime(__DIR__ . '/../../public/js/alerts.js') ?>"></script>
 <script src="../../public/js/categories.js?v=<?= filemtime(__DIR__ . '/../../public/js/categories.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

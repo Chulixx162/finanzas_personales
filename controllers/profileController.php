@@ -110,23 +110,23 @@ function actualizar_perfil(int $idUsuario)
     global $esAjax;
 
     $nombre = trim(campo('nombre'));
-    $correo = strtolower(trim(campo('correo')));
     $nueva  = campo('contrasena_nueva');
 
-    // Límites iguales a las columnas: nombre VARCHAR(50), correo VARCHAR(100).
+    // El correo NO se puede cambiar: siempre se usa el que ya está guardado
+    // y se ignora cualquier valor "correo" que llegue en la petición.
+    $guardado = obtener_usuario_por_id($idUsuario);
+    if (!$guardado) {
+        fallar('actualizacion');
+    }
+    $correo = $guardado['correo'];
+
+    // Límite igual a la columna: nombre VARCHAR(50).
     if (
         mb_strlen($nombre) < 2 ||
         mb_strlen($nombre) > 50 ||
-        !filter_var($correo, FILTER_VALIDATE_EMAIL) ||
-        mb_strlen($correo) > 100 ||
         ($nueva !== '' && strlen($nueva) < 8)
     ) {
         fallar('datos');
-    }
-
-    // El correo no puede pertenecer a otro usuario.
-    if (correo_en_uso($correo, $idUsuario)) {
-        fallar('correo');
     }
 
     if (!actualizar_usuario($idUsuario, $nombre, $correo, $nueva)) {

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof mostrarAviso === 'function') {
             return mostrarAviso(tipo, texto);
         }
-        console.error('mostrarAviso no existe: alertas.js está desactualizado o no cargó.');
+        console.error('mostrarAviso no existe: alerts.js está desactualizado o no cargó.');
         window.alert(texto);
     }
 

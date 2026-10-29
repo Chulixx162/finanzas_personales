@@ -141,20 +141,11 @@
   form.addEventListener('submit', function (evento) {
 
     var nombre = form.elements['nombre'].value.trim();
-    var correo = form.elements['correo'].value.trim();
     var actual = form.elements['contrasena_actual'].value;
     var nueva = form.elements['contrasena_nueva'].value;
 
-    if (
-      nombre.length < 2 ||
-      nombre.length > 50 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) ||
-      correo.length > 100
-    ) {
-      mostrarAviso(
-        'error',
-        'Escribe un nombre de 2 a 50 caracteres y un correo válido.'
-      );
+    if (nombre.length < 2 || nombre.length > 50) {
+      mostrarAviso('error', 'Escribe un nombre de 2 a 50 caracteres.');
       return;
     }
 
