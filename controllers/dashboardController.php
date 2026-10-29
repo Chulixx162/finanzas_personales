@@ -53,8 +53,10 @@ $resumen = dashboard_resumen_mensual(
     $finMes
 );
 
-$ingresos = $resumen['ingresos'];
-$gastos = $resumen['gastos'];
+$ingresos = (float) ($resumen['ingresos'] ?? 0);
+$gastos = (float) ($resumen['gastos'] ?? 0);
+
+// Cálculo corregido del saldo (Ingresos menos Gastos)
 $saldo = $ingresos - $gastos;
 
 $movimientos = dashboard_movimientos_recientes($idUsuario, 5);

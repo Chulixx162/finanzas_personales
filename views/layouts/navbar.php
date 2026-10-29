@@ -17,7 +17,8 @@ $inicial      = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
-    'categorias'   => ['Categorías', 'views/categories/index.php'],   
+    'categorias'   => ['Categorías', 'views/categories/index.php'],
+    'rubros'       => ['Rubros', 'views/rubros/index.php'],   
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
 ];
 
@@ -66,7 +67,7 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                 <?php if ($logueado): ?>
 
                     <span class="user-chip">
-                        <a href="<?= $h($base) ?>views/users/perfile.php" class="user-avatar" aria-label="Ir a mi perfil"><?= $h($inicial) ?></a>
+                        <a href="<?= $h($base) ?>views/users/profile.php" class="user-avatar" aria-label="Ir a mi perfil"><?= $h($inicial) ?></a>
 
                         <span class="user-name"><?= $h($primerNombre) ?></span>
                     </span>

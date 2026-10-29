@@ -1,10 +1,10 @@
 <?php
-// controllers/perfileController.php
+// controllers/profileController.php
 // Controlador único del perfil. Solo decide qué ruta seguir y qué función del
 // modelo llamar; todas las consultas están en models/usersModel.php.
 //
 // Se usa de dos maneras:
-//   - La vista views/users/perfile.php lo incluye (GET) y recibe $usuario y $csrf.
+//   - La vista views/users/profile.php lo incluye (GET) y recibe $usuario y $csrf.
 //   - Los formularios de esa vista le envían (POST) las acciones
 //     "actualizar" y "eliminar".
 //
@@ -55,7 +55,7 @@ function responder(array $datos, int $estado = 200)
         $sobrante .= (string) ob_get_clean();
     }
     if (trim($sobrante) !== '') {
-        error_log('perfileController.php: salida inesperada antes del JSON: ' . $sobrante);
+        error_log('profileController.php: salida inesperada antes del JSON: ' . $sobrante);
     }
 
     http_response_code($estado);
@@ -73,7 +73,7 @@ function fallar(string $codigo)
         responder(['ok' => false, 'error' => $codigo], ESTADOS_ERROR[$codigo] ?? 400);
     }
 
-    header('Location: ' . RUTA_VISTAS . 'users/perfile.php?error=' . $codigo);
+    header('Location: ' . RUTA_VISTAS . 'users/profile.php?error=' . $codigo);
     exit;
 }
 
@@ -110,23 +110,23 @@ function actualizar_perfil(int $idUsuario)
     global $esAjax;
 
     $nombre = trim(campo('nombre'));
-    $correo = strtolower(trim(campo('correo')));
     $nueva  = campo('contrasena_nueva');
 
-    // Límites iguales a las columnas: nombre VARCHAR(50), correo VARCHAR(100).
+    // El correo NO se puede cambiar: siempre se usa el que ya está guardado
+    // y se ignora cualquier valor "correo" que llegue en la petición.
+    $guardado = obtener_usuario_por_id($idUsuario);
+    if (!$guardado) {
+        fallar('actualizacion');
+    }
+    $correo = $guardado['correo'];
+
+    // Límite igual a la columna: nombre VARCHAR(50).
     if (
         mb_strlen($nombre) < 2 ||
         mb_strlen($nombre) > 50 ||
-        !filter_var($correo, FILTER_VALIDATE_EMAIL) ||
-        mb_strlen($correo) > 100 ||
         ($nueva !== '' && strlen($nueva) < 8)
     ) {
         fallar('datos');
-    }
-
-    // El correo no puede pertenecer a otro usuario.
-    if (correo_en_uso($correo, $idUsuario)) {
-        fallar('correo');
     }
 
     if (!actualizar_usuario($idUsuario, $nombre, $correo, $nueva)) {
@@ -145,7 +145,7 @@ function actualizar_perfil(int $idUsuario)
         responder(['ok' => true, 'nombre' => $nombre, 'correo' => $correo]);
     }
 
-    header('Location: ' . RUTA_VISTAS . 'users/perfile.php?mensaje=actualizado');
+    header('Location: ' . RUTA_VISTAS . 'users/profile.php?mensaje=actualizado');
     exit;
 }
 
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         fallar('datos');
     } catch (Throwable $e) {
-        error_log('perfileController.php: ' . $e->getMessage());
+        error_log('profileController.php: ' . $e->getMessage());
 
         // 1062 = correo duplicado (otro usuario lo registró en el mismo instante).
         if ($e instanceof mysqli_sql_exception && (int) $e->getCode() === 1062) {
@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($accesoDirecto) {
     // Escribieron la dirección del controlador: llevarlos a la vista.
-    header('Location: ../views/users/perfile.php');
+    header('Location: ../views/users/profile.php');
     exit;
 }
 

@@ -10,9 +10,10 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Categorías - Finanzas</title>
-    <link rel="stylesheet" href="../../public/css/categories.css">
+    <link rel="stylesheet" href="../../public/css/categories.css?v=<?= filemtime(__DIR__ . '/../../public/css/categories.css') ?>">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
 </head>
 <body>
 
@@ -26,6 +27,12 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
         </div>
         <a href="create.php" class="btn btn-primary">+ Nueva Categoría</a>
     </div>
+
+    <?php if (!empty($aviso)): ?>
+        <div id="avisoData" hidden
+             data-tipo="<?= htmlspecialchars($aviso[0]) ?>"
+             data-texto="<?= htmlspecialchars($aviso[1]) ?>"></div>
+    <?php endif; ?>
 
     <div class="table-toolbar">
         <div class="search-box">
@@ -76,8 +83,8 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../../public/js/alertas.js"></script>
-<script src="../../public/js/categories.js"></script>
+<script src="../../public/js/alerts.js?v=<?= filemtime(__DIR__ . '/../../public/js/alerts.js') ?>"></script>
+<script src="../../public/js/categories.js?v=<?= filemtime(__DIR__ . '/../../public/js/categories.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

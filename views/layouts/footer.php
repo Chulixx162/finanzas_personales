@@ -14,7 +14,7 @@ if ($logueado) {
     $enlaces = [
         ['Inicio', 'views/users/dashboard.php'],
         ['Movimientos',  'views/movimientos/index.php'],
-        ['Categorías',   'views/categorias/index.php'],
+        ['Categorías',   'views/categories/index.php'],
         ['Presupuestos', 'views/presupuestos/index.php'],
         ['Cerrar sesión', 'controllers/logoutController.php'],
     ];
@@ -50,6 +50,8 @@ if ($logueado) {
                 <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
                     <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
                 <?php endforeach; ?>
+                <li><a href="<?= $h($base) ?>views/legal/terms_of_use.php">Términos de uso</a></li>
+                <li><a href="<?= $h($base) ?>views/legal/privacy_policies.php">Política de privacidad</a></li>
             </ul>
         </nav>
 
@@ -66,5 +68,4 @@ if ($logueado) {
     <div class="footer-bottom">
         <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </footer>
