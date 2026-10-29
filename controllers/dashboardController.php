@@ -59,7 +59,11 @@ $gastos = (float) ($resumen['gastos'] ?? 0);
 // Cálculo corregido del saldo (Ingresos menos Gastos)
 $saldo = $ingresos - $gastos;
 
-$movimientos = dashboard_movimientos_recientes($idUsuario, 5);
+$movimientos = dashboard_movimientos_recientes(
+    $idUsuario,
+    $inicioMes,
+    $finMes
+);
 
 // Datos de los gráficos.
 $filasMensuales = dashboard_balance_mensual(
@@ -121,7 +125,6 @@ $datosGraficos = [
     ],
 ];
 
-// 5. Autorizar la carga de la vista.
-define('DASHBOARD_CONTROLLER_ACCESS', true);
 
-require __DIR__ . '/../views/users/dashboard.php';
+
+

@@ -55,14 +55,36 @@ function dashboard_resumen_mensual(
     ];
 }
 
-/** Últimos movimientos del usuario. */
+/**
+ * Movimientos del usuario durante el periodo consultado.
+ */
 function dashboard_movimientos_recientes(
     int $idUsuario,
-    int $limite = 5
+    string $inicio,
+    string $fin
 ): array {
     global $conn;
 
-    $sql = 'CALL sp_dashboard_movimientos_recientes(?, ?)';
+    $sql = "
+        SELECT
+            DATE_FORMAT(m.fecha, '%d/%m/%Y') AS fecha,
+            COALESCE(m.descripcion, r.nombre) AS descripcion,
+            c.nombre AS categoria,
+            m.tipo,
+            m.monto
+        FROM movimientos m
+        INNER JOIN rubros r
+            ON r.id_rubro = m.id_rubro
+        INNER JOIN categorias c
+            ON c.id_categoria = r.id_categoria
+        WHERE c.id_usuario = ?
+          AND m.fecha >= ?
+          AND m.fecha < ?
+        ORDER BY
+            m.fecha DESC,
+            m.id_movimiento DESC
+    ";
+
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
@@ -70,19 +92,21 @@ function dashboard_movimientos_recientes(
         return [];
     }
 
-    mysqli_stmt_bind_param($stmt, 'ii', $idUsuario, $limite);
+    mysqli_stmt_bind_param(
+        $stmt,
+        'iss',
+        $idUsuario,
+        $inicio,
+        $fin
+    );
 
-    if (!mysqli_stmt_execute($stmt)) {
-        error_log(mysqli_stmt_error($stmt));
-        mysqli_stmt_close($stmt);
-        dashboard_liberar_resultados();
-        return [];
-    }
+    mysqli_stmt_execute($stmt);
 
     $resultado = mysqli_stmt_get_result($stmt);
 
     $filas = [];
-    while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
+
+    while ($fila = mysqli_fetch_assoc($resultado)) {
         $filas[] = [
             $fila['fecha'],
             $fila['descripcion'],
@@ -93,7 +117,6 @@ function dashboard_movimientos_recientes(
     }
 
     mysqli_stmt_close($stmt);
-    dashboard_liberar_resultados();
 
     return $filas;
 }
