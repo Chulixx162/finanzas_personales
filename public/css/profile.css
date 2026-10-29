@@ -1,4 +1,4 @@
-/* public/css/perfile.css
+/* public/css/profile.css
    Estilos de la página de perfil. Sigue el mismo diseño del panel y la portada.
    Variables, botones (.btn), navbar y footer viven en layout.css. */
 
@@ -139,6 +139,15 @@
 }
 
 .field input:hover { border-color: var(--soft); }
+
+/* Campo de solo lectura (correo): se ve bloqueado y no se puede editar */
+.field input[readonly] {
+  border-style: dashed;
+  background: var(--tint);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.field input[readonly]:hover { border-color: var(--border); }
 
 .field input:focus-visible {
   outline: none;

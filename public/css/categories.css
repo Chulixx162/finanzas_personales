@@ -295,6 +295,11 @@ body {
     padding: 2rem;
 }
 
+/* Filas ocultas por el buscador */
+.row-hidden {
+    display: none;
+}
+
 .btn-action {
     display: inline-block;
     padding: 0.35rem 0.75rem;

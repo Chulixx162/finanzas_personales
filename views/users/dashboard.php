@@ -37,9 +37,10 @@ $cop = static function ($valor): string {
 };
 
 // Valores recibidos del controlador.
-// Se usan variables temporales para evitar avisos.
 $ingresos = (float) ($ingresos ?? 0);
 $gastos = (float) ($gastos ?? 0);
+
+// Cálculo del balance / saldo (Ingresos menos Gastos) con datos reales
 $saldo = (float) ($saldo ?? ($ingresos - $gastos));
 
 $movimientosRecibidos = $movimientos ?? [];
@@ -92,6 +93,7 @@ $datosGraficos = array_replace_recursive(
 
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/dashboard.css">
+    <link rel="stylesheet" href="<?= $h($base) ?>public/css/alerts.css">
     <link rel="icon" type="image/webp" href="<?= $h($base) ?>public/img/icon.webp">
 </head>
 
@@ -109,14 +111,49 @@ $datosGraficos = array_replace_recursive(
                         <?= $h($primerNombre !== '' ? $primerNombre : 'usuario') ?>
                     </h1>
 
-                    <p class="dash-sub">
-                        Resumen financiero de <?= $h(date('F Y')) ?>
-                    </p>
+<?php
+$meses = [
+    1 => 'enero',
+    2 => 'febrero',
+    3 => 'marzo',
+    4 => 'abril',
+    5 => 'mayo',
+    6 => 'junio',
+    7 => 'julio',
+    8 => 'agosto',
+    9 => 'septiembre',
+    10 => 'octubre',
+    11 => 'noviembre',
+    12 => 'diciembre'
+];
+
+$fechaActual = new DateTimeImmutable('today');
+
+$mesActual = $meses[(int) $fechaActual->format('n')];
+
+$periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
+?>
+
+<p class="dash-sub">
+    Resumen financiero de <?= $h($periodoActual) ?>
+</p>
                 </div>
             </header>
 
+            <?php if ($ingresos == 0 && $gastos == 0 && $movimientos !== []): ?>
+                <p class="notice notice-info" role="status">
+                    No hay movimientos en <?= $h($periodoActual) ?>. Las tarjetas y los gráficos
+                    solo cuentan el mes actual; la tabla «Últimos movimientos» muestra registros
+                    de cualquier fecha.
+                </p>
+            <?php endif; ?>
+
+            <!-- ========================================================== -->
+            <!-- AQUÍ SE IMPLEMENTA EL RESUMEN FINANCIERO (TARJETAS)          -->
+            <!-- ========================================================== -->
             <section class="stats" aria-label="Resumen financiero">
 
+                <!-- 1. Total de Ingresos -->
                 <article class="stat">
                     <h2>Ingresos</h2>
                     <p class="stat-value is-in">
@@ -125,6 +162,7 @@ $datosGraficos = array_replace_recursive(
                     <p class="stat-note">Total recibido en el periodo</p>
                 </article>
 
+                <!-- 2. Total de Gastos -->
                 <article class="stat">
                     <h2>Gastos</h2>
                     <p class="stat-value is-out">
@@ -133,6 +171,7 @@ $datosGraficos = array_replace_recursive(
                     <p class="stat-note">Total gastado en el periodo</p>
                 </article>
 
+                <!-- 3. Balance / Saldo General -->
                 <article class="stat stat-balance">
                     <h2>Saldo</h2>
                     <p class="stat-value">
@@ -142,6 +181,7 @@ $datosGraficos = array_replace_recursive(
                 </article>
 
             </section>
+            <!-- ========================================================== -->
 
             <div class="dash-grid">
 

@@ -25,6 +25,7 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../../public/css/register.css">
     <link rel="stylesheet" href="../../public/css/login.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="icon" type="image/x-icon" href="../../public/img/icon.webp">
 </head>
 
@@ -62,7 +63,7 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                     <p class="sub">Qué bueno verte de nuevo.</p>
 
                     <?php if ($status === 'restablecido'): ?>
-                        <p role="status" style="background:#ede9fe;color:#3b1d8f;border-radius:8px;padding:12px 14px;margin:0 0 16px;">
+                        <p class="notice notice-success" role="status">
                             Tu contraseña fue actualizada. Ya puedes iniciar sesión.
                         </p>
                     <?php endif; ?>

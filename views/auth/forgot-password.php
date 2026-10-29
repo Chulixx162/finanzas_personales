@@ -22,9 +22,7 @@ $mensajesError = [
     <title>Recuperar contraseña | Finanzas Personales</title>
     <link rel="stylesheet" href="../../public/css/register.css">
     <link rel="stylesheet" href="../../public/css/login.css">
-    <style>
-        .notice { background:#ede9fe; color:#3b1d8f; border-radius:8px; padding:12px 14px; margin:0 0 16px; }
-    </style>
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
 <div class="page">
@@ -42,14 +40,14 @@ $mensajesError = [
             <p class="sub">Escribe el correo asociado a tu cuenta.</p>
 
             <?php if ($status === 'solicitado'): ?>
-                <p class="notice" role="status">
+                <p class="notice notice-success" role="status">
                     Si el correo está registrado, recibirás un enlace en unos minutos.
                     Revisa también la carpeta de spam.
                 </p>
             <?php endif; ?>
 
             <?php if (!empty($_SESSION['dev_enlace'])): ?>
-                <p class="notice">
+                <p class="notice notice-info">
                     <strong>DA CLICK ACÁ:</strong>
                     <a href="<?= htmlspecialchars($_SESSION['dev_enlace'], ENT_QUOTES, 'UTF-8') ?>">abrir enlace de recuperación</a>
                 </p>

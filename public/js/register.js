@@ -136,7 +136,11 @@
         setError(window.SERVER_DATA.errorField, window.SERVER_DATA.errorMessage);
         fields[window.SERVER_DATA.errorField].focus();
       } else {
-        alert(window.SERVER_DATA.errorMessage);
+        if (typeof mostrarAviso === 'function') {
+          mostrarAviso('error', window.SERVER_DATA.errorMessage);
+        } else {
+          alert(window.SERVER_DATA.errorMessage);
+        }
       }
     }
   }
