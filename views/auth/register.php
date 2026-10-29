@@ -30,6 +30,7 @@ if (!empty($error) && isset($error_messages[$error])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../public/css/register.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="icon" type="image/x-icon" href="../../public/img/icon.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -132,13 +133,15 @@ if (!empty($error) && isset($error_messages[$error])) {
         </main>
     </div>
     <script>
-        // Variables enviadas desde PHP al cliente
-        window.SERVER_DATA = {
-            status: "<?php echo $status; ?>",
-            errorField: "<?php echo $server_error_field; ?>",
-            errorMessage: "<?php echo $server_error_msg; ?>"
-        };
+        // Variables enviadas desde PHP al cliente (json_encode escapa los valores)
+        window.SERVER_DATA = <?= json_encode([
+            'status'       => is_string($status) ? $status : '',
+            'errorField'   => $server_error_field,
+            'errorMessage' => $server_error_msg,
+        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../public/js/alerts.js"></script>
     <script src="../../public/js/register.js"></script>
 </body>
 

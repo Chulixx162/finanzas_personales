@@ -41,6 +41,7 @@ $errores = [
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/profile.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
 </head>
 
@@ -142,8 +143,7 @@ $errores = [
                             <p>Esta acción puede borrar permanentemente tus datos y no se puede deshacer.</p>
                         </header>
 
-                        <form class="profile-form" action="../../controllers/profileController.php" method="POST"
-                            onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
+                        <form class="profile-form" id="form-eliminar" action="../../controllers/profileController.php" method="POST">
                             <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
                             <input type="hidden" name="accion" value="eliminar">
 
@@ -178,21 +178,13 @@ $errores = [
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
-<<<<<<< HEAD:views/users/profile.php
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="<?= $base ?>public/js/alerts.js" defer></script>
     <script type="application/json" id="profile-mensajes"><?= json_encode(
         ['exito' => $textoExito, 'errores' => $errores],
         JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
     ) ?></script>
     <script src="<?= $base ?>public/js/profile.js" defer></script>
-=======
-    <script type="application/json" id="perfil-mensajes">
-        <?= json_encode(
-            ['exito' => $textoExito, 'errores' => $errores],
-            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
-        ) ?>
-    </script>
-    <script src="<?= $base ?>public/js/perfile.js" defer></script>
->>>>>>> 8dbd2ac9d6f8363ff29643f2387023fcc39cd831:views/users/perfile.php
 </body>
 
 </html>

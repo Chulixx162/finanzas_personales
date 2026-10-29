@@ -869,6 +869,48 @@ BEGIN
     WHERE c.id_usuario = p_id_usuario
     ORDER BY c.nombre, r.nombre;
 END$$
+
+-- 8.22 Verificar si el nombre de una categoria ya existe para el usuario
+-- p_excluir_id = 0 al crear; el id de la categoria al editar.
+-- La colacion utf8mb4_unicode_ci ignora mayusculas y tildes.
+
+DROP PROCEDURE IF EXISTS sp_categoria_nombre_existe$$
+CREATE PROCEDURE sp_categoria_nombre_existe(
+    IN p_id_usuario INT,
+    IN p_nombre VARCHAR(50),
+    IN p_excluir_id INT
+)
+BEGIN
+    SELECT COUNT(*) AS total
+    FROM categorias
+    WHERE id_usuario   = p_id_usuario
+      AND nombre       = TRIM(p_nombre)
+      AND id_categoria <> p_excluir_id;
+END$$
+
+
+-- 8.23 Contar rubros y movimientos asociados a una categoria
+-- Los movimientos se relacionan con la categoria a traves de rubros.
+
+DROP PROCEDURE IF EXISTS sp_contar_relaciones_categoria$$
+CREATE PROCEDURE sp_contar_relaciones_categoria(
+    IN p_id_usuario INT,
+    IN p_id_categoria INT
+)
+BEGIN
+    SELECT
+        (SELECT COUNT(*)
+           FROM rubros r
+           INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+          WHERE r.id_categoria = p_id_categoria
+            AND c.id_usuario   = p_id_usuario) AS rubros,
+        (SELECT COUNT(*)
+           FROM movimientos m
+           INNER JOIN rubros r     ON r.id_rubro     = m.id_rubro
+           INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+          WHERE r.id_categoria = p_id_categoria
+            AND c.id_usuario   = p_id_usuario) AS movimientos;
+END$$
  
 
 DELIMITER ;

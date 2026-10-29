@@ -93,6 +93,7 @@ $datosGraficos = array_replace_recursive(
 
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/dashboard.css">
+    <link rel="stylesheet" href="<?= $h($base) ?>public/css/alerts.css">
     <link rel="icon" type="image/webp" href="<?= $h($base) ?>public/img/icon.webp">
 </head>
 
@@ -138,6 +139,14 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
 </p>
                 </div>
             </header>
+
+            <?php if ($ingresos == 0 && $gastos == 0 && $movimientos !== []): ?>
+                <p class="notice notice-info" role="status">
+                    No hay movimientos en <?= $h($periodoActual) ?>. Las tarjetas y los gráficos
+                    solo cuentan el mes actual; la tabla «Últimos movimientos» muestra registros
+                    de cualquier fecha.
+                </p>
+            <?php endif; ?>
 
             <!-- ========================================================== -->
             <!-- AQUÍ SE IMPLEMENTA EL RESUMEN FINANCIERO (TARJETAS)          -->

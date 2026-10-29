@@ -33,6 +33,31 @@
     });
   }
 
+  /* ---------- Confirmación al eliminar la cuenta ---------- */
+  var formEliminar = document.getElementById('form-eliminar');
+  if (formEliminar) {
+    formEliminar.addEventListener('submit', function (evento) {
+      // Si alerts.js no cargó, se usa la ventana del navegador.
+      if (typeof alerta !== 'function') {
+        if (!window.confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+          evento.preventDefault();
+        }
+        return;
+      }
+
+      evento.preventDefault();
+      alerta(
+        '¿Eliminar tu cuenta?',
+        'Esta acción no se puede deshacer y se borrarán tus datos.',
+        'warning',
+        'Sí, eliminar mi cuenta',
+        'Cancelar'
+      ).then(function (confirmado) {
+        if (confirmado) formEliminar.submit();
+      });
+    });
+  }
+
   /* ---------- Guardado por fetch ---------- */
   var form = document.getElementById('form-profile');
   var region = document.getElementById('toast-region');

@@ -1,0 +1,170 @@
+/* public/css/alerts.css
+   Estilo único para las alertas del sistema, con la paleta de layout.css.
+
+   1. Ventanas emergentes de SweetAlert2 (confirmar, avisos)  -> clases .al-*
+   2. Avisos dentro de la página                              -> .notice
+
+   Es independiente: no necesita layout.css ni categories.css, así que se
+   puede enlazar en cualquier página (login, registro, categorías, perfil...). */
+
+:root {
+  --al-primary: #6D28D9;
+  --al-primary-dark: #5B21B6;
+  --al-deep: #1E1B4B;
+  --al-soft-2: #C4B5FD;
+  --al-tint: #EDE9FE;
+  --al-border: #E4DFF7;
+  --al-text: #1F1B3A;
+  --al-muted: #5B5580;
+  --al-danger: #B91C1C;
+  --al-danger-dark: #991B1B;
+  --al-success: #15803D;
+  --al-warning: #B45309;
+}
+
+/* ==========================================================
+   1. SweetAlert2
+   ========================================================== */
+
+.swal2-popup.al-popup {
+  width: min(420px, calc(100vw - 32px));
+  padding: 28px 24px 24px;
+  border: 1px solid var(--al-border);
+  border-radius: 16px;
+  background: #FFFFFF;
+  color: var(--al-text);
+  box-shadow: 0 24px 60px rgba(30, 27, 75, 0.28);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.al-popup .swal2-title.al-title {
+  margin: 8px 0 0;
+  padding: 0;
+  color: var(--al-deep);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.al-popup .swal2-html-container.al-text {
+  margin: 10px 0 0;
+  padding: 0;
+  color: var(--al-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.al-popup .swal2-actions.al-actions {
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 0;
+  gap: 10px;
+}
+
+/* Iconos (más pequeños y en la paleta de la app) */
+.al-popup .swal2-icon {
+  margin: 0 auto 4px;
+  font-size: 14px;
+}
+
+.al-popup .swal2-icon.swal2-success { border-color: #BBE5C8; color: var(--al-success); }
+.al-popup .swal2-icon.swal2-success [class^="swal2-success-line"] { background-color: var(--al-success); }
+.al-popup .swal2-icon.swal2-success .swal2-success-ring { border-color: rgba(21, 128, 61, 0.25); }
+
+.al-popup .swal2-icon.swal2-error { border-color: #F3C4C4; color: var(--al-danger); }
+.al-popup .swal2-icon.swal2-error [class^="swal2-x-mark-line"] { background-color: var(--al-danger); }
+
+.al-popup .swal2-icon.swal2-warning { border-color: #FDE68A; color: var(--al-warning); }
+
+.al-popup .swal2-icon.swal2-question,
+.al-popup .swal2-icon.swal2-info { border-color: var(--al-soft-2); color: var(--al-primary); }
+
+/* Botones */
+.al-popup .al-btn {
+  flex: 1 1 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.al-popup .al-btn-primary { background: var(--al-primary); color: #FFFFFF; }
+.al-popup .al-btn-primary:hover { background: var(--al-primary-dark); }
+
+.al-popup .al-btn-danger { background: var(--al-danger); color: #FFFFFF; }
+.al-popup .al-btn-danger:hover { background: var(--al-danger-dark); }
+
+.al-popup .al-btn-ghost {
+  border-color: var(--al-border);
+  background: #FFFFFF;
+  color: var(--al-muted);
+}
+.al-popup .al-btn-ghost:hover { background: var(--al-tint); color: var(--al-primary); }
+
+.al-popup .al-btn:focus-visible {
+  outline: 2px solid var(--al-primary);
+  outline-offset: 2px;
+}
+.al-popup .al-btn-danger:focus-visible { outline-color: var(--al-danger); }
+
+/* ==========================================================
+   2. Avisos dentro de la página
+      <p class="notice notice-success" role="status">Texto</p>
+      Tipos: notice-info, notice-success, notice-error, notice-warning
+   ========================================================== */
+
+.notice {
+  position: relative;
+  margin: 0 0 16px;
+  padding: 12px 14px 12px 46px;
+  border: 1px solid;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.notice::before {
+  content: "i";
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.notice a { color: inherit; font-weight: 800; text-decoration: underline; }
+
+.notice-info    { border-color: #D9CCFA; background: var(--al-tint); color: #3B1D8F; }
+.notice-info::before { background: var(--al-primary); }
+
+.notice-success { border-color: #BBE5C8; background: #F0FAF3; color: var(--al-success); }
+.notice-success::before { content: "\2713"; background: var(--al-success); }
+
+.notice-error   { border-color: #F3C4C4; background: #FDF2F2; color: var(--al-danger); }
+.notice-error::before { content: "!"; background: var(--al-danger); }
+
+.notice-warning { border-color: #F6DFA0; background: #FFFBEB; color: #92400E; }
+.notice-warning::before { content: "!"; background: var(--al-warning); }
+
+@media (prefers-reduced-motion: reduce) {
+  .al-popup,
+  .al-popup * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
