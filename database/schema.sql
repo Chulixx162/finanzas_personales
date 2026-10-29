@@ -125,16 +125,16 @@ CREATE TABLE IF NOT EXISTS recuperacion_contrasena (
 INSERT INTO usuarios
 (nombre, correo, contrasena, fecha_registro, presupuesto_mensual)
 VALUES
-('Julio Casanova', 'julio@gmail.com', 'clave123', '2026-01-05 08:30:00', 1500000),
-('Ana Martinez', 'ana@gmail.com', 'clave123', '2026-01-06 09:15:00', 1200000),
-('Carlos Perez', 'carlos@gmail.com', 'clave123', '2026-01-07 10:00:00', 1800000),
-('Laura Gomez', 'laura@gmail.com', 'clave123', '2026-01-08 11:20:00', 1400000),
-('Andres Torres', 'andres@gmail.com', 'clave123', '2026-01-09 14:10:00', 1600000),
-('Sofia Ramirez', 'sofia@gmail.com', 'clave123', '2026-01-10 15:45:00', 1300000),
-('Daniel Rojas', 'daniel@gmail.com', 'clave123', '2026-01-11 08:00:00', 2000000),
-('Camila Diaz', 'camila@gmail.com', 'clave123', '2026-01-12 12:30:00', 1700000),
-('Miguel Castro', 'miguel@gmail.com', 'clave123', '2026-01-13 16:00:00', 1100000),
-('Valentina Silva', 'valentina@gmail.com', 'clave123', '2026-01-14 17:15:00', 1900000);
+('Julio Casanova', 'julioacr8@gmail.com',        'clave123', '2026-01-05 08:30:00', 1500000),
+('Jaime Ladino', 'ladinomontealegre07@gmail.com', 'clave123', '2026-01-06 09:15:00', 1200000),
+('Laura Isanoa', 'danielaisanoa255@gmail.com',                'clave123', '2026-01-07 10:00:00', 1800000),
+('Juan Barreiro', 'barreiropolojuanmanuel@gmail.com',                  'clave123', '2026-01-08 11:20:00', 1400000),
+('Karoll Coronado', 'karollcoronado91@gmail.com',               'clave123', '2026-01-09 14:10:00', 1600000),
+('Sofia Ramirez', 'sofia@gmail.com',                'clave123', '2026-01-10 15:45:00', 1300000),
+('Pepe Rodríguez', 'pepe@gmail.com',                'clave123', '2026-01-11 08:00:00', 2000000),
+('Camila Diaz', 'camila@gmail.com',                 'clave123', '2026-01-12 12:30:00', 1700000),
+('Miguel Castro', 'miguel@gmail.com',               'clave123', '2026-01-13 16:00:00', 1100000),
+('Valentina Silva', 'valentina@gmail.com',          'clave123', '2026-01-14 17:15:00', 1900000);
 
 
 -- ============================================================
@@ -847,6 +847,71 @@ BEGIN
         SELECT 1 AS restablecido;
     END IF;
 END$$
+
+
+-- 8.21 Listar rubros de un usuario
+
+CREATE PROCEDURE sp_listar_rubros_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT
+        r.id_rubro,
+        r.nombre            AS rubro,
+        r.monto_proyectado,
+        r.fecha_inicio,
+        r.fecha_fin,
+        c.id_categoria,
+        c.nombre            AS categoria
+    FROM rubros r
+    INNER JOIN categorias c
+        ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+    ORDER BY c.nombre, r.nombre;
+END$$
+
+-- 8.22 Verificar si el nombre de una categoria ya existe para el usuario
+-- p_excluir_id = 0 al crear; el id de la categoria al editar.
+-- La colacion utf8mb4_unicode_ci ignora mayusculas y tildes.
+
+DROP PROCEDURE IF EXISTS sp_categoria_nombre_existe$$
+CREATE PROCEDURE sp_categoria_nombre_existe(
+    IN p_id_usuario INT,
+    IN p_nombre VARCHAR(50),
+    IN p_excluir_id INT
+)
+BEGIN
+    SELECT COUNT(*) AS total
+    FROM categorias
+    WHERE id_usuario   = p_id_usuario
+      AND nombre       = TRIM(p_nombre)
+      AND id_categoria <> p_excluir_id;
+END$$
+
+
+-- 8.23 Contar rubros y movimientos asociados a una categoria
+-- Los movimientos se relacionan con la categoria a traves de rubros.
+
+DROP PROCEDURE IF EXISTS sp_contar_relaciones_categoria$$
+CREATE PROCEDURE sp_contar_relaciones_categoria(
+    IN p_id_usuario INT,
+    IN p_id_categoria INT
+)
+BEGIN
+    SELECT
+        (SELECT COUNT(*)
+           FROM rubros r
+           INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+          WHERE r.id_categoria = p_id_categoria
+            AND c.id_usuario   = p_id_usuario) AS rubros,
+        (SELECT COUNT(*)
+           FROM movimientos m
+           INNER JOIN rubros r     ON r.id_rubro     = m.id_rubro
+           INNER JOIN categorias c ON c.id_categoria = r.id_categoria
+          WHERE r.id_categoria = p_id_categoria
+            AND c.id_usuario   = p_id_usuario) AS movimientos;
+END$$
+ 
 
 DELIMITER ;
 

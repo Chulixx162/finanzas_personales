@@ -33,6 +33,31 @@
     });
   }
 
+  /* ---------- Confirmación al eliminar la cuenta ---------- */
+  var formEliminar = document.getElementById('form-eliminar');
+  if (formEliminar) {
+    formEliminar.addEventListener('submit', function (evento) {
+      // Si alerts.js no cargó, se usa la ventana del navegador.
+      if (typeof alerta !== 'function') {
+        if (!window.confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+          evento.preventDefault();
+        }
+        return;
+      }
+
+      evento.preventDefault();
+      alerta(
+        '¿Eliminar tu cuenta?',
+        'Esta acción no se puede deshacer y se borrarán tus datos.',
+        'warning',
+        'Sí, eliminar mi cuenta',
+        'Cancelar'
+      ).then(function (confirmado) {
+        if (confirmado) formEliminar.submit();
+      });
+    });
+  }
+
   /* ---------- Guardado por fetch ---------- */
   var form = document.getElementById('form-profile');
   var region = document.getElementById('toast-region');
@@ -116,20 +141,11 @@
   form.addEventListener('submit', function (evento) {
 
     var nombre = form.elements['nombre'].value.trim();
-    var correo = form.elements['correo'].value.trim();
     var actual = form.elements['contrasena_actual'].value;
     var nueva = form.elements['contrasena_nueva'].value;
 
-    if (
-      nombre.length < 2 ||
-      nombre.length > 50 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) ||
-      correo.length > 100
-    ) {
-      mostrarAviso(
-        'error',
-        'Escribe un nombre de 2 a 50 caracteres y un correo válido.'
-      );
+    if (nombre.length < 2 || nombre.length > 50) {
+      mostrarAviso('error', 'Escribe un nombre de 2 a 50 caracteres.');
       return;
     }
 

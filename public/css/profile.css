@@ -140,6 +140,15 @@
 
 .field input:hover { border-color: var(--soft); }
 
+/* Campo de solo lectura (correo): se ve bloqueado y no se puede editar */
+.field input[readonly] {
+  border-style: dashed;
+  background: var(--tint);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.field input[readonly]:hover { border-color: var(--border); }
+
 .field input:focus-visible {
   outline: none;
   border-color: var(--primary);

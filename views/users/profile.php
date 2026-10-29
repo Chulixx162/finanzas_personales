@@ -41,6 +41,7 @@ $errores = [
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/profile.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
 </head>
 
@@ -103,8 +104,10 @@ $errores = [
 
                                 <div class="field">
                                     <label for="correo">Correo electrónico</label>
-                                    <input id="correo" name="correo" type="email" maxlength="100" required
-                                        value="<?= $h($correo) ?>">
+                                    <input id="correo" name="correo" type="email" maxlength="100"
+                                        value="<?= $h($correo) ?>" readonly aria-readonly="true"
+                                        aria-describedby="correo-ayuda" tabindex="-1">
+                                    <p class="hint" id="correo-ayuda">El correo no se puede cambiar.</p>
                                 </div>
 
                                 <div class="field">
@@ -142,8 +145,7 @@ $errores = [
                             <p>Esta acción puede borrar permanentemente tus datos y no se puede deshacer.</p>
                         </header>
 
-                        <form class="profile-form" action="../../controllers/profileController.php" method="POST"
-                            onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
+                        <form class="profile-form" id="form-eliminar" action="../../controllers/profileController.php" method="POST">
                             <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
                             <input type="hidden" name="accion" value="eliminar">
 
@@ -178,6 +180,8 @@ $errores = [
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="<?= $base ?>public/js/alerts.js" defer></script>
     <script type="application/json" id="profile-mensajes"><?= json_encode(
         ['exito' => $textoExito, 'errores' => $errores],
         JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP

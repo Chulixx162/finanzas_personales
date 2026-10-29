@@ -80,4 +80,80 @@ function eliminarCategoria($conn, $user_id, $categoria_id) {
     }
     return false;
 }
+
+
+/**
+ * Libera los resultados pendientes que deja un CALL
+ * para poder ejecutar otro procedimiento en la misma conexión.
+ */
+function categorias_liberar_resultados($conn): void
+{
+    while (mysqli_more_results($conn) && mysqli_next_result($conn)) {
+        // Solo se consumen los resultados restantes.
+    }
+}
+
+/** Indica si el usuario ya tiene una categoría con ese nombre. */
+function categoriaNombreExiste($conn, int $user_id, string $nombre, int $excluir_id = 0): bool
+{
+    $sql  = 'CALL sp_categoria_nombre_existe(?, ?, ?)';
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log(mysqli_error($conn));
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'isi', $user_id, $nombre, $excluir_id);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        categorias_liberar_resultados($conn);
+        return false;
+    }
+
+    $resultado = mysqli_stmt_get_result($stmt);
+    $fila      = $resultado ? mysqli_fetch_assoc($resultado) : null;
+    mysqli_stmt_close($stmt);
+    categorias_liberar_resultados($conn);
+
+    return ((int) ($fila['total'] ?? 0)) > 0;
+}
+
+/** Cantidad de rubros y movimientos que dependen de la categoría. */
+function contarRelacionesCategoria($conn, int $user_id, int $categoria_id): array
+{
+    $relaciones = ['rubros' => 0, 'movimientos' => 0];
+
+    $sql  = 'CALL sp_contar_relaciones_categoria(?, ?)';
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log(mysqli_error($conn));
+        return $relaciones;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'ii', $user_id, $categoria_id);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        error_log(mysqli_stmt_error($stmt));
+        mysqli_stmt_close($stmt);
+        categorias_liberar_resultados($conn);
+        return $relaciones;
+    }
+
+    $resultado = mysqli_stmt_get_result($stmt);
+    $fila      = $resultado ? mysqli_fetch_assoc($resultado) : null;
+    mysqli_stmt_close($stmt);
+    categorias_liberar_resultados($conn);
+
+    if ($fila) {
+        $relaciones['rubros']      = (int) $fila['rubros'];
+        $relaciones['movimientos'] = (int) $fila['movimientos'];
+    }
+
+    return $relaciones;
+}
+
 ?>

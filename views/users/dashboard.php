@@ -89,11 +89,11 @@ $datosGraficos = array_replace_recursive(
 
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/dashboard.css">
+    <link rel="stylesheet" href="<?= $h($base) ?>public/css/alerts.css">
     <link rel="icon" type="image/webp" href="<?= $h($base) ?>public/img/icon.webp">
 </head>
 
@@ -139,6 +139,14 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
 </p>
                 </div>
             </header>
+
+            <?php if ($ingresos == 0 && $gastos == 0 && $movimientos !== []): ?>
+                <p class="notice notice-info" role="status">
+                    No hay movimientos en <?= $h($periodoActual) ?>. Las tarjetas y los gráficos
+                    solo cuentan el mes actual; la tabla «Últimos movimientos» muestra registros
+                    de cualquier fecha.
+                </p>
+            <?php endif; ?>
 
             <!-- ========================================================== -->
             <!-- AQUÍ SE IMPLEMENTA EL RESUMEN FINANCIERO (TARJETAS)          -->
@@ -187,8 +195,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
                         <canvas
                             id="chart-meses"
                             role="img"
-                            aria-label="Comparación mensual de ingresos y gastos"
-                        ></canvas>
+                            aria-label="Comparación mensual de ingresos y gastos"></canvas>
                     </div>
                 </section>
 
@@ -202,8 +209,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
                         <canvas
                             id="chart-categorias"
                             role="img"
-                            aria-label="Distribución de gastos por categoría"
-                        ></canvas>
+                            aria-label="Distribución de gastos por categoría"></canvas>
                     </div>
                 </section>
 
@@ -217,8 +223,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
                         <canvas
                             id="chart-presupuesto"
                             role="img"
-                            aria-label="Comparación del presupuesto y los gastos"
-                        ></canvas>
+                            aria-label="Comparación del presupuesto y los gastos"></canvas>
                     </div>
                 </section>
 
@@ -293,23 +298,25 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
-    <script id="dashboard-data" type="application/json"><?=
+    <script id="dashboard-data" type="application/json">
+        <?=
         json_encode(
             $datosGraficos,
             JSON_HEX_TAG
-            | JSON_HEX_APOS
-            | JSON_HEX_AMP
-            | JSON_HEX_QUOT 
-            | JSON_UNESCAPED_UNICODE
+                | JSON_HEX_APOS
+                | JSON_HEX_AMP
+                | JSON_HEX_QUOT
+                | JSON_UNESCAPED_UNICODE
         )
-    ?></script>
+        ?>
+    </script>
 
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
-        defer
-    ></script>
+        defer></script>
 
     <script src="<?= $h($base) ?>public/js/dashboard.js" defer></script>
 
 </body>
+
 </html>
