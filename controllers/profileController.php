@@ -1,17 +1,4 @@
 <?php
-// controllers/profileController.php
-// Controlador único del perfil. Solo decide qué ruta seguir y qué función del
-// modelo llamar; todas las consultas están en models/usersModel.php.
-//
-// Se usa de dos maneras:
-//   - La vista views/users/profile.php lo incluye (GET) y recibe $usuario y $csrf.
-//   - Los formularios de esa vista le envían (POST) las acciones
-//     "actualizar" y "eliminar".
-//
-// Si la petición viene de fetch() (cabecera X-Requested-With) responde JSON y
-// la página no se recarga. Sin JavaScript, el formulario sigue funcionando con
-// redirecciones normales.
-
 // ¿Se abrió este archivo directamente (formulario o fetch) o lo incluyó la vista?
 $accesoDirecto = basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__);
 

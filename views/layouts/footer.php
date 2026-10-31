@@ -68,4 +68,6 @@ if ($logueado) {
     <div class="footer-bottom">
         <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="<?= $base ?>public/js/alerts.js" defer></script>
 </footer>

@@ -110,25 +110,100 @@ try {
 
     $mail->isHTML(true);
     $mail->Subject = 'Restablece tu contraseña - Finanzas Personales';
+
     $mail->Body = '
-        <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#1f1b3a">
-            <h2 style="color:#6D28D9">Recuperar contraseña</h2>
-            <p>Hola ' . $nombreSeguro . ',</p>
-            <p>Recibimos una solicitud para restablecer tu contraseña de Finanzas Personales.</p>
-            <p>
-                <a href="' . $urlSegura . '"
-                   style="display:inline-block;background:#6D28D9;color:#ffffff;
-                          padding:13px 20px;border-radius:8px;text-decoration:none">
-                    Crear nueva contraseña
-                </a>
-            </p>
-            <p>Este enlace vence en 60 minutos y solo puede usarse una vez.</p>
-            <p>Si no solicitaste este cambio, ignora este mensaje: tu contraseña no cambiará.</p>
-            <p>Finanzas Personales</p>
-        </div>';
-    $mail->AltBody = "Para restablecer tu contraseña abre este enlace:\n" . $url
-        . "\nVence en 60 minutos y solo puede usarse una vez."
-        . "\nSi no lo solicitaste, ignora este correo.";
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #F5F3FF; font-family: \'Plus Jakarta Sans\', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F5F3FF; padding: 40px 10px;">
+        <tr>
+          <td align="center">
+            <!-- Contenedor Principal (Tarjeta) -->
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 520px; background-color: #FFFFFF; border-radius: 12px; border: 1px solid #E4DFF7; box-shadow: 0 10px 25px -5px rgba(30, 27, 75, 0.05); overflow: hidden;">
+              
+              <!-- Cabecera / Branding -->
+              <tr>
+                <td style="background-color: #1E1B4B; padding: 32px 40px; text-align: center; background-image: linear-gradient(135deg, #1E1B4B 0%, #5B21B6 100%);">
+                  <h1 style="margin: 0; color: #FFFFFF; font-size: 24px; font-weight: 800; tracking-spacing: -0.5px; display: inline-flex; align-items: center; gap: 8px;">
+                    Finanzas<span style="color: #FBBF24;">.</span>
+                  </h1>
+                </td>
+              </tr>
+
+              <!-- Cuerpo del Correo -->
+              <tr>
+                <td style="padding: 40px 40px 32px 40px;">
+                  <h2 style="margin: 0 0 16px 0; color: #1F1B3A; font-size: 20px; font-weight: 700; line-height: 1.3;">
+                    Restablecer contraseña
+                  </h2>
+                  
+                  <p style="margin: 0 0 16px 0; color: #5B5580; font-size: 15px; line-height: 1.6;">
+                    Hola <strong style="color: #1F1B3A;">' . $nombreSeguro . '</strong>,
+                  </p>
+                  
+                  <p style="margin: 0 0 28px 0; color: #5B5580; font-size: 15px; line-height: 1.6;">
+                    Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Finanzas Personales</strong>. Haz clic en el siguiente botón para continuar:
+                  </p>
+
+                  <!-- Botón de Acción -->
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 28px 0;">
+                    <tr>
+                      <td align="center">
+                        <a href="' . $urlSegura . '" target="_blank" style="display: inline-block; background-color: #6D28D9; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25); text-align: center;">
+                          Crear nueva contraseña
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Caja Informativa de Expiración -->
+                  <div style="background-color: #EDE9FE; border-left: 4px solid #6D28D9; border-radius: 6px; padding: 14px 16px; margin-bottom: 24px;">
+                    <p style="margin: 0; color: #5B21B6; font-size: 13px; line-height: 1.5; font-weight: 600;">
+                      ⏱️ Este enlace es válido por 60 minutos y solo puede usarse una vez.
+                    </p>
+                  </div>
+
+                  <p style="margin: 0; color: #5B5580; font-size: 14px; line-height: 1.5;">
+                    Si no solicitaste este cambio, puedes ignorar este mensaje de forma segura. Tu contraseña actual no cambiará.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Separador -->
+              <tr>
+                <td style="padding: 0 40px;">
+                  <div style="border-top: 1px solid #E4DFF7;"></div>
+                </td>
+              </tr>
+
+              <!-- Pie de Página -->
+              <tr>
+                <td style="padding: 24px 40px; background-color: #FFFFFF; text-align: center;">
+                  <p style="margin: 0 0 8px 0; color: #5B5580; font-size: 12px; line-height: 1.4;">
+                    Este correo fue generado automáticamente por <strong>Finanzas Personales</strong>. Por favor, no respondas a este mensaje.
+                  </p>
+                  <p style="margin: 0; color: #C4B5FD; font-size: 11px;">
+                    &copy; ' . date('Y') . ' Finanzas Personales. Todos los derechos reservados.
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>';
+
+    $mail->AltBody = "Hola " . $nombreSeguro . ",\n\n"
+        . "Recibimos una solicitud para restablecer tu contraseña en Finanzas Personales.\n\n"
+        . "Para restablecer tu contraseña abre este enlace:\n" . $urlSegura . "\n\n"
+        . "Este enlace vence en 60 minutos y solo puede usarse una vez.\n"
+        . "Si no solicitaste este cambio, ignora este mensaje: tu contraseña permanecerá sin cambios.";
 
     $mail->send();
 } catch (Throwable $e) {

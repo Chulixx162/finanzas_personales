@@ -16,9 +16,10 @@ $primerNombre = explode(' ', trim($nombre))[0] ?? '';
 $inicial      = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 
 $enlacesInternos = [
-    'inicio'       => ['Inicio', 'views/users/dashboard.php'],    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
+    'inicio'       => ['Inicio', 'views/users/dashboard.php'],
+    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
     'categorias'   => ['Categorías', 'views/categories/index.php'],
-    'rubros'       => ['Rubros', 'views/rubros/index.php'],   
+    'rubros'       => ['Rubros', 'views/rubros/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
 ];
 
@@ -35,7 +36,7 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                 </svg>
             </span>
             <span class="brand-name">Finanzas</span>
-        </a>   
+        </a>
 
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">
             <svg class="icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -59,7 +60,7 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                 <?php else: ?>
                     <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
                     <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
-                    <li><a class="nav-link"href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
+                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
                 <?php endif; ?>
             </ul>
 
@@ -71,8 +72,9 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
 
                         <span class="user-name"><?= $h($primerNombre) ?></span>
                     </span>
-
-                    <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>controllers/logoutController.php">Cerrar sesión</a>
+                    <form id="logout-form" action="<?= $h($base) ?>controllers/logoutController.php" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
+                    </form>
                 <?php else: ?>
                     <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
                     <a class="btn btn-sm btn-primary" href="<?= $h($base) ?>views/auth/register.php">Crear cuenta</a>
@@ -81,4 +83,6 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
         </div>
     </nav>
 </header>
-<script src="<?= $h($base) ?>public/js/navbar.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?= $h($base) ?>public/js/alerts.js"></script>
+<script src="<?= $h($base) ?>public/js/navbar.js"></script>

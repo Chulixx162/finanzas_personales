@@ -179,9 +179,6 @@ $errores = [
 
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="<?= $base ?>public/js/alerts.js" defer></script>
     <script type="application/json" id="profile-mensajes"><?= json_encode(
         ['exito' => $textoExito, 'errores' => $errores],
         JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
