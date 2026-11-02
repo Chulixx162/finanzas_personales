@@ -20,6 +20,7 @@ $enlacesInternos = [
     'categorias'   => ['Categorías', 'views/categories/index.php'],
     'rubros'       => ['Rubros', 'views/rubros/index.php'],   
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
+    'historial'    => ['Historial', 'views/budget_history/index.php'],
 ];
 
 $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';

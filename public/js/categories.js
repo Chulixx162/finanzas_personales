@@ -49,12 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (createCategoryForm) {
-        createCategoryForm.addEventListener('submit', (e) => {
-            const mensaje = mensajeValidacion(createCategoryForm);
+        createCategoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
+            const mensaje = mensajeValidacion(createCategoryForm);
             if (mensaje) {
-                e.preventDefault();
                 avisar('error', mensaje);
+                return;
+            }
+
+            const nombreCat = createCategoryForm.querySelector('#nombre').value.trim();
+
+            const confirmed = await alerta(
+                '¿Crear categoría?',
+                `¿Confirmas que deseas crear la categoría "${nombreCat}"?`,
+                'question',
+                'Sí, crear',
+                'Cancelar'
+            );
+
+            if (confirmed) {
+                createCategoryForm.submit();
             }
         });
     }
