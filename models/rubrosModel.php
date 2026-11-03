@@ -2,9 +2,9 @@
 // models/rubrosModel.php
 
 /**
- * Obtiene los rubros del usuario invocando el procedimiento almacenado sp_listar_rubros_usuario.
+ * Obtiene los rubros del usuario mediante el procedimiento almacenado.
  */
-function obtenerRubrosPorUsuario($conn, $user_id) {
+function obtenerRubrosPorUsuario(mysqli $conn, $user_id): array {
     $rubros = [];
     $sql = "CALL sp_listar_rubros_usuario(?)";
     $stmt = mysqli_prepare($conn, $sql);
@@ -25,9 +25,9 @@ function obtenerRubrosPorUsuario($conn, $user_id) {
 }
 
 /**
- * Obtiene un rubro por su id_rubro validando la propiedad del usuario.
+ * Obtiene un rubro por su id validando que pertenezca al usuario.
  */
-function obtenerRubroPorId($conn, $user_id, $rubro_id) {
+function obtenerRubroPorId(mysqli $conn, $user_id, $rubro_id): ?array {
     $rubro = null;
     $sql = "SELECT r.id_rubro, r.id_categoria, r.nombre, r.monto_proyectado, r.fecha_inicio, r.fecha_fin 
             FROM rubros r 
@@ -48,9 +48,9 @@ function obtenerRubroPorId($conn, $user_id, $rubro_id) {
 }
 
 /**
- * Obtiene las categorías del usuario para poblar los select.
+ * Obtiene las categorías del usuario para el select del formulario.
  */
-function obtenerCategoriasParaSelect($conn, $user_id) {
+function obtenerCategoriasParaSelect(mysqli $conn, $user_id): array {
     $categorias = [];
     $sql = "SELECT id_categoria, nombre FROM categorias WHERE id_usuario = ? ORDER BY nombre ASC";
     $stmt = mysqli_prepare($conn, $sql);
@@ -68,9 +68,9 @@ function obtenerCategoriasParaSelect($conn, $user_id) {
 }
 
 /**
- * Inserta un nuevo rubro en la base de datos controlando excepciones de desbordamiento.
+ * Crea un rubro controlando desbordamientos y excepciones.
  */
-function crearRubro($conn, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin) {
+function crearRubro(mysqli $conn, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool {
     $sql = "INSERT INTO rubros (id_categoria, nombre, monto_proyectado, fecha_inicio, fecha_fin) 
             VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
@@ -92,9 +92,9 @@ function crearRubro($conn, $id_categoria, $nombre, $monto_proyectado, $fecha_ini
 }
 
 /**
- * Actualiza los datos de un rubro existente controlando excepciones de desbordamiento.
+ * Actualiza un rubro existente.
  */
-function actualizarRubro($conn, $user_id, $rubro_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin) {
+function actualizarRubro(mysqli $conn, $user_id, $rubro_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool {
     $rubroExistente = obtenerRubroPorId($conn, $user_id, $rubro_id);
     if (!$rubroExistente) {
         return false;
@@ -123,28 +123,49 @@ function actualizarRubro($conn, $user_id, $rubro_id, $id_categoria, $nombre, $mo
 }
 
 /**
- * Elimina un rubro mediante el procedimiento almacenado sp_eliminar_rubro.
+ * Elimina un rubro validando previamente si tiene movimientos asociados 
+ * para respetar la restricción ON DELETE RESTRICT de la base de datos.
  */
-function eliminarRubro($conn, $user_id, $rubro_id) {
+function eliminarRubro(mysqli $conn, $user_id, $rubro_id): array {
     $rubroExistente = obtenerRubroPorId($conn, $user_id, $rubro_id);
     if (!$rubroExistente) {
-        return false;
+        return ['success' => false, 'message' => 'El rubro no existe o no tienes permisos.'];
     }
 
-    try {
-        $sql = "CALL sp_eliminar_rubro(?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        if ($stmt) {
-            $r_id = (int) $rubro_id;
-            mysqli_stmt_bind_param($stmt, "i", $r_id);
-            $resultado = mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
-            while (mysqli_more_results($conn) && mysqli_next_result($conn));
-            return $resultado;
+    $r_id = (int) $rubro_id;
+
+    // 1. Verificación previa de movimientos en PHP (Evita que salte el error 1451 de MySQL)
+    $sqlCheck = "SELECT COUNT(*) AS total FROM movimientos WHERE id_rubro = ?";
+    $stmtCheck = mysqli_prepare($conn, $sqlCheck);
+    if ($stmtCheck) {
+        mysqli_stmt_bind_param($stmtCheck, "i", $r_id);
+        mysqli_stmt_execute($stmtCheck);
+        $resCheck = mysqli_stmt_get_result($stmtCheck);
+        $rowCheck = mysqli_fetch_assoc($resCheck);
+        mysqli_stmt_close($stmtCheck);
+        
+        if ($rowCheck['total'] > 0) {
+            return [
+                'success' => false, 
+                'message' => 'No se puede eliminar un rubro con movimientos asociados.'
+            ];
         }
-    } catch (Exception $e) {
-        return false;
     }
-    return false;
+
+    // 2. Si pasa la validación, procedemos a borrar con seguridad
+    $sqlDelete = "DELETE FROM rubros WHERE id_rubro = ?";
+    $stmtDelete = mysqli_prepare($conn, $sqlDelete);
+    
+    if ($stmtDelete) {
+        mysqli_stmt_bind_param($stmtDelete, "i", $r_id);
+        $resultado = mysqli_stmt_execute($stmtDelete);
+        mysqli_stmt_close($stmtDelete);
+        
+        if ($resultado) {
+            return ['success' => true];
+        }
+    }
+    
+    return ['success' => false, 'message' => 'Error al procesar la eliminación en la base de datos.'];
 }
 ?>

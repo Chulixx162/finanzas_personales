@@ -21,7 +21,7 @@ require_once __DIR__ . '/../models/rubrosModel.php';
 
 $user_id   = $_SESSION['user_id'];
 $action    = $_GET['action'] ?? 'index';
-$MAX_MONTO = 9999999999.99; // Límite para la columna DECIMAL(12,2)
+$MAX_MONTO = 9999999999.99; // Límite estricto de la columna DECIMAL(12,2)
 
 switch ($action) {
     case 'store':
@@ -52,7 +52,8 @@ switch ($action) {
             if ($id_rubro && $id_categoria && !empty($nombre) && $monto_proyectado >= 0 && $monto_proyectado <= $MAX_MONTO && !empty($fecha_inicio) && !empty($fecha_fin) && ($fecha_fin >= $fecha_inicio)) {
                 actualizarRubro($conn, $user_id, $id_rubro, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin);
             }
-            header("Location: /finanzas_personales/views/rubros/index.php");
+            // Redirige con indicador de éxito en la actualización
+            header("Location: /finanzas_personales/views/rubros/index.php?success=updated");
             exit();
         }
         break;
@@ -60,7 +61,14 @@ switch ($action) {
     case 'delete':
         $id = $_GET['id'] ?? null;
         if ($id) {
-            eliminarRubro($conn, $user_id, $id);
+            $resultado = eliminarRubro($conn, $user_id, $id);
+            if (!$resultado['success']) {
+                $mensaje = urlencode($resultado['message']);
+                header("Location: /finanzas_personales/views/rubros/index.php?error=$mensaje");
+                exit();
+            }
+            header("Location: /finanzas_personales/views/rubros/index.php?success=deleted");
+            exit();
         }
         header("Location: /finanzas_personales/views/rubros/index.php");
         exit();

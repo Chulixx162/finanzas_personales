@@ -17,6 +17,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
 
@@ -32,6 +33,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
     <div class="card form-card">
         <?php if (!empty($rubroEdit)): ?>
+            <!-- Importante: el id="editRubroForm" para interceptar con JS -->
             <form action="/finanzas_personales/controllers/rubrosController.php?action=update" method="POST" id="editRubroForm">
                 <input type="hidden" name="id_rubro" value="<?= $h($rubroEdit['id_rubro']) ?>">
 
@@ -79,6 +81,11 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
         <?php endif; ?>
     </div>
 </main>
+
+<!-- Scripts de SweetAlert2 y alertas globales -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/finanzas_personales/public/js/alerts.js"></script>
+<script src="/finanzas_personales/public/js/rubros.js"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

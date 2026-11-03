@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteButtons = document.querySelectorAll('.btn-delete');
     const editRubroForm = document.getElementById('editRubroForm');
 
-    // 1. Buscador en tiempo real sobre todo el texto de cada fila
+    // 1. Buscador en tiempo real
     if (searchInput) {
         searchInput.addEventListener('keyup', () => {
             const term = searchInput.value.toLowerCase().trim();
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Confirmación al ELIMINAR usando el helper alerta()
+    // 2. Confirmación previa al ELIMINAR con SweetAlert2
     deleteButtons.forEach(button => {
         button.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. Confirmación al EDITAR
+    // 3. Confirmación al GUARDAR CAMBIOS en la edición mediante alerta()
     if (editRubroForm) {
         editRubroForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const confirmed = await alerta(
                 '¿Guardar cambios?',
-                `¿Confirmas que deseas guardar los cambios en "${nombreRubro}"?`,
+                `¿Confirmas que deseas actualizar los datos de "${nombreRubro}"?`,
                 'question',
                 'Sí, guardar',
                 'Cancelar',
@@ -69,5 +69,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 editRubroForm.submit();
             }
         });
+    }
+
+    // 4. Procesar respuestas del servidor (Éxito o Error de URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const swalBg = isLight ? '#ffffff' : '#1e1e24';
+    const swalColor = isLight ? '#0f172a' : '#ffffff';
+
+    if (urlParams.has('error')) {
+        Swal.fire({
+            title: 'Acción denegada',
+            text: urlParams.get('error'),
+            icon: 'error',
+            confirmButtonColor: '#ef4444',
+            background: swalBg,
+            color: swalColor
+        });
+        window.history.replaceState(null, '', window.location.pathname);
+    } else if (urlParams.get('success') === 'deleted') {
+        Swal.fire({
+            title: '¡Eliminado!',
+            text: 'El rubro ha sido eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#10b981',
+            background: swalBg,
+            color: swalColor
+        });
+        window.history.replaceState(null, '', window.location.pathname);
+    } else if (urlParams.get('success') === 'updated') {
+        Swal.fire({
+            title: '¡Actualizado!',
+            text: 'Los cambios del rubro se han guardado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#10b981',
+            background: swalBg,
+            color: swalColor
+        });
+        window.history.replaceState(null, '', window.location.pathname);
     }
 });

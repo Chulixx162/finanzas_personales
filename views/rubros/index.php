@@ -3,7 +3,6 @@
 $base   = '/finanzas_personales/';
 $active = 'rubros';
 
-// La vista se ejecuta primero y llama al controlador.
 require_once __DIR__ . '/../../controllers/rubrosController.php';
 
 $h      = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -19,6 +18,7 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
 
@@ -81,7 +81,9 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     </div>
 </main>
 
-<script src="/finanzas_personales/public/js/rubros.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../public/js/alerts.js"></script>
+<script src="../../public/js/rubros.js"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
