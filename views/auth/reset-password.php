@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../config/session.php';
+iniciar_sesion_segura();
 
 require_once __DIR__ . '/../../models/passwordResetModel.php';
 
@@ -27,6 +28,9 @@ $mensajesError = [
     <title>Nueva contraseña | Finanzas Personales</title>
     <link rel="stylesheet" href="../../public/css/register.css">
     <link rel="stylesheet" href="../../public/css/login.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
+     <link rel="icon" type="image/x-icon" href="../../public/img/icon.webp">
+
 </head>
 <body>
 <div class="page">

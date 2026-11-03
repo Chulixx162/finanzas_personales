@@ -17,6 +17,7 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     <title>Mis Rubros - Finanzas</title>
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>

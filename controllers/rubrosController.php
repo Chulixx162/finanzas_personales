@@ -4,22 +4,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 
-$base = '/finanzas_personales/';
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: /finanzas_personales/views/auth/login.php");
-    exit();
-}
+$idUsuario = requerir_login();
 
 require_once __DIR__ . '/../config/connection.php';
 /** @var mysqli $conn */
 require_once __DIR__ . '/../models/rubrosModel.php';
 
-$user_id   = $_SESSION['user_id'];
 $action    = $_GET['action'] ?? 'index';
 $MAX_MONTO = 9999999999.99; // Límite estricto de la columna DECIMAL(12,2)
 

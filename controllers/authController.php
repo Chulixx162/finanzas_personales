@@ -1,7 +1,8 @@
 <?php
 // controllers/authController.php
 
-session_start();
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../views/auth/login.php");
@@ -41,6 +42,7 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
 
     // Abrir el Dashboard (la vista llama al controlador).
     header('Location: ../views/users/dashboard.php');
+    exit;
 
 } else {
     header('Location: ../views/auth/login.php?error=credenciales');

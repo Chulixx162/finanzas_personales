@@ -1,5 +1,5 @@
 <?php
-// models/passwordResetModel.php
+
 // Recuperacion de contrasena. Usa los procedimientos 8.18 a 8.20
 // (database/migracion_recuperacion.sql).
 

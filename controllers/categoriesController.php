@@ -2,24 +2,15 @@
 // controllers/categoriesController.php
 // Solo maneja la sesión y las rutas; las consultas están en el modelo.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 
 $base = '/finanzas_personales/';
 
-if (
-    !isset($_SESSION['user_id']) ||
-    !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
-) {
-    header('Location: ' . $base . 'views/auth/login.php?error=sesion');
-    exit;
-}
+$user_id = requerir_login();
 
 require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/../models/categoriesModel.php';
 
-$user_id = (int) $_SESSION['user_id'];
 $action  = $_GET['action'] ?? 'index';
 $listado = $base . 'views/categories/index.php';
 

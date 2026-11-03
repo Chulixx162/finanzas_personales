@@ -1,0 +1,53 @@
+/* public/css/budget_history.css
+   Estilos propios del historial de presupuesto.
+   Se carga DESPUÉS de categories.css y reutiliza sus variables. */
+
+.history-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    padding: 20px 24px;
+}
+
+.summary-label {
+    margin: 0 0 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.summary-value {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.history-table-wrap {
+    overflow-x: auto;
+}
+
+.badge-up,
+.badge-down,
+.badge-equal {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-up    { background: #DCFCE7; color: #15803D; }
+.badge-down  { background: #FEE2E2; color: #B91C1C; }
+.badge-equal { background: #EDE9FE; color: var(--text-muted); }
+
+@media (max-width: 760px) {
+    .history-summary {
+        grid-template-columns: 1fr;
+    }
+}
