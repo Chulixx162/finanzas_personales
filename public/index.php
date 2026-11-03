@@ -2,7 +2,8 @@
 // public/index.php
 // Página de inicio. Visible para visitantes y para usuarios con sesión.
 
-session_start();
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
 $base     = '../';   // desde public/ hasta la raíz del proyecto
 $active   = '';
@@ -33,7 +34,7 @@ $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 
     <main>
         <!-- Portada -->
-        <section class="hero on-dark">
+        <section class="hero on-dark" id="inicio">
             <div class="wrap hero-grid">
                 <div class="hero-copy">
                     <h1>Sabe en qué se va tu dinero antes de que termine el mes.</h1>

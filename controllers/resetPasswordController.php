@@ -1,10 +1,12 @@
 <?php
-// controllers/resetPasswordController.php
-// Paso 2: la persona llega desde el correo y escribe la contraseña nueva.
 
-session_start();
+// Paso 1: la persona llega desde el correo y escribe la contraseña nueva.
+
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
 require_once __DIR__ . '/../models/passwordResetModel.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../views/auth/forgot-password.php');

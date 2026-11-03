@@ -1,9 +1,8 @@
 <?php
 
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../../config/session.php';
+iniciar_sesion_segura();
 
 $base     = $base   ?? '../';
 $active   = $active ?? '';
@@ -21,6 +20,7 @@ $enlacesInternos = [
     'categorias'   => ['Categorías', 'views/categories/index.php'],
     'rubros'       => ['Rubros', 'views/rubros/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
+    'historial'    => ['Historial', 'views/budget_history/index.php'],
 ];
 
 $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
@@ -58,6 +58,7 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                         </li>
                     <?php endforeach; ?>
                 <?php else: ?>
+                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#inicio">Inicio</a></li>
                     <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
                     <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
                     <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>

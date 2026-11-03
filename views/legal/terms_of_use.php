@@ -2,9 +2,8 @@
 // views/legal/terms_of_use.php
 // Página pública: no requiere sesión, se lee antes de registrarse.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../../config/session.php';
+iniciar_sesion_segura();
 
 $base     = '../../';   // desde views/legal/ hasta la raíz del proyecto
 $active   = '';         // las páginas legales no están en el menú principal
@@ -17,8 +16,8 @@ $ultimaActualizacion = '27 de octubre de 2026';
 $correoContacto      = 'Equipo7@gmail.com';
 
 // El botón de regreso depende de si hay sesión.
-$volverRuta  = $base . ($logueado ? 'controllers/dashboardController.php' : 'views/auth/register.php');
-$volverTexto = $logueado ? 'Ir a mi panel' : 'Volver al registro';
+$volverRuta  = $base . ($logueado ? 'views/users/dashboard.php' : 'views/auth/register.php');
+$volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
 ?>
 <!DOCTYPE html>
 <html lang="es">

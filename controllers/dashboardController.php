@@ -1,31 +1,21 @@
 <?php
 // controllers/dashboardController.php
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 
 // 1. Comprobar que el usuario haya iniciado sesión.
-if (
-    !isset($_SESSION['user_id']) ||
-    !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
-) {
-    header('Location: ../auth/login.php?error=sesion');
-    exit;
-}
+$idUsuario = requerir_login();
 
 // 2. Consultar el usuario en la base de datos.
 require_once __DIR__ . '/../models/usersModel.php';
 
-$idUsuario = (int) $_SESSION['user_id'];
 $usuario = obtener_usuario_por_id($idUsuario);
 
 // 3. Si el usuario ya no existe, cerrar la sesión.
 if (!$usuario) {
-    $_SESSION = [];
-    session_destroy();
+    destruir_sesion();
 
-    header('Location: ../views/auth/login.php?error=sesion');
+    header('Location: /finanzas_personales/views/auth/login.php?error=sesion');
     exit;
 }
 
@@ -59,7 +49,11 @@ $gastos = (float) ($resumen['gastos'] ?? 0);
 // Cálculo corregido del saldo (Ingresos menos Gastos)
 $saldo = $ingresos - $gastos;
 
-$movimientos = dashboard_movimientos_recientes($idUsuario, 5);
+$movimientos = dashboard_movimientos_recientes(
+    $idUsuario,
+    $inicioMes,
+    $finMes
+);
 
 // Datos de los gráficos.
 $filasMensuales = dashboard_balance_mensual(

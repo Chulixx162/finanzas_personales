@@ -2,21 +2,12 @@
 // controllers/rubrosController.php
 // Solo maneja la sesión y las rutas; las consultas están en el modelo.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
 
-if (
-    !isset($_SESSION['user_id']) ||
-    !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
-) {
-    header('Location: /finanzas_personales/views/auth/login.php?error=sesion');
-    exit;
-}
+$idUsuario = requerir_login();
 
 require_once __DIR__ . '/../models/rubrosModel.php';
 
-$idUsuario = (int) $_SESSION['user_id'];
 $action    = $_GET['action'] ?? 'index';
 
 switch ($action) {
