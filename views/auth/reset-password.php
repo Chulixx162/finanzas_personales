@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../../config/session.php';
+iniciar_sesion_segura();
 
 require_once __DIR__ . '/../../models/passwordResetModel.php';
 

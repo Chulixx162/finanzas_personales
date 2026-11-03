@@ -1,7 +1,6 @@
 -- ============================================================
 -- BASE DE DATOS: finanzas_personales
 -- MOTOR: MySQL 8.0+
--- RELACION: RUBROS (1) ---- (N) MOVIMIENTOS
 -- ============================================================
 
 DROP DATABASE IF EXISTS finanzas_personales;

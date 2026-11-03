@@ -2,7 +2,8 @@
 // public/index.php
 // Página de inicio. Visible para visitantes y para usuarios con sesión.
 
-session_start();
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
 $base     = '../';   // desde public/ hasta la raíz del proyecto
 $active   = '';

@@ -2,9 +2,8 @@
 // views/legal/privacy_policies.php
 // Página pública, igual que terms_of_use.php: no requiere sesión.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../../config/session.php';
+iniciar_sesion_segura();
 
 $base     = '../../';   // desde views/legal/ hasta la raíz del proyecto
 $active   = '';         // las páginas legales no están en el menú principal

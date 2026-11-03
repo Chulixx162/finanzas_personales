@@ -1,5 +1,5 @@
 <?php
-// models/budgetHistoryModel.php
+
 // Consultas del historial de presupuesto. No tiene lógica de sesión ni HTML.
 
 require_once __DIR__ . '/../config/connection.php';

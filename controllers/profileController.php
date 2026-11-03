@@ -1,5 +1,5 @@
 <?php
-// controllers/profileController.php
+
 // Controlador único del perfil. Solo decide qué ruta seguir y qué función del
 // modelo llamar; todas las consultas están en models/usersModel.php.
 //
@@ -21,9 +21,8 @@ if ($accesoDirecto) {
     ob_start();
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
 require_once __DIR__ . '/../models/usersModel.php';
 
@@ -179,6 +178,12 @@ if (
 }
 
 $idUsuario = (int) $_SESSION['user_id'];
+
+
+// Que el navegador no guarde la página privada.
+if (!headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+}
 
 /* ---------- Ruta POST: acciones del formulario ---------- */
 

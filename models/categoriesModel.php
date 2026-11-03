@@ -1,5 +1,4 @@
 <?php
-// models/categoriesModel.php
 
 function obtenerCategoriasPorUsuario($conn, $user_id) {
     $categorias = [];
