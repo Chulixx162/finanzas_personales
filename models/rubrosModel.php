@@ -4,23 +4,73 @@
 /**
  * Obtiene los rubros del usuario mediante el procedimiento almacenado.
  */
-function obtenerRubrosPorUsuario(mysqli $conn, $user_id): array {
+function obtenerRubrosPorUsuario(mysqli $conn, $id_usuario): array
+{
     $rubros = [];
-    $sql = "CALL sp_listar_rubros_usuario(?)";
-    $stmt = mysqli_prepare($conn, $sql);
-    
-    if ($stmt) {
-        $u_id = (int) $user_id;
-        mysqli_stmt_bind_param($stmt, "i", $u_id);
-        mysqli_stmt_execute($stmt);
-        $resultado = mysqli_stmt_get_result($stmt);
-        
-        while ($fila = mysqli_fetch_assoc($resultado)) {
-            $rubros[] = $fila;
-        }
-        mysqli_stmt_close($stmt);
-        while (mysqli_more_results($conn) && mysqli_next_result($conn));
+
+    $sql = "
+        SELECT
+            r.id_rubro,
+            r.nombre AS rubro,
+            r.monto_proyectado,
+            r.fecha_inicio,
+            r.fecha_fin,
+            c.id_categoria,
+            c.nombre AS categoria,
+
+            COALESCE(SUM(
+                CASE
+                    WHEN m.tipo = 'ingreso' THEN m.monto
+                    ELSE 0
+                END
+            ), 0) AS total_ingresos,
+
+            COALESCE(SUM(
+                CASE
+                    WHEN m.tipo = 'gasto' THEN m.monto
+                    ELSE 0
+                END
+            ), 0) AS total_gastos
+
+        FROM rubros r
+
+        INNER JOIN categorias c
+            ON c.id_categoria = r.id_categoria
+
+        LEFT JOIN movimientos m
+            ON m.id_rubro = r.id_rubro
+
+        WHERE c.id_usuario = ?
+
+        GROUP BY
+            r.id_rubro,
+            r.nombre,
+            r.monto_proyectado,
+            r.fecha_inicio,
+            r.fecha_fin,
+            c.id_categoria,
+            c.nombre
+
+        ORDER BY c.nombre, r.nombre
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        return [];
     }
+
+    $stmt->bind_param("i", $id_usuario);
+    $stmt->execute();
+
+    $resultado = $stmt->get_result();
+
+    while ($fila = $resultado->fetch_assoc()) {
+        $rubros[] = $fila;
+    }
+
+    $stmt->close();
+
     return $rubros;
 }
 

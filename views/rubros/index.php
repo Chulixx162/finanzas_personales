@@ -1,14 +1,7 @@
-<?php
-// views/rubros/index.php
-$base   = '/finanzas_personales/';
-$active = 'rubros';
-
+ <?php
 require_once __DIR__ . '/../../controllers/rubrosController.php';
-
-$h      = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
-$moneda = fn($valor) => '$' . number_format((float) $valor, 0, ',', '.');
-$fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,6 +10,7 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     <title>Mis Rubros - Finanzas</title>
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
@@ -58,17 +52,36 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
                 <?php else: ?>
                     <?php foreach ($rubros as $rubro): ?>
                         <tr>
-                            <td class="category-name"><?= $h($rubro['rubro']) ?></td>
-                            <td><?= $h($rubro['categoria']) ?></td>
-                            <td class="text-right"><?= $moneda($rubro['monto_proyectado']) ?></td>
-                            <td><?= $fecha($rubro['fecha_inicio']) ?> al <?= $fecha($rubro['fecha_fin']) ?></td>
+                            <td class="category-name">
+                                <?= $h($rubro['rubro']) ?>
+                            </td>
+
+                            <td>
+                                <?= $h($rubro['categoria']) ?>
+                            </td>
+
+                            <td class="text-right">
+                                <?= '$' . number_format((float)($rubro['monto_proyectado'] ?? 0), 0, ',', '.') ?>
+                            </td>
+
+                            <td>
+                                <?= !empty($rubro['fecha_inicio'])
+                                    ? date('d/m/Y', strtotime($rubro['fecha_inicio']))
+                                    : 'Sin fecha' ?>
+                                al
+                                <?= !empty($rubro['fecha_fin'])
+                                    ? date('d/m/Y', strtotime($rubro['fecha_fin']))
+                                    : 'Sin fecha' ?>
+                            </td>
+
                             <td class="text-right actions-cell">
-                                <a href="edit.php?id=<?= urlencode($rubro['id_rubro']) ?>" 
+                                <a href="edit.php?id=<?= urlencode($rubro['id_rubro']) ?>"
                                    class="btn-action btn-edit" title="Editar">
                                     Editar
                                 </a>
-                                <a href="/finanzas_personales/controllers/rubrosController.php?action=delete&id=<?= urlencode($rubro['id_rubro']) ?>" 
-                                   class="btn-action btn-delete" 
+
+                                <a href="/finanzas_personales/controllers/rubrosController.php?action=delete&id=<?= urlencode($rubro['id_rubro']) ?>"
+                                   class="btn-action btn-delete"
                                    data-name="<?= $h($rubro['rubro']) ?>" title="Eliminar">
                                     Eliminar
                                 </a>
@@ -89,3 +102,4 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
 
 </body>
 </html>
+```
