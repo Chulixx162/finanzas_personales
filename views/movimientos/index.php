@@ -18,6 +18,7 @@ $fecha  = fn($valor) => date('d/m/Y h:i A', strtotime($valor));
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
 
@@ -85,7 +86,7 @@ $fecha  = fn($valor) => date('d/m/Y h:i A', strtotime($valor));
     </div>
 </main>
 
-<script src="/finanzas_personales/public/js/movimientos.js"></script>
+<script src="/finanzas_personales/public/js/movimientos.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

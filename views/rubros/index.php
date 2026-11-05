@@ -17,7 +17,6 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     <title>Mis Rubros - Finanzas</title>
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
-    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
@@ -82,9 +81,7 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../../public/js/alerts.js"></script>
-<script src="../../public/js/rubros.js"></script>
+<script src="../../public/js/rubros.js?v=<?= filemtime(__DIR__ . '/../../public/js/rubros.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

@@ -97,7 +97,9 @@ CREATE TABLE historial_presupuesto (
         FOREIGN KEY (id_usuario)
         REFERENCES usuarios(id_usuario)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
+
+    INDEX idx_historial_usuario_fecha (id_usuario, fecha_cambio)
 ) ENGINE=InnoDB;
 
 -- Tabla: solo se guarda el HASH del token, nunca el token.
@@ -941,12 +943,14 @@ END$$
 
 
 -- 9.2 Guardar historial cuando cambia el presupuesto
+-- Usa <=> (seguro con NULL) y COALESCE: los usuarios nuevos nacen con
+-- presupuesto NULL y las columnas del historial son NOT NULL.
 
 CREATE TRIGGER trg_usuarios_au
 AFTER UPDATE ON usuarios
 FOR EACH ROW
 BEGIN
-    IF OLD.presupuesto_mensual <> NEW.presupuesto_mensual THEN
+    IF NOT (OLD.presupuesto_mensual <=> NEW.presupuesto_mensual) THEN
         INSERT INTO historial_presupuesto (
             id_usuario,
             presupuesto_anterior,
@@ -954,8 +958,8 @@ BEGIN
         )
         VALUES (
             OLD.id_usuario,
-            OLD.presupuesto_mensual,
-            NEW.presupuesto_mensual
+            COALESCE(OLD.presupuesto_mensual, 0),
+            COALESCE(NEW.presupuesto_mensual, 0)
         );
     END IF;
 END$$
