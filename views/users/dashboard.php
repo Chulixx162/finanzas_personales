@@ -111,32 +111,32 @@ $datosGraficos = array_replace_recursive(
                         <?= $h($primerNombre !== '' ? $primerNombre : 'usuario') ?>
                     </h1>
 
-<?php
-$meses = [
-    1 => 'enero',
-    2 => 'febrero',
-    3 => 'marzo',
-    4 => 'abril',
-    5 => 'mayo',
-    6 => 'junio',
-    7 => 'julio',
-    8 => 'agosto',
-    9 => 'septiembre',
-    10 => 'octubre',
-    11 => 'noviembre',
-    12 => 'diciembre'
-];
+                    <?php
+                    $meses = [
+                        1 => 'enero',
+                        2 => 'febrero',
+                        3 => 'marzo',
+                        4 => 'abril',
+                        5 => 'mayo',
+                        6 => 'junio',
+                        7 => 'julio',
+                        8 => 'agosto',
+                        9 => 'septiembre',
+                        10 => 'octubre',
+                        11 => 'noviembre',
+                        12 => 'diciembre'
+                    ];
 
-$fechaActual = new DateTimeImmutable('today');
+                    $fechaActual = new DateTimeImmutable('today');
 
-$mesActual = $meses[(int) $fechaActual->format('n')];
+                    $mesActual = $meses[(int) $fechaActual->format('n')];
 
-$periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
-?>
+                    $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
+                    ?>
 
-<p class="dash-sub">
-    Resumen financiero de <?= $h($periodoActual) ?>
-</p>
+                    <p class="dash-sub">
+                        Resumen financiero de <?= $h($periodoActual) ?>
+                    </p>
                 </div>
             </header>
 
@@ -265,7 +265,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
                                             </td>
 
                                             <td>
-                                                <span class="mov-desc">
+                                                <span class="mov-desc">-
                                                     <?= $h($descripcion) ?>
                                                 </span>
 

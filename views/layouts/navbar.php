@@ -8,12 +8,6 @@ $base     = '../../';   // desde views/layouts/navbar.php hasta la raíz del pro
 $active   = $active ?? '';
 $logueado = isset($_SESSION['user_id']);
 
-/*
- * Ruta base del proyecto.
- * Funciona si el proyecto está instalado en /finanzas_personales.
- */
-$base = '/finanzas_personales/';
-
 $active = $active ?? '';
 
 $h = fn($texto) => htmlspecialchars(

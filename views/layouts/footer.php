@@ -3,7 +3,7 @@
 // Pie de página. Usa $base igual que el navbar.
 
 $logueado = isset($_SESSION['user_id']);
-$base     =$logueado ? '../' : '../views/';
+$base     =$logueado ? '../' : '../';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
@@ -12,19 +12,24 @@ $logoDestino = $logueado
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
-        ['Inicio', 'users/dashboard.php'],
-        ['Movimientos',  'transactions/index.php'],
-        ['Categorías',   'categories/index.php'],
-        ['Rubros',       'rubros/index.php'],
-        ['Presupuestos', 'presupuestos/index.php']
+        ['Inicio', '../users/dashboard.php'],
+        ['Movimientos',  '../transactions/index.php'],
+        ['Categorías',   '../categories/index.php'],
+        ['Rubros',       '../rubros/index.php'],
+        ['Presupuestos', '../presupuestos/index.php'],
+        ['Terminos de uso', '../legal/terms_of_use.php'],
+        ['Política de privacidad', '../legal/privacy_policies.php']
     ];
 } else {
     $enlaces = [
-        ['Funciones',      'public/index.php#funciones'],
-        ['Cómo funciona',  'public/index.php#como-funciona'],
-        ['Crear cuenta',   'views/auth/register.php'],
-        ['Equipo de desarrollo', 'public/index.php#equipo'],
-        ['Iniciar sesión', 'views/auth/login.php']
+        ['Inicio',         '../../public/index.php'],
+        ['Funciones',      '../../public/index.php#funciones'],
+        ['Cómo funciona',  '../../public/index.php#como-funciona'],
+        ['Equipo de desarrollo', '../../public/index.php#equipo'],
+        ['Crea tu cuenta',  '../../views/auth/register.php'],
+        ['Inicia sesión',  '../../views/auth/login.php'],
+        ['Terminos de uso', '../../views/legal/terms_of_use.php'],
+        ['Política de privacidad', '../../views/legal/privacy_policies.php']
     ];
 }
 ?>
@@ -48,10 +53,8 @@ if ($logueado) {
             <h2>Navegación</h2>
             <ul>
                 <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
-                    <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
+                    <li><a href="<?= $h($ruta) ?>"><?= $h($etiqueta) ?></a></li>
                 <?php endforeach; ?>
-                <li><a href="<?= $h($base) ?>legal/terms_of_use.php">Términos de uso</a></li>
-                <li><a href="<?= $h($base) ?>legal/privacy_policies.php">Política de privacidad</a></li>
             </ul>
         </nav>
 

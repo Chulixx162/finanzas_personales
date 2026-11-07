@@ -12,7 +12,7 @@ $idUsuario = requerir_login();
 
 require_once __DIR__ . '/../models/budgetHistoryModel.php';
 
-$vista = '/finanzas_personales/views/presupuestos/index.php';
+$vista = '../views/presupuestos/index.php';
 
 // 2. Mensajes que muestra la vista: [tipo, texto]
 $mensajes = [

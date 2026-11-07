@@ -4,7 +4,7 @@ $active = 'rubros';
 
 $_GET['action'] = 'edit';
 require_once __DIR__ . '/../../controllers/rubrosController.php';
-// require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 

@@ -37,8 +37,6 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
 
 <body class="layout">
 
-    <?php require __DIR__ . '/../layouts/navbar.php'; ?>
-
     <main class="legal-page">
         <article class="legal">
 

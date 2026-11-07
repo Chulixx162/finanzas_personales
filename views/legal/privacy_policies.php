@@ -5,8 +5,8 @@
 require_once __DIR__ . '/../../config/session.php';
 iniciar_sesion_segura();
 
-$base     = '../../';   // desde views/legal/ hasta la raíz del proyecto
-$active   = '';         // las páginas legales no están en el menú principal
+$base = '../../';  // desde views/legal/ hasta la raíz del proyecto
+$active = '';  // las páginas legales no están en el menú principal
 $logueado = isset($_SESSION['user_id']);
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -14,10 +14,10 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 // Cambia la fecha solo cuando cambie la política (no uses date('d/m/Y'):
 // mostraría siempre el día de hoy como si la política se acabara de actualizar).
 $ultimaActualizacion = '27 de octubre de 2026';
-$correoContacto      = 'Equipo7@gmail.com';
+$correoContacto = 'Equipo7@gmail.com';
 
 // El botón de regreso depende de si hay sesión.
-$volverRuta  = $base . ($logueado ? 'views/users/dashboard.php' : 'views/auth/register.php');
+$volverRuta = $base . ($logueado ? 'views/users/dashboard.php' : 'views/auth/register.php');
 $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
 ?>
 <!DOCTYPE html>
@@ -38,8 +38,6 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
 </head>
 
 <body class="layout">
-
-    <?php require __DIR__ . '/../layouts/navbar.php'; ?>
 
     <main class="legal-page">
         <article class="legal">
@@ -95,7 +93,8 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
             <section id="contacto">
                 <h2>6. Contacto</h2>
                 <p>Para manifestar dudas, quejas o reclamos, escríbenos a
-                    <a href="mailto:<?= $h($correoContacto) ?>"><?= $h($correoContacto) ?></a>.</p>
+                    <a href="mailto:<?= $h($correoContacto) ?>"><?= $h($correoContacto) ?></a>.
+                </p>
             </section>
 
             <div class="actions">

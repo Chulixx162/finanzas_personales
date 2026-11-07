@@ -84,7 +84,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
     </div>
 </main>
 
-<script src="/finanzas_personales/public/js/movimientos.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
+<script src="../../public/js/movimientos.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

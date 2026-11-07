@@ -1,6 +1,6 @@
 <?php
 // views/presupuestos/index.php
-$base   = '/finanzas_personales/';
+$base   = '../../';
 $active = 'presupuestos';
 
 // La vista se ejecuta primero y llama al controlador
@@ -64,7 +64,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <!-- Registrar un cambio: el trigger de la BD guarda el historial automáticamente -->
     <div class="card budget-form-card">
         <h2 class="budget-form-title">Cambiar presupuesto mensual</h2>
-        <form action="/finanzas_personales/controllers/budgetHistoryController.php"
+        <form action="../../controllers/budgetHistoryController.php"
               method="POST" id="budgetForm" novalidate
               data-actual="<?= $presupuestoActual !== null ? $h((string) (int) $presupuestoActual) : '' ?>">
             <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
