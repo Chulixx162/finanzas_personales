@@ -4,8 +4,27 @@ $active = 'rubros';
 
 $_GET['action'] = 'edit';
 require_once __DIR__ . '/../../controllers/rubrosController.php';
+// require_once __DIR__ . '/../../config/connection.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+
+// Datos para avisar en pantalla cuánto se puede asignar sin pasar del presupuesto.
+$cupoJson = '';
+if (!empty($rubroEdit)) {
+    $cupo = obtenerCupoRubros($conn, (int) $idUsuario, (int) $rubroEdit['id_rubro']);
+    $actualIni = rubro_indice_mes((string) $rubroEdit['fecha_inicio']);
+    $actualFin = rubro_indice_mes((string) $rubroEdit['fecha_fin']);
+    $cupoJson = json_encode([
+        'presupuesto' => $cupo['presupuesto'],
+        'rubros'      => $cupo['rubros'],
+        'mesActual'   => rubro_mes_actual(),
+        'actual'      => ($actualIni !== null && $actualFin !== null) ? [
+            'ini'   => $actualIni,
+            'fin'   => $actualFin,
+            'monto' => (float) $rubroEdit['monto_proyectado'],
+        ] : null,
+    ]);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,7 +52,8 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
     <div class="card form-card">
         <?php if (!empty($rubroEdit)): ?>
             <!-- Importante: el id="editRubroForm" para interceptar con JS -->
-            <form action="../../controllers/rubrosController.php?action=update" method="POST" id="editRubroForm">
+            <form action="../../controllers/rubrosController.php?action=update" method="POST" id="editRubroForm"
+                  data-cupo="<?= $h($cupoJson) ?>">
                 <input type="hidden" name="id_rubro" value="<?= $h($rubroEdit['id_rubro']) ?>">
 
                 <div class="form-group">
@@ -55,6 +75,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
                 <div class="form-group">
                     <label for="monto_proyectado">Monto Proyectado ($):</label>
                     <input type="number" id="monto_proyectado" name="monto_proyectado" step="0.01" min="0" max="9999999999.99" value="<?= $h($rubroEdit['monto_proyectado']) ?>" required>
+                    <p class="field-hint" id="cupoHint" aria-live="polite"></p>
                 </div>
 
                 <div class="form-group">
@@ -81,10 +102,8 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
     </div>
 </main>
 
-<!-- Scripts de SweetAlert2 y alertas globales -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../../public/js/alerts.js"></script>
-<script src="../../public/js/rubros.js"></script>
+<!-- SweetAlert2 y alerts.js ya los carga el navbar -->
+<script src="../../public/js/rubros.js?v=<?= filemtime(__DIR__ . '/../../public/js/rubros.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

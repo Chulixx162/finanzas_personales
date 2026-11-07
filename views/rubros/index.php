@@ -3,11 +3,8 @@
 $active = 'rubros';
 
 require_once __DIR__ . '/../../controllers/rubrosController.php';
-
-$h      = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
-$moneda = fn($valor) => '$' . number_format((float) $valor, 0, ',', '.');
-$fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -58,12 +55,30 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
                 <?php else: ?>
                     <?php foreach ($rubros as $rubro): ?>
                         <tr>
-                            <td class="category-name"><?= $h($rubro['rubro']) ?></td>
-                            <td><?= $h($rubro['categoria']) ?></td>
-                            <td class="text-right"><?= $moneda($rubro['monto_proyectado']) ?></td>
-                            <td><?= $fecha($rubro['fecha_inicio']) ?> al <?= $fecha($rubro['fecha_fin']) ?></td>
+                            <td class="category-name">
+                                <?= $h($rubro['rubro']) ?>
+                            </td>
+
+                            <td>
+                                <?= $h($rubro['categoria']) ?>
+                            </td>
+
+                            <td class="text-right">
+                                <?= '$' . number_format((float)($rubro['monto_proyectado'] ?? 0), 0, ',', '.') ?>
+                            </td>
+
+                            <td>
+                                <?= !empty($rubro['fecha_inicio'])
+                                    ? date('d/m/Y', strtotime($rubro['fecha_inicio']))
+                                    : 'Sin fecha' ?>
+                                al
+                                <?= !empty($rubro['fecha_fin'])
+                                    ? date('d/m/Y', strtotime($rubro['fecha_fin']))
+                                    : 'Sin fecha' ?>
+                            </td>
+
                             <td class="text-right actions-cell">
-                                <a href="edit.php?id=<?= urlencode($rubro['id_rubro']) ?>" 
+                                <a href="edit.php?id=<?= urlencode($rubro['id_rubro']) ?>"
                                    class="btn-action btn-edit" title="Editar">
                                     Editar
                                 </a>
@@ -81,9 +96,7 @@ $fecha  = fn($valor) => date('d/m/Y', strtotime($valor));
     </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../../public/js/alerts.js"></script>
-<script src="../../public/js/rubros.js"></script>
+<script src="../../public/js/rubros.js?v=<?= filemtime(__DIR__ . '/../../public/js/rubros.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

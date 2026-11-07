@@ -38,7 +38,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
                 <a href="../../views/rubros/create.php" class="btn btn-primary">+ Crear Rubro</a>
             </div>
         <?php else: ?>
-            <form action="../../controllers/transactionsController.php?action=store" method="POST">
+            <form action="../../controllers/movimientosController.php?action=store" method="POST">
                 
                 <div class="form-group">
                     <label for="tipo">Tipo de Movimiento:</label>
@@ -83,6 +83,8 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
         <?php endif; ?>
     </div>
 </main>
+
+<script src="/finanzas_personales/public/js/movimientos.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

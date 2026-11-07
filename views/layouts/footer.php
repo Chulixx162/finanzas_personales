@@ -15,6 +15,7 @@ if ($logueado) {
         ['Inicio', 'users/dashboard.php'],
         ['Movimientos',  'transactions/index.php'],
         ['Categorías',   'categories/index.php'],
+        ['Rubros',       'rubros/index.php'],
         ['Presupuestos', 'presupuestos/index.php']
     ];
 } else {

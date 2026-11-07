@@ -6,6 +6,17 @@ $_GET['action'] = 'create';
 require_once __DIR__ . '/../../controllers/rubrosController.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+
+// Datos para avisar en pantalla cuánto se puede asignar sin pasar del presupuesto.
+/** @var mysqli $conn */
+/** @var int $idUsuario */
+$cupo = obtenerCupoRubros($conn, (int) $idUsuario);
+$cupoJson = json_encode([
+    'presupuesto' => $cupo['presupuesto'],
+    'rubros'      => $cupo['rubros'],
+    'mesActual'   => rubro_mes_actual(),
+    'actual'      => null,
+]);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,6 +27,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
     <link rel="stylesheet" href="../../public/css/rubros.css">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
@@ -37,7 +49,8 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
                 <a href="../../views/categories/create.php" class="btn btn-primary">+ Crear Categoría</a>
             </div>
         <?php else: ?>
-            <form action="../../controllers/rubrosController.php?action=store" method="POST">
+            <form id="createRubroForm" action="../../controllers/rubrosController.php?action=store" method="POST"
+                  data-cupo="<?= $h($cupoJson) ?>">
                 <div class="form-group">
                     <label for="id_categoria">Categoría:</label>
                     <select id="id_categoria" name="id_categoria" required class="custom-select">
@@ -56,6 +69,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
                 <div class="form-group">
                     <label for="monto_proyectado">Monto Proyectado ($):</label>
                     <input type="number" id="monto_proyectado" name="monto_proyectado" step="0.01" min="0" max="9999999999.99" required placeholder="0.00">
+                    <p class="field-hint" id="cupoHint" aria-live="polite"></p>
                 </div>
 
                 <div class="form-group">
@@ -76,6 +90,8 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
         <?php endif; ?>
     </div>
 </main>
+
+<script src="../../public/js/rubros.js?v=<?= filemtime(__DIR__ . '/../../public/js/rubros.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

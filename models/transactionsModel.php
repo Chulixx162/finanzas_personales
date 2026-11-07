@@ -14,17 +14,31 @@ function obtenerMovimientosPorUsuario( $conn, $user_id): array {
             WHERE c.id_usuario = ?
             ORDER BY m.fecha DESC, m.id_movimiento DESC";
 
-    $stmt = mysqli_prepare($conn, $sql);
-    if ($stmt) {
+    try {
+        $stmt = mysqli_prepare($conn, $sql);
+
+        if (!$stmt) {
+            error_log('obtenerMovimientosPorUsuario (prepare): ' . mysqli_error($conn));
+            return $movimientos;
+        }
+
         $u_id = (int) $user_id;
         mysqli_stmt_bind_param($stmt, "i", $u_id);
-        mysqli_stmt_execute($stmt);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            error_log('obtenerMovimientosPorUsuario (execute): ' . mysqli_stmt_error($stmt));
+            mysqli_stmt_close($stmt);
+            return $movimientos;
+        }
+
         $resultado = mysqli_stmt_get_result($stmt);
 
-        while ($fila = mysqli_fetch_assoc($resultado)) {
+        while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
             $movimientos[] = $fila;
         }
         mysqli_stmt_close($stmt);
+    } catch (mysqli_sql_exception $e) {
+        error_log('obtenerMovimientosPorUsuario: ' . $e->getMessage());
     }
     return $movimientos;
 }

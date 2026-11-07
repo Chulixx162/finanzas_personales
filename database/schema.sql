@@ -1,6 +1,7 @@
 -- ============================================================
 -- BASE DE DATOS: finanzas_personales
 -- MOTOR: MySQL 8.0+
+-- RELACION: RUBROS (1) ---- (N) MOVIMIENTOS
 -- ============================================================
 
 DROP DATABASE IF EXISTS finanzas_personales;
@@ -97,7 +98,9 @@ CREATE TABLE historial_presupuesto (
         FOREIGN KEY (id_usuario)
         REFERENCES usuarios(id_usuario)
         ON UPDATE CASCADE
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
+
+    INDEX idx_historial_usuario_fecha (id_usuario, fecha_cambio)
 ) ENGINE=InnoDB;
 
 -- Tabla: solo se guarda el HASH del token, nunca el token.
@@ -117,6 +120,7 @@ CREATE TABLE IF NOT EXISTS recuperacion_contrasena (
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
 -- ============================================================
 -- 2. INSERTAR USUARIOS
 -- ============================================================
@@ -439,6 +443,7 @@ END$$
 
 -- 8.4 Actualizar presupuesto mensual
 
+DROP PROCEDURE IF EXISTS sp_actualizar_presupuesto$$
 CREATE PROCEDURE sp_actualizar_presupuesto(
     IN p_id_usuario INT,
     IN p_presupuesto DECIMAL(12,2)
@@ -511,6 +516,7 @@ BEGIN
     DELETE FROM rubros
     WHERE id_rubro = p_id_rubro;
 END$$
+
 
 -- 8.7 Obtener usuario por id
 
@@ -911,7 +917,6 @@ BEGIN
             AND c.id_usuario   = p_id_usuario) AS movimientos;
 END$$
  
-
 DELIMITER ;
 
 
@@ -942,11 +947,12 @@ END$$
 
 -- 9.2 Guardar historial cuando cambia el presupuesto
 
+DROP TRIGGER IF EXISTS trg_usuarios_au$$
 CREATE TRIGGER trg_usuarios_au
 AFTER UPDATE ON usuarios
 FOR EACH ROW
 BEGIN
-    IF OLD.presupuesto_mensual <> NEW.presupuesto_mensual THEN
+    IF NOT (OLD.presupuesto_mensual <=> NEW.presupuesto_mensual) THEN
         INSERT INTO historial_presupuesto (
             id_usuario,
             presupuesto_anterior,
@@ -954,8 +960,8 @@ BEGIN
         )
         VALUES (
             OLD.id_usuario,
-            OLD.presupuesto_mensual,
-            NEW.presupuesto_mensual
+            COALESCE(OLD.presupuesto_mensual, 0),
+            COALESCE(NEW.presupuesto_mensual, 0)
         );
     END IF;
 END$$
@@ -1028,50 +1034,35 @@ BEGIN
     END IF;
 END$$
 
-DELIMITER ;
+
+-- 2. Índice: se crea solo si la tabla ya existía sin él
+SET @existe_indice = (
+    SELECT COUNT(*)
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+      AND table_name = 'historial_presupuesto'
+      AND index_name = 'idx_historial_usuario_fecha'
+);
+
+SET @sql_indice = IF(
+    @existe_indice = 0,
+    'CREATE INDEX idx_historial_usuario_fecha ON historial_presupuesto (id_usuario, fecha_cambio)',
+    'SELECT ''El índice ya existe'' AS aviso'
+);
+
+PREPARE stmt FROM @sql_indice;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 
 
 -- ============================================================
 -- 10. VERIFICACION DE LA BASE DE DATOS
 -- ============================================================
 
-SELECT * FROM usuarios;
-SELECT * FROM categorias;
-SELECT * FROM rubros;
-SELECT * FROM movimientos;
-SELECT * FROM historial_presupuesto;
-
-SELECT * FROM v_balance_mensual;
-
-
--- ============================================================
--- 11. PRUEBAS DE PROCEDIMIENTOS
--- No se ejecutan automaticamente para evitar duplicar datos.
--- ============================================================
-
-/*CALL sp_registrar_usuario(
-     'Ana Perez',
-    'ana@correo.com',
-    'hash_de_ejemplo',
-    2000000
- );*/
-
-/*CALL sp_crear_categoria(
-     1,
-     'Alimentacion adicional',
-     'Mercado y restaurantes'
- );*/
-
-/* CALL sp_registrar_movimiento(
-     1,
-     'gasto',
-     150000,
-     'Compra adicional de mercado',
-     '2026-10-21 10:00:00'
- );*/
-
--- CALL sp_actualizar_presupuesto(1, 2500000);
-
--- CALL sp_balance_usuario(4);
-
--- CALL sp_eliminar_rubro(9);
+-- SELECT * FROM usuarios;
+-- SELECT * FROM categorias;
+-- SELECT * FROM rubros;
+-- SELECT * FROM movimientos;
+-- SELECT * FROM historial_presupuesto;
+-- SELECT * FROM v_balance_mensual;
