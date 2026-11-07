@@ -1,5 +1,4 @@
 <?php
-$base = '/finanzas_personales/';
 $active = 'categorias';
 
 $_GET['action'] = 'edit';
@@ -33,7 +32,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 
     <div class="card form-card">
         <?php if (!empty($categoriaEdit)): ?>
-            <form action="/finanzas_personales/controllers/categoriesController.php?action=update" method="POST" id="editCategoryForm" novalidate>
+            <form action="../../controllers/categoriesController.php?action=update" method="POST" id="editCategoryForm" novalidate>
                 <input type="hidden" name="id" value="<?= htmlspecialchars($categoriaEdit['id']) ?>">
 
                 <div class="form-group">
@@ -62,8 +61,8 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/finanzas_personales/public/js/alerts.js?v=<?= filemtime(__DIR__ . '/../../public/js/alerts.js') ?>"></script>
-<script src="/finanzas_personales/public/js/categories.js?v=<?= filemtime(__DIR__ . '/../../public/js/categories.js') ?>"></script>
+<script src="../../public/js/alerts.js?v=<?= filemtime(__DIR__ . '/../../public/js/alerts.js') ?>"></script>
+<script src="../../public/js/categories.js?v=<?= filemtime(__DIR__ . '/../../public/js/categories.js') ?>"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

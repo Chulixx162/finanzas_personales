@@ -4,7 +4,7 @@
 
 require_once __DIR__ . '/../config/session.php';
 
-$base = '/finanzas_personales/';
+$base = '../';
 
 $user_id = requerir_login();
 

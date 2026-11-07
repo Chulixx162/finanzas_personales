@@ -315,7 +315,7 @@ $periodoActual = $mesActual . ' de ' . $fechaActual->format('Y');
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
         defer></script>
 
-    <script src="<?= $h($base) ?>public/js/dashboard.js" defer></script>
+    <script src="../../public/js/dashboard.js" defer></script>
 
 </body>
 

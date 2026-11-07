@@ -1,6 +1,5 @@
 <?php
 // views/budget_history/index.php
-$base   = '/finanzas_personales/';
 $active = 'historial';
 
 // La vista se ejecuta primero y llama al controlador.
@@ -20,6 +19,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <link rel="stylesheet" href="../../public/css/budget_history.css?v=<?= filemtime(__DIR__ . '/../../public/css/budget_history.css') ?>">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 <body>
 

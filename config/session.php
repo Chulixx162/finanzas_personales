@@ -44,7 +44,7 @@ function requerir_login(): int
         !isset($_SESSION['user_id']) ||
         !filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT)
     ) {
-        header('Location: /finanzas_personales/views/auth/login.php?error=sesion');
+        header('Location: ../views/auth/login.php?error=sesion');
         exit;
     }
 

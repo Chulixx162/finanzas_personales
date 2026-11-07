@@ -9,7 +9,7 @@ $base     = '../';   // desde public/ hasta la raíz del proyecto
 $active   = '';
 $logueado = isset($_SESSION['user_id']);
 
-$ctaRuta  = $base . ($logueado ? 'views/users/dashboard.php' : 'views/auth/register.php');
+$ctaRuta  = $logueado ? 'views/users/dashboard.php' : '../views/auth/register.php';
 $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 ?>
 <!DOCTYPE html>
@@ -45,7 +45,7 @@ $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
                     <div class="hero-actions">
                         <a class="btn btn-gold" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                         <?php if (!$logueado): ?>
-                            <a class="btn btn-outline-light" href="<?= $base ?>views/auth/login.php">Ya tengo cuenta</a>
+                            <a class="btn btn-outline-light" href="../views/auth/login.php">Ya tengo cuenta</a>
                         <?php endif; ?>
                     </div>
                     <?php if (!$logueado): ?>
@@ -263,7 +263,7 @@ $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
                 <div class="cta-actions">
                     <a class="btn btn-white" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                     <?php if (!$logueado): ?>
-                        <a class="btn btn-outline-light" href="<?= $base ?>views/auth/login.php">Iniciar sesión</a>
+                        <a class="btn btn-outline-light" href="../views/auth/login.php">Iniciar sesión</a>
                     <?php endif; ?>
                 </div>
             </div>

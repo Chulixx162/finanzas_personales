@@ -1,5 +1,4 @@
 <?php
-$base = '/finanzas_personales/';
 $active = 'categorias';
 
 require_once __DIR__ . '/../../controllers/categoriesController.php';
@@ -68,7 +67,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
                                    class="btn-action btn-edit" title="Editar">
                                     Editar
                                 </a>
-                                <a href="/finanzas_personales/controllers/categoriesController.php?action=delete&id=<?= urlencode($cat['id']) ?>" 
+                                <a href="../../controllers/categoriesController.php?action=delete&id=<?= urlencode($cat['id']) ?>" 
                                    class="btn-action btn-delete" 
                                    data-name="<?= htmlspecialchars($cat['nombre']) ?>" title="Eliminar">
                                     Eliminar

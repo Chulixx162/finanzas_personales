@@ -2,8 +2,8 @@
 // views/layouts/footer.php
 // Pie de página. Usa $base igual que el navbar.
 
-$base     = $base ?? '../';
 $logueado = isset($_SESSION['user_id']);
+$base     =$logueado ? '../' : '../views/';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
@@ -12,11 +12,10 @@ $logoDestino = $logueado
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
-        ['Inicio', 'views/users/dashboard.php'],
-        ['Movimientos',  'views/movimientos/index.php'],
-        ['Categorías',   'views/categories/index.php'],
-        ['Presupuestos', 'views/presupuestos/index.php'],
-        ['Cerrar sesión', 'controllers/logoutController.php'],
+        ['Inicio', 'users/dashboard.php'],
+        ['Movimientos',  'transactions/index.php'],
+        ['Categorías',   'categories/index.php'],
+        ['Presupuestos', 'presupuestos/index.php']
     ];
 } else {
     $enlaces = [
@@ -24,7 +23,7 @@ if ($logueado) {
         ['Cómo funciona',  'public/index.php#como-funciona'],
         ['Crear cuenta',   'views/auth/register.php'],
         ['Equipo de desarrollo', 'public/index.php#equipo'],
-        ['Iniciar sesión', 'views/auth/login.php'],
+        ['Iniciar sesión', 'views/auth/login.php']
     ];
 }
 ?>
@@ -50,8 +49,8 @@ if ($logueado) {
                 <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
                     <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
                 <?php endforeach; ?>
-                <li><a href="<?= $h($base) ?>views/legal/terms_of_use.php">Términos de uso</a></li>
-                <li><a href="<?= $h($base) ?>views/legal/privacy_policies.php">Política de privacidad</a></li>
+                <li><a href="<?= $h($base) ?>legal/terms_of_use.php">Términos de uso</a></li>
+                <li><a href="<?= $h($base) ?>legal/privacy_policies.php">Política de privacidad</a></li>
             </ul>
         </nav>
 
@@ -69,5 +68,5 @@ if ($logueado) {
         <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="<?= $base ?>public/js/alerts.js" defer></script>
+    <script src="../../public/js/alerts.js" defer></script>
 </footer>

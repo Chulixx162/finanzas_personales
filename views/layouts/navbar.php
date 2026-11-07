@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../../config/session.php';
 iniciar_sesion_segura();
 
-$base     = $base   ?? '../';
+$base     = '../../';   // desde views/layouts/navbar.php hasta la raíz del proyecto
 $active   = $active ?? '';
 $logueado = isset($_SESSION['user_id']);
 
@@ -16,7 +16,7 @@ $inicial      = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
-    'movimientos'  => ['Movimientos', 'views/movimientos/index.php'],
+    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
     'categorias'   => ['Categorías', 'views/categories/index.php'],
     'rubros'       => ['Rubros', 'views/rubros/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
@@ -58,10 +58,10 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                         </li>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#inicio">Inicio</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
+                    <li><a class="nav-link" href="../public/index.php#inicio">Inicio</a></li>
+                    <li><a class="nav-link" href="../public/index.php#funciones">Funciones</a></li>
+                    <li><a class="nav-link" href="../public/index.php#como-funciona">Cómo funciona</a></li>
+                    <li><a class="nav-link" href="../public/index.php#equipo">Equipo</a></li>
                 <?php endif; ?>
             </ul>
 
@@ -77,8 +77,8 @@ $logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
                         <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                     </form>
                 <?php else: ?>
-                    <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
-                    <a class="btn btn-sm btn-primary" href="<?= $h($base) ?>views/auth/register.php">Crear cuenta</a>
+                    <a class="btn btn-sm btn-ghost" href="../views/auth/login.php">Iniciar sesión</a>
+                    <a class="btn btn-sm btn-primary" href="../views/auth/register.php">Crear cuenta</a>
                 <?php endif; ?>
             </div>
         </div>

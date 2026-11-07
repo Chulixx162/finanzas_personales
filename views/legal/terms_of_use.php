@@ -32,6 +32,7 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $h($base) ?>public/css/legal.css">
     <link rel="icon" type="image/x-icon" href="<?= $h($base) ?>public/img/icon.webp">
+    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 
 <body class="layout">
