@@ -221,4 +221,3 @@ switch ($action) {
 
         break;
 }
-?>

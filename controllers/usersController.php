@@ -139,7 +139,7 @@ if ($guardado) {
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 12px 0;">
                                 <tr>
                                 <td align="center">
-                                    <a href="finanzas.nexohuila.com/viwes/auth/login.php" target="_blank" style="display: inline-block; background-color: #6D28D9; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25); text-align: center;">
+                                    <a href="finanzas.nexohuila.com/views/auth/login.php" target="_blank" style="display: inline-block; background-color: #6D28D9; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25); text-align: center;">
                                     Iniciar sesión ahora
                                     </a>
                                 </td>

@@ -51,7 +51,7 @@ switch ($action) {
 
                     if ($gastado > $presupuesto) {
                         $destino .= '&excede=1&gastado=' . (int) round($gastado)
-                                  . '&presupuesto=' . (int) round($presupuesto);
+                            . '&presupuesto=' . (int) round($presupuesto);
                     }
                 }
             }
@@ -69,4 +69,3 @@ switch ($action) {
         $movimientos = obtenerMovimientosPorUsuario($conn, $user_id);
         break;
 }
-?>

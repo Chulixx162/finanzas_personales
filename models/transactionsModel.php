@@ -4,7 +4,8 @@
 /**
  * Obtiene el historial de movimientos de un usuario con los nombres de su rubro y categoría.
  */
-function obtenerMovimientosPorUsuario( $conn, $user_id): array {
+function obtenerMovimientosPorUsuario($conn, $user_id): array
+{
     $movimientos = [];
     $sql = "SELECT m.id_movimiento, m.id_rubro, m.tipo, m.monto, m.fecha, m.descripcion,
                    r.nombre AS rubro_nombre, c.nombre AS categoria_nombre
@@ -46,14 +47,15 @@ function obtenerMovimientosPorUsuario( $conn, $user_id): array {
 /**
  * Obtiene los rubros del usuario para poblar el select en el formulario de movimientos.
  */
-function obtenerRubrosParaSelect($conn, $user_id): array {
+function obtenerRubrosParaSelect($conn, $user_id): array
+{
     $rubros = [];
     $sql = "SELECT r.id_rubro, r.nombre AS rubro_nombre, c.nombre AS categoria_nombre 
             FROM rubros r
             INNER JOIN categorias c ON r.id_categoria = c.id_categoria
             WHERE c.id_usuario = ? 
             ORDER BY c.nombre ASC, r.nombre ASC";
-            
+
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
         $u_id = (int) $user_id;
@@ -71,7 +73,8 @@ function obtenerRubrosParaSelect($conn, $user_id): array {
 /**
  * Inserta un nuevo movimiento financiero validando que el rubro pertenezca al usuario.
  */
-function crearMovimiento($conn, $user_id, $id_rubro, $tipo, $monto, $fecha, $descripcion): bool {
+function crearMovimiento($conn, $user_id, $id_rubro, $tipo, $monto, $fecha, $descripcion): bool
+{
     // 1. Validar que el rubro pertenezca a una categoría del usuario
     $sqlCheck = "SELECT r.id_rubro FROM rubros r 
                  INNER JOIN categorias c ON r.id_categoria = c.id_categoria 
@@ -112,4 +115,3 @@ function crearMovimiento($conn, $user_id, $id_rubro, $tipo, $monto, $fecha, $des
     }
     return false;
 }
-?>

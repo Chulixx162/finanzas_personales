@@ -42,21 +42,21 @@ $logoDestino = $logueado
     <nav class="navbar" aria-label="Navegación principal">
 
         <a class="brand-link"
-           href="<?= $h($base . $logoDestino) ?>">
+            href="<?= $h($base . $logoDestino) ?>">
 
             <span class="brand-mark" aria-hidden="true">
                 <svg width="20" height="20"
-                     viewBox="0 0 24 24"
-                     fill="none">
+                    viewBox="0 0 24 24"
+                    fill="none">
 
                     <rect x="4" y="12" width="4" height="8"
-                          rx="1" fill="#fff" />
+                        rx="1" fill="#fff" />
 
                     <rect x="10" y="8" width="4" height="12"
-                          rx="1" fill="#fff" />
+                        rx="1" fill="#fff" />
 
                     <rect x="16" y="4" width="4" height="16"
-                          rx="1" fill="#FBBF24" />
+                        rx="1" fill="#FBBF24" />
 
                 </svg>
             </span>
@@ -66,31 +66,31 @@ $logoDestino = $logueado
         </a>
 
         <button class="nav-toggle"
-                type="button"
-                aria-expanded="false"
-                aria-controls="nav-menu"
-                aria-label="Abrir menú">
+            type="button"
+            aria-expanded="false"
+            aria-controls="nav-menu"
+            aria-label="Abrir menú">
 
             <svg class="icon-open"
-                 width="22" height="22"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2"
-                 stroke-linecap="round"
-                 aria-hidden="true">
+                width="22" height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                aria-hidden="true">
 
                 <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
 
             <svg class="icon-close"
-                 width="22" height="22"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2"
-                 stroke-linecap="round"
-                 aria-hidden="true">
+                width="22" height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                aria-hidden="true">
 
                 <path d="M6 6l12 12M18 6L6 18" />
             </svg>
@@ -107,10 +107,10 @@ $logoDestino = $logueado
 
                         <li>
                             <a class="nav-link"
-                               href="<?= $h($base . $ruta) ?>"
-                               <?= $active === $clave
-                                   ? 'aria-current="page"'
-                                   : '' ?>>
+                                href="<?= $h($base . $ruta) ?>"
+                                <?= $active === $clave
+                                    ? 'aria-current="page"'
+                                    : '' ?>>
 
                                 <?= $h($etiqueta) ?>
 
@@ -135,8 +135,8 @@ $logoDestino = $logueado
                     <span class="user-chip">
 
                         <a href="<?= $h($base . 'views/users/profile.php') ?>"
-                           class="user-avatar"
-                           aria-label="Ir a mi perfil">
+                            class="user-avatar"
+                            aria-label="Ir a mi perfil">
 
                             <?= $h($inicial) ?>
 
