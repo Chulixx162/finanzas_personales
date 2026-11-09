@@ -1,16 +1,17 @@
 <?php
 
-function obtenerCategoriasPorUsuario($conn, $user_id) {
+function obtenerCategoriasPorUsuario($conn, $user_id)
+{
     $categorias = [];
     $sql = "SELECT id_categoria AS id, nombre, descripcion FROM categorias WHERE id_usuario = ? ORDER BY id_categoria DESC";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         $u_id = (int) $user_id;
         mysqli_stmt_bind_param($stmt, "i", $u_id);
         mysqli_stmt_execute($stmt);
         $resultado = mysqli_stmt_get_result($stmt);
-        
+
         while ($fila = mysqli_fetch_assoc($resultado)) {
             $categorias[] = $fila;
         }
@@ -19,11 +20,12 @@ function obtenerCategoriasPorUsuario($conn, $user_id) {
     return $categorias;
 }
 
-function obtenerCategoriaPorId($conn, $user_id, $categoria_id) {
+function obtenerCategoriaPorId($conn, $user_id, $categoria_id)
+{
     $categoria = null;
     $sql = "SELECT id_categoria AS id, nombre, descripcion FROM categorias WHERE id_categoria = ? AND id_usuario = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         $cat_id = (int) $categoria_id;
         $u_id   = (int) $user_id;
@@ -36,10 +38,11 @@ function obtenerCategoriaPorId($conn, $user_id, $categoria_id) {
     return $categoria;
 }
 
-function crearCategoria($conn, $user_id, $nombre, $descripcion) {
+function crearCategoria($conn, $user_id, $nombre, $descripcion)
+{
     $sql = "INSERT INTO categorias (id_usuario, nombre, descripcion) VALUES (?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         $u_id = (int) $user_id;
         mysqli_stmt_bind_param($stmt, "iss", $u_id, $nombre, $descripcion);
@@ -50,10 +53,11 @@ function crearCategoria($conn, $user_id, $nombre, $descripcion) {
     return false;
 }
 
-function actualizarCategoria($conn, $user_id, $categoria_id, $nombre, $descripcion) {
+function actualizarCategoria($conn, $user_id, $categoria_id, $nombre, $descripcion)
+{
     $sql = "UPDATE categorias SET nombre = ?, descripcion = ? WHERE id_categoria = ? AND id_usuario = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         $cat_id = (int) $categoria_id;
         $u_id   = (int) $user_id;
@@ -65,10 +69,11 @@ function actualizarCategoria($conn, $user_id, $categoria_id, $nombre, $descripci
     return false;
 }
 
-function eliminarCategoria($conn, $user_id, $categoria_id) {
+function eliminarCategoria($conn, $user_id, $categoria_id)
+{
     $sql = "DELETE FROM categorias WHERE id_categoria = ? AND id_usuario = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         $cat_id = (int) $categoria_id;
         $u_id   = (int) $user_id;
@@ -154,5 +159,3 @@ function contarRelacionesCategoria($conn, int $user_id, int $categoria_id): arra
 
     return $relaciones;
 }
-
-?>

@@ -1,59 +1,59 @@
 <?php
-    // public/index.php
-    // Página de inicio. Visible para visitantes y para usuarios con sesión.
+// public/index.php
+// Página de inicio. Visible para visitantes y para usuarios con sesión.
 
-    require_once __DIR__ . '/../config/session.php';
-    iniciar_sesion_segura();
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
-    $base = '../';  // desde public/ hasta la raíz del proyecto
-    $active = '';
-    $logueado = isset($_SESSION['user_id']);
+$base = '../';  // desde public/ hasta la raíz del proyecto
+$active = '';
+$logueado = isset($_SESSION['user_id']);
 
-    $ctaRuta = $logueado ? '../views/users/dashboard.php' : '../views/auth/register.php';
-    $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
+$ctaRuta = $logueado ? '../views/users/dashboard.php' : '../views/auth/register.php';
+$ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 
-    $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
-    $nombre = $_SESSION['user_nombre'] ?? '';
-    $primerNombre = explode(' ', trim($nombre))[0] ?? '';
+$h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+$nombre = $_SESSION['user_nombre'] ?? '';
+$primerNombre = explode(' ', trim($nombre))[0] ?? '';
 
-    $inicial = $nombre !== ''
-        ? mb_strtoupper(mb_substr($nombre, 0, 1))
-        : '?';
+$inicial = $nombre !== ''
+    ? mb_strtoupper(mb_substr($nombre, 0, 1))
+    : '?';
 
-    $enlacesInternos = [
-        'inicio'       => ['Inicio', 'views/users/dashboard.php'],
-        'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
-        'categorias'   => ['Categorías', 'views/categories/index.php'],
-        'rubros'       => ['Rubros', 'views/rubros/index.php'],
-        'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
-        'historial'    => ['Historial', 'views/budget_history/index.php'],
+$enlacesInternos = [
+    'inicio'       => ['Inicio', 'views/users/dashboard.php'],
+    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
+    'categorias'   => ['Categorías', 'views/categories/index.php'],
+    'rubros'       => ['Rubros', 'views/rubros/index.php'],
+    'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
+    'historial'    => ['Historial', 'views/budget_history/index.php'],
+];
+
+$logoDestino = $logueado
+    ? '../views/users/dashboard.php'
+    : 'public/index.php';
+if ($logueado) {
+    $enlaces = [
+        ['Inicio', '../views/users/dashboard.php'],
+        ['Movimientos', '../views/transactions/index.php'],
+        ['Categorías', '../views/categories/index.php'],
+        ['Rubros', '../views/rubros/index.php'],
+        ['Presupuestos', '../views/presupuestos/index.php'],
+        ['Terminos de uso', '../views/legal/terms_of_use.php'],
+        ['Política de privacidad', '../views/legal/privacy_policies.php']
     ];
-
-    $logoDestino = $logueado
-        ? '../views/users/dashboard.php'
-        : 'index.php';
-    if ($logueado) {
-        $enlaces = [
-            ['Inicio', '../views/users/dashboard.php'],
-            ['Movimientos', '../views/transactions/index.php'],
-            ['Categorías', '../views/categories/index.php'],
-            ['Rubros', '../views/rubros/index.php'],
-            ['Presupuestos', '../views/presupuestos/index.php'],
-            ['Terminos de uso', '../views/legal/terms_of_use.php'],
-            ['Política de privacidad', '../views/legal/privacy_policies.php']
-        ];
-    } else {
-        $enlaces = [
-            ['Inicio', 'index.php'],
-            ['Funciones', 'index.php#funciones'],
-            ['Cómo funciona', 'index.php#como-funciona'],
-            ['Equipo de desarrollo', 'index.php#equipo'],
-            ['Crea tu cuenta', '../views/auth/register.php'],
-            ['Inicia sesión', '../views/auth/login.php'],
-            ['Terminos de uso', '../views/legal/terms_of_use.php'],
-            ['Política de privacidad', '../views/legal/privacy_policies.php']
-        ];
-    }
+} else {
+    $enlaces = [
+        ['Inicio', 'index.php'],
+        ['Funciones', 'index.php#funciones'],
+        ['Cómo funciona', 'index.php#como-funciona'],
+        ['Equipo de desarrollo', 'index.php#equipo'],
+        ['Crea tu cuenta', '../views/auth/register.php'],
+        ['Inicia sesión', '../views/auth/login.php'],
+        ['Terminos de uso', '../views/legal/terms_of_use.php'],
+        ['Política de privacidad', '../views/legal/privacy_policies.php']
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

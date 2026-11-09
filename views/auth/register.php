@@ -106,8 +106,8 @@ if (!empty($error) && isset($error_messages[$error])) {
                             <span>Acepto los
                                 <a href="../legal/terms_of_use.php" target="_blank">términos de uso</a>
                                 y la
-                            
-                                <a href="../legal/privacy_policies.php" target="_blank" >política de privacidad</a>.
+
+                                <a href="../legal/privacy_policies.php" target="_blank">política de privacidad</a>.
                             </span>
                         </label>
                     </div>
@@ -136,10 +136,10 @@ if (!empty($error) && isset($error_messages[$error])) {
     <script>
         // Variables enviadas desde PHP al cliente (json_encode escapa los valores)
         window.SERVER_DATA = <?= json_encode([
-            'status'       => is_string($status) ? $status : '',
-            'errorField'   => $server_error_field,
-            'errorMessage' => $server_error_msg,
-        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+                                    'status'       => is_string($status) ? $status : '',
+                                    'errorField'   => $server_error_field,
+                                    'errorMessage' => $server_error_msg,
+                                ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     </script>
     <script src="../../public/js/register.js"></script>
 </body>

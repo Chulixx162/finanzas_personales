@@ -104,7 +104,8 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
             <section id="contacto">
                 <h2>7. Contacto</h2>
                 <p>Si tienes dudas, escríbenos a
-                    <a href="mailto:<?= $h($correoContacto) ?>"><?= $h($correoContacto) ?></a>.</p>
+                    <a href="mailto:<?= $h($correoContacto) ?>"><?= $h($correoContacto) ?></a>.
+                </p>
             </section>
 
             <div class="actions">

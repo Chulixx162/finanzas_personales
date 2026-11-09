@@ -114,10 +114,9 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
 
     <script>
         window.SERVER_DATA = <?= json_encode([
-            'errorField'   => $server_error_field,
-            'errorMessage' => $server_error_msg,
-        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-   
+                                    'errorField'   => $server_error_field,
+                                    'errorMessage' => $server_error_msg,
+                                ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     </script>
     <script src="../../public/js/login.js"></script>
 </body>

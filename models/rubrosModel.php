@@ -77,13 +77,14 @@ function obtenerRubrosPorUsuario(mysqli $conn, $id_usuario): array
 /**
  * Obtiene un rubro por su id validando que pertenezca al usuario.
  */
-function obtenerRubroPorId( $conn, $user_id, $rubro_id): ?array {
+function obtenerRubroPorId($conn, $user_id, $rubro_id): ?array
+{
     $rubro = null;
     $sql = "SELECT r.id_rubro, r.id_categoria, r.nombre, r.monto_proyectado, r.fecha_inicio, r.fecha_fin 
             FROM rubros r 
             INNER JOIN categorias c ON r.id_categoria = c.id_categoria 
             WHERE r.id_rubro = ? AND c.id_usuario = ?";
-            
+
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
         $r_id = (int) $rubro_id;
@@ -100,7 +101,8 @@ function obtenerRubroPorId( $conn, $user_id, $rubro_id): ?array {
 /**
  * Obtiene las categorías del usuario para el select del formulario.
  */
-function obtenerCategoriasParaSelect( $conn, $user_id): array {
+function obtenerCategoriasParaSelect($conn, $user_id): array
+{
     $categorias = [];
     $sql = "SELECT id_categoria, nombre FROM categorias WHERE id_usuario = ? ORDER BY nombre ASC";
     $stmt = mysqli_prepare($conn, $sql);
@@ -120,7 +122,8 @@ function obtenerCategoriasParaSelect( $conn, $user_id): array {
 /**
  * Crea un rubro controlando desbordamientos y excepciones.
  */
-function crearRubro(mysqli $conn, $user_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool {
+function crearRubro(mysqli $conn, $user_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool
+{
     $sql = "INSERT INTO rubros (id_categoria, nombre, monto_proyectado, fecha_inicio, fecha_fin)
             SELECT c.id_categoria, ?, ?, ?, ?
             FROM categorias c
@@ -147,7 +150,8 @@ function crearRubro(mysqli $conn, $user_id, $id_categoria, $nombre, $monto_proye
 /**
  * Actualiza un rubro existente.
  */
-function actualizarRubro( $conn, $user_id, $rubro_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool {
+function actualizarRubro($conn, $user_id, $rubro_id, $id_categoria, $nombre, $monto_proyectado, $fecha_inicio, $fecha_fin): bool
+{
     $rubroExistente = obtenerRubroPorId($conn, $user_id, $rubro_id);
     if (!$rubroExistente) {
         return false;
@@ -157,7 +161,7 @@ function actualizarRubro( $conn, $user_id, $rubro_id, $id_categoria, $nombre, $m
             SET id_categoria = ?, nombre = ?, monto_proyectado = ?, fecha_inicio = ?, fecha_fin = ? 
             WHERE id_rubro = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    
+
     if ($stmt) {
         try {
             $cat_id = (int) $id_categoria;
@@ -179,7 +183,8 @@ function actualizarRubro( $conn, $user_id, $rubro_id, $id_categoria, $nombre, $m
  * Elimina un rubro validando previamente si tiene movimientos asociados 
  * para respetar la restricción ON DELETE RESTRICT de la base de datos.
  */
-function eliminarRubro( $conn, $user_id, $rubro_id): array {
+function eliminarRubro($conn, $user_id, $rubro_id): array
+{
     $rubroExistente = obtenerRubroPorId($conn, $user_id, $rubro_id);
     if (!$rubroExistente) {
         return ['success' => false, 'message' => 'El rubro no existe o no tienes permisos.'];
@@ -196,10 +201,10 @@ function eliminarRubro( $conn, $user_id, $rubro_id): array {
         $resCheck = mysqli_stmt_get_result($stmtCheck);
         $rowCheck = mysqli_fetch_assoc($resCheck);
         mysqli_stmt_close($stmtCheck);
-        
+
         if ($rowCheck['total'] > 0) {
             return [
-                'success' => false, 
+                'success' => false,
                 'message' => 'No se puede eliminar un rubro con movimientos asociados.'
             ];
         }
@@ -208,17 +213,17 @@ function eliminarRubro( $conn, $user_id, $rubro_id): array {
     // 2. Si pasa la validación, procedemos a borrar con seguridad
     $sqlDelete = "DELETE FROM rubros WHERE id_rubro = ?";
     $stmtDelete = mysqli_prepare($conn, $sqlDelete);
-    
+
     if ($stmtDelete) {
         mysqli_stmt_bind_param($stmtDelete, "i", $r_id);
         $resultado = mysqli_stmt_execute($stmtDelete);
         mysqli_stmt_close($stmtDelete);
-        
+
         if ($resultado) {
             return ['success' => true];
         }
     }
-    
+
     return ['success' => false, 'message' => 'Error al procesar la eliminación en la base de datos.'];
 }
 
@@ -233,7 +238,8 @@ function eliminarRubro( $conn, $user_id, $rubro_id): array {
 /**
  * Número de mes (año * 12 + mes) de una fecha 'YYYY-MM-DD'. null si no es válida.
  */
-function rubro_indice_mes(string $fecha): ?int {
+function rubro_indice_mes(string $fecha): ?int
+{
     if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $fecha, $m)) {
         return null;
     }
@@ -243,11 +249,13 @@ function rubro_indice_mes(string $fecha): ?int {
     return (int) $m[1] * 12 + (int) $m[2];
 }
 
-function rubro_mes_actual(): int {
+function rubro_mes_actual(): int
+{
     return (int) date('Y') * 12 + (int) date('n');
 }
 
-function rubro_pesos($valor): string {
+function rubro_pesos($valor): string
+{
     return '$' . number_format((float) $valor, 0, ',', '.');
 }
 
@@ -255,7 +263,8 @@ function rubro_pesos($valor): string {
  * Presupuesto mensual del usuario y sus rubros (como rangos de meses).
  * $excluir_id deja fuera un rubro (el que se está editando).
  */
-function obtenerCupoRubros(mysqli $conn, int $user_id, int $excluir_id = 0): array {
+function obtenerCupoRubros(mysqli $conn, int $user_id, int $excluir_id = 0): array
+{
     $cupo = ['presupuesto' => null, 'rubros' => []];
 
     try {
@@ -309,7 +318,8 @@ function obtenerCupoRubros(mysqli $conn, int $user_id, int $excluir_id = 0): arr
  * del periodo. Solo cuentan los meses desde el actual (el pasado no cambia).
  * Puede dar negativo (ya estaba excedido) o INF (periodo ya terminado).
  */
-function rubro_disponible(array $cupo, int $ini, int $fin, ?int $desde = null): float {
+function rubro_disponible(array $cupo, int $ini, int $fin, ?int $desde = null): float
+{
     $desde = $desde ?? rubro_mes_actual();
     $ini   = max($ini, $desde);
 
@@ -343,7 +353,8 @@ function rubro_disponible(array $cupo, int $ini, int $fin, ?int $desde = null): 
  * Lo máximo que suman los rubros en un solo mes, desde el mes actual en adelante.
  * Es el piso al que se puede bajar el presupuesto mensual.
  */
-function rubro_max_asignado(array $cupo, ?int $desde = null): float {
+function rubro_max_asignado(array $cupo, ?int $desde = null): float
+{
     $desde = $desde ?? rubro_mes_actual();
     $max   = 0.0;
 
@@ -415,4 +426,3 @@ function validarRubroContraPresupuesto(
 
     return null;
 }
-?>

@@ -149,4 +149,3 @@ switch ($action) {
         $categorias = obtenerCategoriasPorUsuario($conn, $user_id);
         break;
 }
-?>

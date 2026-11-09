@@ -3,13 +3,13 @@
 // Pie de página. Usa $base igual que el navbar.
 
 $logueado = isset($_SESSION['user_id']);
-$base     =$logueado ? '../' : '../';
+$base     = $logueado ? '../' : '../';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
 $logoDestino = $logueado
     ? 'views/users/dashboard.php'
-    : 'public/index.php';
+    : '../public/index.php';
 if ($logueado) {
     $enlaces = [
         ['Inicio', '../users/dashboard.php'],
@@ -36,7 +36,7 @@ if ($logueado) {
 <footer class="site-footer on-dark">
     <div class="footer-inner">
         <div class="footer-brand">
-            <a class="brand-link brand-link-light" href="<?= $h($base . $logoDestino) ?>">
+            <a class="brand-link brand-link-light" href="">
                 <span class="brand-mark" aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <rect x="4" y="12" width="4" height="8" rx="1" fill="#fff" />

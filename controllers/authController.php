@@ -43,7 +43,6 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
     // Abrir el Dashboard (la vista llama al controlador).
     header('Location: ../views/users/dashboard.php');
     exit;
-
 } else {
     header('Location: ../views/auth/login.php?error=credenciales');
     exit;
