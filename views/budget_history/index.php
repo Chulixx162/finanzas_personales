@@ -15,11 +15,11 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Presupuesto - Finanzas</title>
-    <link rel="stylesheet" href="/finanzas_personales/public/css/categories.css">
-    <link rel="stylesheet" href="/finanzas_personales/public/css/budget_history.css?v=<?= filemtime(__DIR__ . '/../../public/css/budget_history.css') ?>">
-    <link rel="icon" href="/finanzas_personales/public/img/icon.webp" type="image/x-icon">
-    <link rel="stylesheet" href="/finanzas_personales/public/css/layout.css">
-    <link rel="stylesheet" href="/finanzas_personales/public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
+    <link rel="stylesheet" href="../../public/css/categories.css">
+    <link rel="stylesheet" href="../../public/css/budget_history.css?v=<?= filemtime(__DIR__ . '/../../public/css/budget_history.css') ?>">
+    <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="../../public/css/layout.css">
+    <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
 </head>
 
 <body>
@@ -245,7 +245,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
             <h3 style="margin-bottom: 0.5rem; color: var(--text);">Exportar Movimientos</h3>
             <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Filtra tus registros y descarga tu reporte en formato CSV o PDF.</p>
 
-            <form action="/finanzas_personales/controllers/budgetHistoryController.php" method="GET" target="_blank">
+            <form action="../../controllers/budgetHistoryController.php" method="GET" target="_blank">
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label for="filtro_tipo" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Tipo de movimiento:</label>
                     <select id="filtro_tipo" name="tipo" class="custom-select" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
@@ -281,7 +281,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
         </div>
     </div>
 
-    <script src="/finanzas_personales/public/js/budget_history.js?v=<?= filemtime(__DIR__ . '/../../public/js/budget_history.js') ?>"></script>
+    <script src="../../public/js/budget_history.js?v=<?= filemtime(__DIR__ . '/../../public/js/budget_history.js') ?>"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('exportModal');
