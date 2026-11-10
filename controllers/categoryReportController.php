@@ -17,6 +17,7 @@ $periodos = [
     'mes_anterior'    => 'Mes anterior',
     'ultimos_3_meses' => 'Últimos 3 meses',
     'anio_actual'     => 'Este año',
+    'todo'            => 'Todo el historial',
     'personalizado'   => 'Personalizado',
 ];
 
@@ -49,6 +50,10 @@ function resolver_periodo(string $periodo, string $desdeTexto, string $hastaText
         case 'anio_actual':
             return [$hoy->format('Y-01-01'), $hoy->format('Y-m-d'), null];
 
+        case 'todo':
+            // Rango amplio para incluir todos los movimientos (incluso los de fechas futuras).
+            return ['2000-01-01', '2100-12-31', null];
+
         case 'personalizado':
             if ($desdeTexto === '' || $hastaTexto === '') {
                 return [$desdeTexto, $hastaTexto, 'Elige la fecha inicial y la fecha final del periodo.'];
@@ -75,9 +80,9 @@ function a_centavos(float $valor): int
 }
 
 // 3. Leer y validar los filtros (GET).
-$periodo = is_string($_GET['periodo'] ?? null) ? $_GET['periodo'] : 'mes_actual';
+$periodo = is_string($_GET['periodo'] ?? null) ? $_GET['periodo'] : 'anio_actual';
 if (!array_key_exists($periodo, $periodos)) {
-    $periodo = 'mes_actual';
+    $periodo = 'anio_actual';
 }
 
 $desdeEntrada = is_string($_GET['desde'] ?? null) ? trim($_GET['desde']) : '';
@@ -95,6 +100,7 @@ $segmentos     = [];
 $maxBarra      = 0.0;
 $verificacion  = null;
 $errorReporte  = null;   // mensaje si falla la consulta a la base de datos
+$directo       = null;   // totales generales del procedimiento (se llena más abajo)
 
 // Colores de la gráfica de distribución de gastos (se repiten si hay más categorías).
 $paleta = ['#6D28D9', '#FBBF24', '#10B981', '#EF4444', '#3B82F6', '#EC4899', '#14B8A6', '#F97316', '#8B5CF6', '#64748B'];
