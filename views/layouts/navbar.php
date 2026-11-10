@@ -134,19 +134,13 @@ $logoDestino = $logueado
                 <?php if ($logueado): ?>
 
                     <span class="user-chip">
-
-                        <a href="<?= $h($base . 'views/users/profile.php') ?>"
-                            class="user-avatar"
-                            aria-label="Ir a mi perfil">
-
+                        <a href="<?= $h($base . 'views/users/profile.php') ?>" class="user-avatar" aria-label="Ir a mi perfil">
                             <?= $h($inicial) ?>
-
                         </a>
 
                         <span class="user-name">
                             <?= $h($primerNombre) ?>
                         </span>
-
                     </span>
                     <form id="logout-form" action="<?= $h($base) ?>controllers/logoutController.php" method="POST" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>

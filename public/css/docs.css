@@ -1,0 +1,219 @@
+/* public/css/docs.css
+   Apartado "Manuales y anexos" del perfil. Usa las variables de layout.css. */
+
+.manx-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.manx-head h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.manx-head p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+
+.manx-count {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.manx-group + .manx-group { margin-top: 26px; }
+
+.manx-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.manx-group-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.manx-group-title span {
+  order: 2;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.manx-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manx-item { display: flex; min-width: 0; }
+
+/* ---------- Tarjeta de documento ---------- */
+.manx-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.manx-card:not(.is-pending):hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 22px rgba(109, 40, 217, 0.12);
+  transform: translateY(-2px);
+}
+
+.manx-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
+.manx-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--tint);
+  color: var(--primary);
+  transition: background 0.15s, color 0.15s;
+}
+
+.manx-card:not(.is-pending):hover .manx-icon { background: var(--primary); color: #fff; }
+
+.manx-type {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.manx-title { margin-top: 4px; font-size: 15px; font-weight: 800; line-height: 1.3; }
+.manx-detail { flex: 1; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+
+.manx-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.manx-links { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.manx-link {
+  padding: 6px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.manx-link:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+.manx-link:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+.manx-link-alt { background: transparent; color: var(--primary); }
+.manx-link-alt:hover { background: var(--tint); color: var(--primary-dark); }
+.manx-size { font-size: 12px; color: var(--muted); }
+
+/* ---------- Documento aún no disponible ---------- */
+.manx-card.is-pending {
+  border-style: dashed;
+  background: var(--bg);
+}
+
+.manx-card.is-pending .manx-icon { background: var(--surface); color: var(--soft); }
+.manx-card.is-pending .manx-title { color: var(--muted); }
+
+.manx-soon {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Despliegue (cerrado por defecto) ---------- */
+.manx-details > .manx-head {
+  align-items: center;
+  margin-bottom: 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.manx-details > .manx-head::-webkit-details-marker { display: none; }
+.manx-details[open] > .manx-head { margin-bottom: 22px; }
+
+.manx-head:focus-visible { outline: 3px solid var(--primary); outline-offset: 6px; border-radius: 10px; }
+
+.manx-side { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+.manx-chevron {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.manx-chevron::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-top: -3px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+
+.manx-details[open] .manx-chevron::before { margin-top: 3px; transform: rotate(-135deg); }
+.manx-head:hover .manx-chevron { border-color: var(--primary); color: var(--primary); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .manx-grid { grid-template-columns: 1fr; }
+  .manx-head { flex-direction: column; gap: 10px; }
+  .manx-details > .manx-head { flex-direction: row; align-items: flex-start; }
+  .manx-count { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manx-card, .manx-icon, .manx-link, .manx-chevron, .manx-chevron::before { transition: none; }
+  .manx-card:not(.is-pending):hover { transform: none; }
+}
