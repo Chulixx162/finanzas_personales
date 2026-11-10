@@ -30,6 +30,7 @@ $enlacesInternos = [
     'rubros'       => ['Rubros', 'views/rubros/index.php'],
     'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
     'historial'    => ['Historial', 'views/budget_history/index.php'],
+    'reportes'     => ['Reportes', 'views/reports/category_report.php'],
 ];
 
 $logoDestino = $logueado
