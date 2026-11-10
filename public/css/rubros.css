@@ -434,3 +434,20 @@ body {
   color: var(--text);
   padding: 0.6rem;
 }
+
+/* Aviso bajo el monto: cuánto se puede asignar sin pasar del presupuesto */
+.field-hint {
+    margin-top: 6px;
+    min-height: 1.2em;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.field-hint.is-ok {
+    color: #15803D;
+}
+
+.field-hint.is-over {
+    color: var(--danger-color);
+    font-weight: 600;
+}

@@ -1,8 +1,8 @@
 <?php
 // views/users/profile.php
 // Perfil del usuario: editar datos de la cuenta y eliminarla.
-$base   = '../../';   // desde views/users/ hasta la raíz del proyecto
-$active = '';         // el perfil no está en el menú principal
+$base = '../../';  // desde views/users/ hasta la raíz del proyecto
+$active = '';  // el perfil no está en el menú principal
 
 // La vista se abre primero y llama al controlador: este valida la sesión
 // (redirige al login si hace falta) y deja listos $usuario y $csrf.
@@ -10,23 +10,23 @@ require_once __DIR__ . '/../../controllers/profileController.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
-$nombre  = $usuario['nombre'];
-$correo  = $usuario['correo'];
+$nombre = $usuario['nombre'];
+$correo = $usuario['correo'];
 $inicial = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 $mensaje = is_string($_GET['mensaje'] ?? null) ? $_GET['mensaje'] : '';
-$error   = is_string($_GET['error'] ?? null) ? $_GET['error'] : '';
+$error = is_string($_GET['error'] ?? null) ? $_GET['error'] : '';
 
 $textoExito = 'Tu perfil se actualizó correctamente.';
 
 $errores = [
-    'datos'         => 'Verifica los datos ingresados.',
-    'correo'        => 'Ese correo ya está registrado o no es válido.',
-    'contrasena'    => 'La contraseña actual es incorrecta.',
+    'datos' => 'Verifica los datos ingresados.',
+    'correo' => 'Ese correo ya está registrado o no es válido.',
+    'contrasena' => 'La contraseña actual es incorrecta.',
     'actualizacion' => 'No se pudo actualizar el perfil.',
-    'eliminacion'   => 'No se pudo eliminar la cuenta.',
-    'csrf'          => 'La solicitud no es válida. Recarga la página.',
-    'sesion'        => 'Tu sesión expiró. Inicia sesión de nuevo.',
-    'red'           => 'No se pudo conectar con el servidor. Inténtalo de nuevo.',
+    'eliminacion' => 'No se pudo eliminar la cuenta.',
+    'csrf' => 'La solicitud no es válida. Recarga la página.',
+    'sesion' => 'Tu sesión expiró. Inicia sesión de nuevo.',
+    'red' => 'No se pudo conectar con el servidor. Inténtalo de nuevo.',
 ];
 ?>
 <!DOCTYPE html>
@@ -179,10 +179,12 @@ $errores = [
 
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
-    <script type="application/json" id="profile-mensajes"><?= json_encode(
-        ['exito' => $textoExito, 'errores' => $errores],
-        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
-    ) ?></script>
+    <script type="application/json" id="profile-mensajes">
+        <?= json_encode(
+            ['exito' => $textoExito, 'errores' => $errores],
+            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP
+        ) ?>
+    </script>
     <script src="<?= $base ?>public/js/profile.js" defer></script>
 </body>
 

@@ -134,7 +134,8 @@ function correo_en_uso(string $correo, int $idExcluido): bool
     return (bool) ($fila['en_uso'] ?? 1);
 }
 
-function crear_usuario($nombre, $email, $password) {
+function crear_usuario($nombre, $email, $password)
+{
     global $conn;
 
     // Cifrado seguro de la contraseña

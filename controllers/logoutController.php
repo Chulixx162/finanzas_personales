@@ -7,7 +7,7 @@ session_start();
 // Validar que la petición sea estrictamente por método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     // Si intentan acceder directamente por URL (GET), redirigir al panel o login
-    header("Location: ../views/dashboard.php");
+    header("Location: ../views/usersdashboard.php");
     exit;
 }
 

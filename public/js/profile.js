@@ -138,7 +138,10 @@
   }
 
   /* ---------- Envío ---------- */
-  form.addEventListener('submit', function (evento) {
+  form.addEventListener('submit', async function (evento) {
+    // Siempre se detiene el envío tradicional: el guardado se hace por fetch.
+    evento.preventDefault();
+    if (enviando) return;
 
     var nombre = form.elements['nombre'].value.trim();
     var actual = form.elements['contrasena_actual'].value;
@@ -167,8 +170,17 @@
       return;
     }
 
-    evento.preventDefault();
-    if (enviando) return;
+    // Confirmación antes de guardar
+    if (typeof alerta === 'function') {
+      var confirmado = await alerta(
+        '¿Guardar cambios del perfil?',
+        'Se actualizarán tus datos' + (nueva !== '' ? ' y tu contraseña' : '') + '.',
+        'question',
+        'Sí, guardar',
+        'Cancelar'
+      );
+      if (!confirmado) return;
+    }
 
     enviando = true;
     var boton = form.querySelector('button[type="submit"]');

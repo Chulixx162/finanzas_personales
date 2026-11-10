@@ -1,10 +1,11 @@
 <?php
-// models/movimientosModel.php
+// models/transactionsModel.php
 
 /**
  * Obtiene el historial de movimientos de un usuario con los nombres de su rubro y categoría.
  */
-function obtenerMovimientosPorUsuario(mysqli $conn, $user_id): array {
+function obtenerMovimientosPorUsuario($conn, $user_id): array
+{
     $movimientos = [];
     $sql = "SELECT m.id_movimiento, m.id_rubro, m.tipo, m.monto, m.fecha, m.descripcion,
                    r.nombre AS rubro_nombre, c.nombre AS categoria_nombre
@@ -14,17 +15,31 @@ function obtenerMovimientosPorUsuario(mysqli $conn, $user_id): array {
             WHERE c.id_usuario = ?
             ORDER BY m.fecha DESC, m.id_movimiento DESC";
 
-    $stmt = mysqli_prepare($conn, $sql);
-    if ($stmt) {
+    try {
+        $stmt = mysqli_prepare($conn, $sql);
+
+        if (!$stmt) {
+            error_log('obtenerMovimientosPorUsuario (prepare): ' . mysqli_error($conn));
+            return $movimientos;
+        }
+
         $u_id = (int) $user_id;
         mysqli_stmt_bind_param($stmt, "i", $u_id);
-        mysqli_stmt_execute($stmt);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            error_log('obtenerMovimientosPorUsuario (execute): ' . mysqli_stmt_error($stmt));
+            mysqli_stmt_close($stmt);
+            return $movimientos;
+        }
+
         $resultado = mysqli_stmt_get_result($stmt);
 
-        while ($fila = mysqli_fetch_assoc($resultado)) {
+        while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
             $movimientos[] = $fila;
         }
         mysqli_stmt_close($stmt);
+    } catch (mysqli_sql_exception $e) {
+        error_log('obtenerMovimientosPorUsuario: ' . $e->getMessage());
     }
     return $movimientos;
 }
@@ -32,14 +47,15 @@ function obtenerMovimientosPorUsuario(mysqli $conn, $user_id): array {
 /**
  * Obtiene los rubros del usuario para poblar el select en el formulario de movimientos.
  */
-function obtenerRubrosParaSelect(mysqli $conn, $user_id): array {
+function obtenerRubrosParaSelect($conn, $user_id): array
+{
     $rubros = [];
     $sql = "SELECT r.id_rubro, r.nombre AS rubro_nombre, c.nombre AS categoria_nombre 
             FROM rubros r
             INNER JOIN categorias c ON r.id_categoria = c.id_categoria
             WHERE c.id_usuario = ? 
             ORDER BY c.nombre ASC, r.nombre ASC";
-            
+
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt) {
         $u_id = (int) $user_id;
@@ -57,7 +73,8 @@ function obtenerRubrosParaSelect(mysqli $conn, $user_id): array {
 /**
  * Inserta un nuevo movimiento financiero validando que el rubro pertenezca al usuario.
  */
-function crearMovimiento(mysqli $conn, $user_id, $id_rubro, $tipo, $monto, $fecha, $descripcion): bool {
+function crearMovimiento($conn, $user_id, $id_rubro, $tipo, $monto, $fecha, $descripcion): bool
+{
     // 1. Validar que el rubro pertenezca a una categoría del usuario
     $sqlCheck = "SELECT r.id_rubro FROM rubros r 
                  INNER JOIN categorias c ON r.id_categoria = c.id_categoria 
@@ -98,4 +115,3 @@ function crearMovimiento(mysqli $conn, $user_id, $id_rubro, $tipo, $monto, $fech
     }
     return false;
 }
-?>
