@@ -1,13 +1,12 @@
 <?php
-
-// Consultas del historial de presupuesto. No tiene lógica de sesión ni HTML.
+// models/budgetHistoryModel.php
+// Consultas del historial de presupuesto y reportes.
 
 require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/rubrosModel.php';
 
 /**
  * Historial de cambios de presupuesto de UN usuario, del más reciente al más antiguo.
- * El WHERE id_usuario = ? garantiza que solo se devuelvan los registros de esa persona.
  */
 function obtener_historial_presupuesto(int $idUsuario): array
 {
@@ -89,9 +88,7 @@ function obtener_presupuesto_actual(int $idUsuario): ?float
 }
 
 /**
- * Cambia el presupuesto mensual del usuario.
- * El trigger trg_usuarios_au de la base de datos guarda solo el registro en
- * historial_presupuesto (anterior, nuevo, fecha, usuario) cuando el valor cambia.
+ * Cambia el presupuesto mensual del usuario mediante procedimiento almacenado.
  */
 function actualizar_presupuesto_mensual(int $idUsuario, float $nuevoPresupuesto): bool
 {
@@ -109,7 +106,6 @@ function actualizar_presupuesto_mensual(int $idUsuario, float $nuevoPresupuesto)
         $ok = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        // Libera resultados pendientes del CALL para poder seguir usando la conexión.
         while (mysqli_more_results($conn) && mysqli_next_result($conn)) {
         }
 
@@ -121,10 +117,7 @@ function actualizar_presupuesto_mensual(int $idUsuario, float $nuevoPresupuesto)
 }
 
 /**
- * Uso del presupuesto del MES ACTUAL, por categoría (suma de sus rubros vigentes este mes).
- *  - asignado: suma de monto_proyectado de los rubros activos en el mes.
- *  - gastado : suma de los movimientos tipo 'gasto' del mes en esos rubros.
- * Mismo criterio de periodo que sp_dashboard_presupuesto_categoria.
+ * Uso del presupuesto del mes actual, por categoría.
  */
 function obtener_uso_presupuesto(int $idUsuario): array
 {
@@ -169,8 +162,8 @@ function obtener_uso_presupuesto(int $idUsuario): array
         $resultado = mysqli_stmt_get_result($stmt);
 
         while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
-            $fila['asignado'] = (float) $fila['asignado'];
-            $fila['gastado']  = (float) $fila['gastado'];
+            $fila['asignado'] = (float)$fila['asignado'];
+            $fila['gastado']  = (float)$fila['gastado'];
             $uso[] = $fila;
         }
 
@@ -183,12 +176,78 @@ function obtener_uso_presupuesto(int $idUsuario): array
 }
 
 /**
- * Lo máximo que suman los rubros del usuario en un mes (desde el mes actual).
- * El presupuesto mensual no puede bajar de este valor.
+ * Cupo máximo asignado a los rubros en el mes actual.
  */
 function obtener_max_asignado_mensual(int $idUsuario): float
 {
     global $conn;
 
     return rubro_max_asignado(obtenerCupoRubros($conn, $idUsuario));
+}
+
+/**
+ * Obtiene los movimientos con filtros para exportación a CSV/PDF[cite: 4].
+ */
+function obtener_movimientos_reporte(int $idUsuario, array $filtros = []): array
+{
+    global $conn;
+
+    $movimientos = [];
+    $condiciones = ['c.id_usuario = ?'];
+    $tipos = 'i';
+    $params = [$idUsuario];
+
+    if (!empty($filtros['desde'])) {
+        $condiciones[] = 'm.fecha >= ?';
+        $tipos .= 's';
+        $params[] = $filtros['desde'] . ' 00:00:00';
+    }
+
+    if (!empty($filtros['hasta'])) {
+        $condiciones[] = 'm.fecha <= ?';
+        $tipos .= 's';
+        $params[] = $filtros['hasta'] . ' 23:59:59';
+    }
+
+    if (!empty($filtros['tipo']) && in_array($filtros['tipo'], ['ingreso', 'gasto'], true)) {
+        $condiciones[] = 'm.tipo = ?';
+        $tipos .= 's';
+        $params[] = $filtros['tipo'];
+    }
+
+    $whereSql = implode(' AND ', $condiciones);
+
+    $sql = "
+        SELECT
+            m.id_movimiento,
+            m.tipo,
+            m.monto,
+            m.fecha,
+            m.descripcion,
+            r.nombre AS rubro_nombre,
+            c.nombre AS categoria_nombre
+        FROM movimientos m
+        INNER JOIN rubros r ON m.id_rubro = r.id_rubro
+        INNER JOIN categorias c ON r.id_categoria = c.id_categoria
+        WHERE {$whereSql}
+        ORDER BY m.fecha DESC, m.id_movimiento DESC
+    ";
+
+    try {
+        $stmt = mysqli_prepare($conn, $sql);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, $tipos, ...$params);
+            mysqli_stmt_execute($stmt);
+            $resultado = mysqli_stmt_get_result($stmt);
+
+            while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
+                $movimientos[] = $fila;
+            }
+            mysqli_stmt_close($stmt);
+        }
+    } catch (mysqli_sql_exception $e) {
+        error_log($e->getMessage());
+    }
+
+    return $movimientos;
 }

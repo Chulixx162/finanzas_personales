@@ -2,8 +2,6 @@
 // views/budget_history/index.php
 $active = 'historial';
 
-// La vista se ejecuta primero y llama al controlador
-// (comprueba la sesión, guarda cambios y prepara $historial, $aviso, $csrf...).
 require_once __DIR__ . '/../../controllers/budgetHistoryController.php';
 
 $h         = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -17,11 +15,11 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Presupuesto - Finanzas</title>
-    <link rel="stylesheet" href="../../public/css/categories.css">
-    <link rel="stylesheet" href="../../public/css/budget_history.css?v=<?= filemtime(__DIR__ . '/../../public/css/budget_history.css') ?>">
-    <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
-    <link rel="stylesheet" href="../../public/css/layout.css">
-    <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
+    <link rel="stylesheet" href="/finanzas_personales/public/css/categories.css">
+    <link rel="stylesheet" href="/finanzas_personales/public/css/budget_history.css?v=<?= filemtime(__DIR__ . '/../../public/css/budget_history.css') ?>">
+    <link rel="icon" href="/finanzas_personales/public/img/icon.webp" type="image/x-icon">
+    <link rel="stylesheet" href="/finanzas_personales/public/css/layout.css">
+    <link rel="stylesheet" href="/finanzas_personales/public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
 </head>
 
 <body>
@@ -34,7 +32,12 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                 <h1>Historial de Presupuesto</h1>
                 <p class="subtitle">Consulta el uso de tu presupuesto y cada modificación en orden cronológico</p>
             </div>
-            <a href="../presupuestos/index.php" class="btn btn-primary">Cambiar presupuesto</a>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary" id="btnOpenExportModal" title="Exportar reporte de movimientos">
+                    Exportar Reportes
+                </button>
+                <a href="../presupuestos/index.php" class="btn btn-primary">Cambiar presupuesto</a>
+            </div>
         </div>
 
         <?php if (!empty($aviso)): ?>
@@ -62,19 +65,12 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
             </div>
         </section>
 
-        <!-- Uso del presupuesto del mes actual: categorías divididas en rubros -->
         <?php
-        // Porcentaje mostrado: nunca negativo, pero SIN tope en 100 para ver cuánto se excedió.
         $pct        = fn($v) => number_format(max(0, (float) $v), 1, ',', '.') . '%';
-        // Rojo desde el 100 % (presupuesto agotado o excedido), amarillo desde el 80 %.
         $claseBarra = fn($p) => $p >= 100 ? 'bar-danger' : ($p >= 80 ? 'bar-warn' : 'bar-ok');
-        // El ancho de la barra sí se limita a 100.
         $ancho      = fn($p) => max(0, min(100, (float) $p));
 
-        // Los GASTOS sí pueden superar el presupuesto: se avisa con alerta y mensaje.
-        $gastoExcedido = $hayPresupuesto && $totalGastado > $presupuestoActual;
-
-        // Los RUBROS ya no pueden superarlo; esto solo aparece con datos creados antes del límite.
+        $gastoExcedido   = $hayPresupuesto && $totalGastado > $presupuestoActual;
         $rubrosExcedidos = $hayPresupuesto && $totalAsignado > $presupuestoActual;
 
         $textoExceso = '';
@@ -171,8 +167,8 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                     <?php else: ?>
                         <?php foreach ($usoCategorias as $c): ?>
                             <?php
-                            $pctDelPresupuesto = $hayPresupuesto ? $c['asignado'] / $presupuestoActual * 100 : null;
-                            $pctEjecutado      = $c['asignado'] > 0 ? $c['gastado'] / $c['asignado'] * 100 : null;
+                            $pctDelPresupuesto = $hayPresupuesto ? ($c['asignado'] / $presupuestoActual) * 100 : null;
+                            $pctEjecutado      = $c['asignado'] > 0 ? ($c['gastado'] / $c['asignado']) * 100 : null;
                             ?>
                             <tr>
                                 <td class="category-name"><?= $h($c['categoria']) ?></td>
@@ -243,7 +239,83 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
         </div>
     </main>
 
-    <script src="../../public/js/budget_history.js?v=<?= filemtime(__DIR__ . '/../../public/js/budget_history.js') ?>"></script>
+    <!-- Modal para Filtros y Exportación de Reportes en CSV o PDF -->
+    <div id="exportModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card form-card" style="width: 100%; max-width: 480px; margin: 1rem; position: relative;">
+            <h3 style="margin-bottom: 0.5rem; color: var(--text);">Exportar Movimientos</h3>
+            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Filtra tus registros y descarga tu reporte en formato CSV o PDF.</p>
+
+            <form action="/finanzas_personales/controllers/budgetHistoryController.php" method="GET" target="_blank">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="filtro_tipo" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Tipo de movimiento:</label>
+                    <select id="filtro_tipo" name="tipo" class="custom-select" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
+                        <option value="">Todos los movimientos</option>
+                        <option value="ingreso">Solo Ingresos</option>
+                        <option value="gasto">Solo Gastos</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="filtro_desde" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Desde:</label>
+                    <input type="date" id="filtro_desde" name="desde" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="filtro_hasta" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Hasta:</label>
+                    <input type="date" id="filtro_hasta" name="hasta" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
+                </div>
+
+                <!-- Botones parejos distribuidos equitativamente -->
+                <div class="form-actions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btnCloseExportModal" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem;">
+                        Cancelar
+                    </button>
+                    <button type="submit" name="action" value="export_csv" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem;">
+                        Descargar CSV
+                    </button>
+                    <button type="submit" name="action" value="export_pdf" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem; background-color: #ef4444; border-color: #ef4444;">
+                        Descargar PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/finanzas_personales/public/js/budget_history.js?v=<?= filemtime(__DIR__ . '/../../public/js/budget_history.js') ?>"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('exportModal');
+            const openBtn = document.getElementById('btnOpenExportModal');
+            const closeBtn = document.getElementById('btnCloseExportModal');
+            const submitButtons = modal ? modal.querySelectorAll('button[type="submit"]') : [];
+
+            if (openBtn && modal) {
+                openBtn.addEventListener('click', () => {
+                    modal.style.display = 'flex';
+                });
+            }
+
+            if (closeBtn && modal) {
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            submitButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 400);
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
