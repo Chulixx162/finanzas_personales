@@ -188,6 +188,36 @@ body.layout main { flex: 1; }
   font-weight: 800;
 }
 
+/* Chip del usuario: avatar + nombre son un solo enlace al perfil */
+a.user-chip {
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+a.user-chip:hover,
+a.user-chip[aria-current="page"] { background: var(--tint); }
+
+a.user-chip:focus-visible,
+.nav-profile:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.user-name {
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Atajo al perfil junto a la hamburguesa: solo en pantallas con menú colapsado */
+.nav-profile {
+  display: none;
+  padding: 4px;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--deep);
@@ -239,7 +269,9 @@ body.layout main { flex: 1; }
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 860px) {
+/* El navbar tiene 7 enlaces + nombre + "Cerrar sesión": no cabe en una fila
+   por debajo de ~1120px, así que el menú hamburguesa se activa desde ahí. */
+@media (max-width: 1120px) {
   .navbar { gap: 16px; }
   .nav-toggle { display: grid; }
 
@@ -271,7 +303,15 @@ body.layout main { flex: 1; }
 
   .nav-actions .btn { min-height: 46px; }
   .user-chip { margin: 0 0 4px; }
+  a.user-chip { padding: 10px 14px 10px 10px; }
+  .user-name { max-width: none; }
 
+  /* El perfil queda a la vista sin abrir el menú */
+  .nav-profile { display: inline-flex; margin-left: auto; }
+  .nav-profile + .nav-toggle { margin-left: 0; }
+}
+
+@media (max-width: 860px) {
   .footer-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px 32px; }
 }
 

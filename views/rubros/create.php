@@ -29,7 +29,6 @@ $cupoJson = json_encode([
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
-    <link rel="stylesheet" href="../../public/css/alerts.css">
 </head>
 
 <body>

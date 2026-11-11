@@ -2,7 +2,7 @@
 // views/users/profile.php
 // Perfil del usuario: editar datos de la cuenta y eliminarla.
 $base = '../../';  // desde views/users/ hasta la raíz del proyecto
-$active = '';  // el perfil no está en el menú principal
+$active = 'perfil';  // el perfil no está en el menú principal, pero se marca en el chip del usuario
 
 // La vista se abre primero y llama al controlador: este valida la sesión
 // (redirige al login si hace falta) y deja listos $usuario y $csrf.

@@ -94,6 +94,7 @@ $hastaEntrada = is_string($_GET['hasta'] ?? null) ? trim($_GET['hasta']) : '';
 $reporte       = [];
 $totalIngresos = 0.0;
 $totalGastos   = 0.0;
+$presupuesto   = 0.0;
 $saldo         = 0.0;
 $totalMovs     = 0;
 $segmentos     = [];
@@ -110,7 +111,7 @@ if ($errorPeriodo === null) {
 
     // 5. Obtener los totales generales mediante el procedimiento almacenado.
     $directo = obtener_totales_periodo($idUsuario, $desde, $hasta);
-    $presupuesto = obtener_presupuesto_usuario($idUsuario);
+    $presupuesto = obtener_presupuesto_usuario($idUsuario) ?? 0.0; // Evita warning si es null
 
     // Si algún procedimiento falló, el modelo ya guardó el detalle en el log de PHP.
     // Se avisa en pantalla en lugar de mostrar un reporte vacío.
@@ -145,7 +146,7 @@ if ($errorPeriodo === null && $errorReporte === null) {
     foreach ($reporte as $i => $fila) {
         $reporte[$i]['saldo'] = (a_centavos($fila['total_ingresos']) - a_centavos($fila['total_gastos'])) / 100;
         $reporte[$i]['pct_gastos'] = $centGastos > 0
-            ? a_centavos($fila['total_gastos']) / $centGastos * 100
+            ? (a_centavos($fila['total_gastos']) / $centGastos) * 100
             : 0.0;
         $reporte[$i]['color'] = $paleta[$i % count($paleta)];
 
@@ -167,7 +168,7 @@ if ($errorPeriodo === null && $errorReporte === null) {
     $comparaciones = [
         ['Ingresos',    $centIngresos, a_centavos($directo['ingresos']), true],
         ['Gastos',      $centGastos,   a_centavos($directo['gastos']),   true],
-        ['Movimientos', $centMovs,     $directo['movimientos'],          false],
+        ['Movimientos', $centMovs,     $directo['movimientos'],         false],
     ];
 
     $verificacion = ['coincide' => true, 'filas' => []];

@@ -6,7 +6,7 @@
 // (el .sql también se ve como texto). Los .docx y .xlsx solo se descargan.
 
 const CARPETA_DOCUMENTOS = __DIR__ . '/../public/docs/';
-const EXTENSIONES_DOCUMENTO = ['pdf', 'docx', 'xlsx', 'sql'];
+const EXTENSIONES_DOCUMENTO = ['pdf', 'docx', 'xlsx', 'sql', 'jpeg'];
 
 /**
  * Grupos de documentos: clave => [título, descripción, nombre base del archivo].
@@ -18,29 +18,29 @@ function catalogo_documentos(): array
             'user_manual' => [
                 'Manual de usuario',
                 'Guía paso a paso para usar la página.',
-                'user_manual',
+                'Manual de usuario',
             ],
             'technical_manual' => [
                 'Manual técnico',
                 'Estructura del proyecto, instalación y base de datos.',
-                'technical_manual',
+                'Manual técnico',
             ],
         ],
         'Anexos' => [
             'pac' => [
                 'PAC',
                 'Plan de Aseguramiento de Calidad del proyecto.',
-                'PAC',
+                'Plan de Aseguramiento de Calidad',
             ],
             'srs' => [
                 'SRS',
                 'Especificación de requisitos de software.',
-                'SRS',
+                'SRS_Sistema de Gestión Financiera Personal y Presupuestos',
             ],
             'mer' => [
                 'MER',
                 'Modelo entidad-relación y diccionario de datos.',
-                'mer',
+                'MER',
             ],
             'sql' => [
                 'Script SQL',
@@ -50,12 +50,12 @@ function catalogo_documentos(): array
             'error_log' => [
                 'Log de errores y sugerencias',
                 'Registro de errores encontrados y mejoras propuestas.',
-                'error_suggestions_log',
+                'log de errores y sugerencias',
             ],
             'quality_instruments' => [
                 'Instrumentos de calidad',
                 'Formatos e instrumentos usados para verificar la calidad.',
-                'quality_instruments',
+                'Mapeo y Ubicación de Instrumentos de Calidad',
             ],
         ],
     ];

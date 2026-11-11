@@ -80,7 +80,7 @@ function obtener_presupuesto_actual(int $idUsuario): ?float
         return null;
     }
 
-    if (!$fila \vert{}\vert{}$fila['presupuesto_mensual'] === null) {
+    if (!$fila || $fila['presupuesto_mensual'] === null) {
         return null;
     }
 

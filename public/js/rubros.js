@@ -1,5 +1,14 @@
 // public/js/rubros.js
 
+// Muestra un aviso con el estilo único de alerts.js (o alert() si no cargó).
+function avisar(tipo, texto) {
+    if (typeof mostrarAviso === 'function') {
+        return mostrarAviso(tipo, texto);
+    }
+    console.error('mostrarAviso no existe: alerts.js está desactualizado o no cargó.');
+    window.alert(texto);
+}
+
 // Límite del presupuesto: los rubros de un mes no pueden sumar más que el
 // presupuesto mensual. El servidor es quien manda; esto solo avisa antes de enviar.
 // Devuelve una función que pinta el aviso y dice si el formulario puede enviarse.
@@ -121,7 +130,7 @@ function configurarCupo(form) {
     return function validar() {
         const r = pintar();
         if (!r.ok) {
-            mostrarAviso('error', r.texto);
+            avisar('error', r.texto);
         }
         return r.ok;
     };
@@ -218,11 +227,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const confirmed = await alerta(
                 '¿Eliminar rubro?',
-                `¿Estás seguro de que deseas eliminar "${rubroName}"?`,
+                `¿Estás seguro de que deseas eliminar "${rubroName}"? Solo se puede eliminar si no tiene movimientos asociados. Esta acción no se puede deshacer.`,
                 'warning',
                 'Sí, eliminar',
-                'Cancelar',
-                '#ef4444'
+                'Cancelar'
             );
 
             if (confirmed && deleteUrl) {
@@ -248,8 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `¿Confirmas que deseas actualizar los datos de "${nombreRubro}"?`,
                 'question',
                 'Sí, guardar',
-                'Cancelar',
-                '#6366f1'
+                'Cancelar'
             );
 
             if (confirmed) {
@@ -270,11 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const fin = createRubroForm.querySelector('#fecha_fin').value;
 
             if (nombre === '') {
-                mostrarAviso('error', 'El nombre del rubro es obligatorio.');
+                avisar('error', 'El nombre del rubro es obligatorio.');
                 return;
             }
             if (fin < inicio) {
-                mostrarAviso('error', 'La fecha fin no puede ser anterior a la fecha inicio.');
+                avisar('error', 'La fecha fin no puede ser anterior a la fecha inicio.');
                 return;
             }
             if (!validarCupoCreacion()) {
@@ -295,44 +302,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Procesar respuestas del servidor (Éxito o Error de URL)
+    // 4. Procesar respuestas del servidor (?success=... / ?error=...)
+    // Usa los mismos avisos que Categorías (alerts.js), sin colores propios.
     const urlParams = new URLSearchParams(window.location.search);
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    const swalBg = isLight ? '#ffffff' : '#1e1e24';
-    const swalColor = isLight ? '#0f172a' : '#ffffff';
+    const exito = urlParams.get('success');
+    const mensajesExito = {
+        created: 'El rubro se creó correctamente.',
+        updated: 'Los cambios del rubro se guardaron correctamente.',
+        deleted: 'El rubro se eliminó correctamente.'
+    };
 
     if (urlParams.has('error')) {
-        Swal.fire({
-            title: 'Acción denegada',
-            text: urlParams.get('error'),
-            icon: 'error',
-            confirmButtonColor: '#ef4444',
-            background: swalBg,
-            color: swalColor
-        });
+        avisar('error', urlParams.get('error'));
         window.history.replaceState(null, '', window.location.pathname);
-    } else if (urlParams.get('success') === 'deleted') {
-        Swal.fire({
-            title: '¡Eliminado!',
-            text: 'El rubro ha sido eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#10b981',
-            background: swalBg,
-            color: swalColor
-        });
-        window.history.replaceState(null, '', window.location.pathname);
-    } else if (urlParams.get('success') === 'created') {
-        mostrarAviso('ok', 'El rubro se creó correctamente.');
-        window.history.replaceState(null, '', window.location.pathname);
-    } else if (urlParams.get('success') === 'updated') {
-        Swal.fire({
-            title: '¡Actualizado!',
-            text: 'Los cambios del rubro se han guardado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#10b981',
-            background: swalBg,
-            color: swalColor
-        });
+    } else if (mensajesExito[exito]) {
+        avisar('ok', mensajesExito[exito]);
         window.history.replaceState(null, '', window.location.pathname);
     }
 });

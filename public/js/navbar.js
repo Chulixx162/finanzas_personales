@@ -30,7 +30,7 @@
 
     // Si la pantalla vuelve a ser ancha, dejar el menú en su estado normal
     window
-      .matchMedia("(min-width: 861px)")
+      .matchMedia("(min-width: 1121px)")
       .addEventListener("change", (event) => {
         if (event.matches) setOpen(false);
       });
