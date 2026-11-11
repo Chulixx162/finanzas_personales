@@ -58,6 +58,25 @@ function dashboard_resumen_mensual(
 /**
  * Movimientos del usuario durante el periodo consultado.
  */
+function obtener_presupuesto_usuario(int $idUsuario): float {
+    global $conn;
+
+    $sql = 'SELECT presupuesto_mensual FROM usuarios WHERE id_usuario = ?';
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log(mysqli_error($conn));
+        return 0.0;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'i', $idUsuario);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $presupuesto);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return (float) ($presupuesto ?? 0.0);
+}
 function dashboard_movimientos_recientes(
     int $idUsuario,
     string $inicio,

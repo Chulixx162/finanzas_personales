@@ -39,9 +39,8 @@ $cop = static function ($valor): string {
 // Valores recibidos del controlador.
 $ingresos = (float) ($ingresos ?? 0);
 $gastos = (float) ($gastos ?? 0);
-
 // Cálculo del balance / saldo (Ingresos menos Gastos) con datos reales
-$saldo = (float) ($saldo ?? ($ingresos - $gastos));
+$saldo = (float) ($saldo ?? 0);
 
 $movimientosRecibidos = $movimientos ?? [];
 $movimientos = is_array($movimientosRecibidos)
@@ -177,7 +176,7 @@ $datosGraficos = array_replace_recursive(
                     <p class="stat-value">
                         <?= $cop($saldo) ?>
                     </p>
-                    <p class="stat-note">Ingresos menos gastos</p>
+                    <p class="stat-note">Diferencia entre el presupuesto, ingresos y gastos</p>
                 </article>
 
             </section>

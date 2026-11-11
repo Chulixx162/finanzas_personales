@@ -279,3 +279,67 @@ function obtener_reporte_financiero_mensual(int $idUsuario, string $periodo): ar
         'balance' => $balance
     ];
 }
+
+function obtener_movimientos_reporte(int $idUsuario, array $filtros = []): array
+{
+    global $conn;
+
+    $movimientos = [];
+    $condiciones = ['c.id_usuario = ?'];
+    $tipos = 'i';
+    $params = [$idUsuario];
+
+    if (!empty($filtros['desde'])) {
+        $condiciones[] = 'm.fecha >= ?';
+        $tipos .= 's';
+        $params[] = $filtros['desde'] . ' 00:00:00';
+    }
+
+    if (!empty($filtros['hasta'])) {
+        $condiciones[] = 'm.fecha <= ?';
+        $tipos .= 's';
+        $params[] = $filtros['hasta'] . ' 23:59:59';
+    }
+
+    if (!empty($filtros['tipo']) && in_array($filtros['tipo'], ['ingreso', 'gasto'], true)) {
+        $condiciones[] = 'm.tipo = ?';
+        $tipos .= 's';
+        $params[] = $filtros['tipo'];
+    }
+
+    $whereSql = implode(' AND ', $condiciones);
+
+    $sql = "
+        SELECT
+            m.id_movimiento,
+            m.tipo,
+            m.monto,
+            m.fecha,
+            m.descripcion,
+            r.nombre AS rubro_nombre,
+            c.nombre AS categoria_nombre
+        FROM movimientos m
+        INNER JOIN rubros r ON m.id_rubro = r.id_rubro
+        INNER JOIN categorias c ON r.id_categoria = c.id_categoria
+        WHERE {$whereSql}
+        ORDER BY m.fecha DESC, m.id_movimiento DESC
+    ";
+
+    try {
+        $stmt = mysqli_prepare($conn, $sql);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, $tipos, ...$params);
+            mysqli_stmt_execute($stmt);
+            $resultado = mysqli_stmt_get_result($stmt);
+
+            while ($resultado && ($fila = mysqli_fetch_assoc($resultado))) {
+                $movimientos[] = $fila;
+            }
+            mysqli_stmt_close($stmt);
+        }
+    } catch (mysqli_sql_exception $e) {
+        error_log($e->getMessage());
+    }
+
+    return $movimientos;
+}
