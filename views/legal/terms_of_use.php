@@ -13,7 +13,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
 // Cambia la fecha solo cuando cambien los términos.
 $ultimaActualizacion = '27 de octubre de 2026';
-$correoContacto      = 'Equipo7@gmail.com';
+$correoContacto      = 'f.personales1.1@gmail.com';
 
 // El botón de regreso depende de si hay sesión.
 $volverRuta  = $base . ($logueado ? 'views/users/dashboard.php' : 'views/auth/register.php');
