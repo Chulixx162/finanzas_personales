@@ -87,9 +87,7 @@ $fecha  = fn($valor) => date('d/m/Y h:i A', strtotime($valor));
             </table>
         </div>
     </main>
-
-    <script src="../../public/js/transactions.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
-
+<script src="../../public/js/transactions.js?v=<?= filemtime(__DIR__ . '/../../public/js/transactions.js') ?>"></script>
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
 </body>

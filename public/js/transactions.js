@@ -74,3 +74,83 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.replaceState(null, '', window.location.pathname);
     }
 });
+
+/* ==========================================
+   FILTRAR MOVIMIENTOS
+========================================== */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('searchInput');
+    const movimientosTable = document.getElementById('movimientosTable');
+
+    // Verificar que existan los elementos
+    if (!searchInput || !movimientosTable) {
+        return;
+    }
+
+    const tbody = movimientosTable.querySelector('tbody');
+
+    // Obtener las filas que contienen movimientos reales
+    const filas = Array.from(tbody.querySelectorAll('tr'))
+        .filter(fila => !fila.classList.contains('empty-row'));
+
+    // Si no existen movimientos, no ejecutar el filtro
+    if (filas.length === 0) {
+        return;
+    }
+
+    // Crear mensaje para búsquedas sin resultados
+    const mensajeVacio = document.createElement('tr');
+
+    mensajeVacio.classList.add('empty-row');
+
+    mensajeVacio.innerHTML = `
+        <td colspan="5" style="text-align:center; padding:25px;">
+            No se encontraron movimientos que coincidan con tu búsqueda.
+        </td>
+    `;
+
+    mensajeVacio.style.display = 'none';
+
+    tbody.appendChild(mensajeVacio);
+
+    // Normalizar texto para ignorar mayúsculas y tildes
+    function normalizar(texto) {
+        return texto
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    // Ejecutar búsqueda
+    function filtrarMovimientos() {
+
+        const busqueda = normalizar(searchInput.value);
+
+        let coincidencias = 0;
+
+        filas.forEach(fila => {
+
+            const contenido = normalizar(fila.textContent);
+
+            const coincide = contenido.includes(busqueda);
+
+            fila.style.display = coincide ? '' : 'none';
+
+            if (coincide) {
+                coincidencias++;
+            }
+
+        });
+
+        // Mostrar mensaje cuando no existan coincidencias
+        mensajeVacio.style.display =
+            coincidencias === 0 ? '' : 'none';
+    }
+
+    // Filtrar mientras el usuario escribe
+    searchInput.addEventListener('input', filtrarMovimientos);
+
+});

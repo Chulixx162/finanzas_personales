@@ -135,23 +135,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const validarCupoEdicion = configurarCupo(editRubroForm);
 
     // 1. Buscador en tiempo real
+    
+    // 1. Buscador en tiempo real con mensaje cuando no hay resultados
     if (searchInput) {
-        searchInput.addEventListener('keyup', () => {
-            const term = searchInput.value.toLowerCase().trim();
 
-            tableRows.forEach(row => {
-                if (row.classList.contains('empty-row')) return;
+        const tbody = document.querySelector('#rubrosTable tbody');
 
-                const rowText = row.textContent.toLowerCase();
+        // Excluir las filas de mensajes vacíos existentes
+        const rows = Array.from(tableRows).filter(row =>
+            !row.classList.contains('empty-row')
+        );
 
-                if (rowText.includes(term)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+        // Crear fila para mostrar cuando no existan coincidencias
+        const emptySearchRow = document.createElement('tr');
+        emptySearchRow.classList.add('empty-row');
+        emptySearchRow.style.display = 'none';
+
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan =
+            document.querySelectorAll('#rubrosTable thead th').length || 1;
+
+        emptyCell.textContent =
+            'No se encontraron rubros con ese texto';
+
+        emptyCell.style.textAlign = 'center';
+        emptyCell.style.padding = '25px';
+
+        emptySearchRow.appendChild(emptyCell);
+
+        if (tbody) {
+            tbody.appendChild(emptySearchRow);
+        }
+
+        // Normalizar texto para ignorar mayúsculas y tildes
+        function normalizarTexto(texto) {
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim();
+        }
+
+        // Ejecutar búsqueda
+        function filtrarRubros() {
+
+            const term = normalizarTexto(searchInput.value);
+
+            let coincidencias = 0;
+
+            rows.forEach(row => {
+
+                const rowText = normalizarTexto(row.textContent);
+
+                const coincide = rowText.includes(term);
+
+                row.style.display = coincide ? '' : 'none';
+
+                if (coincide) {
+                    coincidencias++;
                 }
+
             });
-        });
+
+            // Mostrar mensaje solamente cuando hay texto
+            // de búsqueda y no existen coincidencias
+            emptySearchRow.style.display =
+                term !== '' && coincidencias === 0 ? '' : 'none';
+        }
+
+        // Buscar mientras se escribe
+        searchInput.addEventListener('input', filtrarRubros);
     }
+
 
     // 2. Confirmación previa al ELIMINAR con SweetAlert2
     deleteButtons.forEach(button => {

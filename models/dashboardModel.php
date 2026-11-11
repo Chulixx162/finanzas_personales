@@ -260,3 +260,59 @@ function dashboard_presupuesto_por_categoria(
 
     return $filas;
 }
+
+/**
+ * Obtener todos los movimientos del usuario para aplicar filtros.
+ */
+function dashboard_todos_movimientos(int $idUsuario): array
+{
+    global $conn;
+
+    $sql = "
+        SELECT
+            DATE_FORMAT(m.fecha, '%Y-%m-%d') AS fecha_iso,
+            DATE_FORMAT(m.fecha, '%d/%m/%Y') AS fecha,
+            COALESCE(m.descripcion, r.nombre) AS descripcion,
+            c.nombre AS categoria,
+            r.nombre AS rubro,
+            m.tipo,
+            m.monto
+        FROM movimientos m
+        INNER JOIN rubros r
+            ON r.id_rubro = m.id_rubro
+        INNER JOIN categorias c
+            ON c.id_categoria = r.id_categoria
+        WHERE c.id_usuario = ?
+        ORDER BY m.fecha DESC, m.id_movimiento DESC
+    ";
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log(mysqli_error($conn));
+        return [];
+    }
+
+    mysqli_stmt_bind_param($stmt, 'i', $idUsuario);
+    mysqli_stmt_execute($stmt);
+
+    $resultado = mysqli_stmt_get_result($stmt);
+
+    $movimientos = [];
+
+    while ($fila = mysqli_fetch_assoc($resultado)) {
+        $movimientos[] = [
+            'fecha_iso' => $fila['fecha_iso'],
+            'fecha' => $fila['fecha'],
+            'descripcion' => $fila['descripcion'],
+            'categoria' => $fila['categoria'],
+            'rubro' => $fila['rubro'],
+            'tipo' => $fila['tipo'],
+            'monto' => (float) $fila['monto']
+        ];
+    }
+
+    mysqli_stmt_close($stmt);
+
+    return $movimientos;
+}
