@@ -48,6 +48,18 @@ function requerir_login(): int
         exit;
     }
 
+    // RNF-05 / CP-08: expirar después de 30 minutos de inactividad.
+    $ahora = time();
+    $ultimaActividad = (int) ($_SESSION['ultima_actividad'] ?? 0);
+
+    if ($ultimaActividad > 0 && ($ahora - $ultimaActividad) > 1800) {
+        destruir_sesion();
+        header('Location: ../views/auth/login.php?error=expirada');
+        exit;
+    }
+
+    $_SESSION['ultima_actividad'] = $ahora;
+
     // Que el navegador no guarde páginas privadas (botón "atrás" tras cerrar sesión).
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     header('Pragma: no-cache');
