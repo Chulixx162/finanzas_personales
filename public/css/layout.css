@@ -87,7 +87,7 @@ body.layout main { flex: 1; }
 .navbar {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
   max-width: 1160px;
   min-height: 68px;
   margin: 0 auto;
@@ -166,7 +166,8 @@ body.layout main { flex: 1; }
   color: var(--primary);
 }
 
-.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-actions { display: flex; align-items: center; flex-shrink: 0; gap: 8px; }
+.nav-actions .btn { white-space: nowrap; }
 
 .user-chip {
   display: flex;
@@ -269,9 +270,9 @@ a.user-chip:focus-visible,
 }
 
 /* ---------- Responsive ---------- */
-/* El navbar tiene 7 enlaces + nombre + "Cerrar sesión": no cabe en una fila
-   por debajo de ~1120px, así que el menú hamburguesa se activa desde ahí. */
-@media (max-width: 1120px) {
+/* El navbar tiene 7 enlaces + nombre + "Cerrar sesión": necesita ~1100px y un
+   nombre largo pide más, así que el menú hamburguesa se activa por debajo de 1200px. */
+@media (max-width: 1200px) {
   .navbar { gap: 16px; }
   .nav-toggle { display: grid; }
 

@@ -20,6 +20,15 @@ $inicial = $nombre !== ''
     ? mb_strtoupper(mb_substr($nombre, 0, 1))
     : '?';
 
+// Video de presentación: usa presentation.mp4 y, si no existe, el primer .mp4 de public/video/
+$videoCarpeta = __DIR__ . '/video/';
+$videoArchivo = 'presentation.mp4';
+if (!is_file($videoCarpeta . $videoArchivo)) {
+    $videosMp4 = glob($videoCarpeta . '*.mp4') ?: [];
+    $videoArchivo = $videosMp4 ? basename($videosMp4[0]) : '';
+}
+$videoUrl = $videoArchivo !== '' ? 'video/' . rawurlencode($videoArchivo) : '';
+
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
     'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
@@ -48,6 +57,7 @@ if ($logueado) {
         ['Inicio', 'index.php'],
         ['Funciones', 'index.php#funciones'],
         ['Cómo funciona', 'index.php#como-funciona'],
+        ['Video', 'index.php#video'],
         ['Equipo de desarrollo', 'index.php#equipo'],
         ['Crea tu cuenta', '../views/auth/register.php'],
         ['Inicia sesión', '../views/auth/login.php'],
@@ -68,7 +78,7 @@ if ($logueado) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
-    <link rel="stylesheet" href="<?= $base ?>public/css/index.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/index.css?v=<?= filemtime(__DIR__ . '/css/index.css') ?>">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
     <link rel="stylesheet" href="css/alerts.css">
 </head>
@@ -99,7 +109,6 @@ if ($logueado) {
                 </span>
 
                 <span class="brand-name">Finanzas</span>
-            </a>
             </a>
 
             <button class="nav-toggle"
@@ -160,6 +169,7 @@ if ($logueado) {
                         <li><a class="nav-link" href="../public/index.php#inicio">Inicio</a></li>
                         <li><a class="nav-link" href="../public/index.php#funciones">Funciones</a></li>
                         <li><a class="nav-link" href="../public/index.php#como-funciona">Cómo funciona</a></li>
+                        <li><a class="nav-link" href="../public/index.php#video">Video</a></li>
                         <li><a class="nav-link" href="../public/index.php#equipo">Equipo</a></li>
                     <?php endif; ?>
 
@@ -386,6 +396,34 @@ if ($logueado) {
                         <p>Reparte tu dinero entre categorías y revisa cuánto llevas gastado en cada una.</p>
                     </li>
                 </ol>
+            </div>
+        </section>
+
+        <!-- Video demostrativo -->
+        <section class="video-demo" id="video" aria-labelledby="video-titulo">
+            <div class="wrap">
+                <div class="video-head">
+                    <h2 class="section-title" id="video-titulo">Conoce la aplicación en acción</h2>
+                    <p class="section-lead">
+                        Mira en pocos minutos cómo registrar movimientos y controlar tu presupuesto.
+                    </p>
+                </div>
+
+                <?php if ($videoUrl !== ''): ?>
+                    <figure class="video-frame">
+                        <video controls preload="metadata" playsinline
+                            aria-describedby="video-descripcion">
+                            <source src="<?= $h($videoUrl) ?>" type="video/mp4">
+                            Tu navegador no soporta la reproducción de video.
+                        </video>
+                        <figcaption class="video-caption" id="video-descripcion">
+                            Video de presentación de Finanzas personales.
+                            <a href="<?= $h($videoUrl) ?>" target="_blank" rel="noopener">Abrir en una pestaña nueva</a>
+                        </figcaption>
+                    </figure>
+                <?php else: ?>
+                    <p class="video-caption">El video todavía no está disponible.</p>
+                <?php endif; ?>
             </div>
         </section>
 
