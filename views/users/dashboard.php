@@ -234,49 +234,6 @@ $datosGraficos = array_replace_recursive(
                         </div>
                     </header>
 
-<div class="filtros-movimientos">
-    <h3>Filtrar movimientos</h3>
-
-    <div class="filtros-grid">
-
-        <div class="filtro-grupo">
-            <label for="fecha-inicio">Fecha inicial</label>
-            <input type="date" id="fecha-inicio">
-        </div>
-
-        <div class="filtro-grupo">
-            <label for="fecha-fin">Fecha final</label>
-            <input type="date" id="fecha-fin">
-        </div>
-
-        <div class="filtro-grupo">
-            <label for="filtro-tipo">Tipo de movimiento</label>
-            <select id="filtro-tipo">
-                <option value="">Todos</option>
-                <option value="ingreso">Ingresos</option>
-                <option value="gasto">Gastos</option>
-            </select>
-        </div>
-
-        <div class="filtro-grupo">
-            <label for="filtro-rubro">Rubro</label>
-            <select id="filtro-rubro">
-                <option value="">Todos los rubros</option>
-            </select>
-        </div>
-
-    </div>
-
-    <div class="filtros-botones">
-        <button type="button" id="aplicar-filtros">
-            Aplicar filtros
-        </button>
-
-        <button type="button" id="limpiar-filtros">
-            Limpiar filtros
-        </button>
-    </div>
-</div>
 
                     <div class="table-wrap">
                         <table class="mov-table">
