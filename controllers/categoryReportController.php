@@ -110,6 +110,7 @@ if ($errorPeriodo === null) {
 
     // 5. Obtener los totales generales mediante el procedimiento almacenado.
     $directo = obtener_totales_periodo($idUsuario, $desde, $hasta);
+    $presupuesto = obtener_presupuesto_usuario($idUsuario);
 
     // Si algún procedimiento falló, el modelo ya guardó el detalle en el log de PHP.
     // Se avisa en pantalla en lugar de mostrar un reporte vacío.
@@ -135,7 +136,7 @@ if ($errorPeriodo === null && $errorReporte === null) {
     // Las tarjetas resumen utilizan los totales generales del procedimiento.
     $totalIngresos = $directo['ingresos'];
     $totalGastos   = $directo['gastos'];
-    $saldo         = $totalIngresos - $totalGastos;
+    $saldo         = $presupuesto + $totalIngresos - $totalGastos;
     $totalMovs     = $directo['movimientos'];
 
     // 6. Cálculos por categoría: saldo, porcentaje del gasto total y segmentos de la gráfica.

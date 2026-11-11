@@ -105,7 +105,7 @@ $valorHasta = es_fecha_valida($hasta) ? $hasta : '';
                     <p class="report-value is-out"><?= $moneda($totalGastos) ?></p>
                 </div>
                 <div class="card report-card">
-                    <p class="report-label">Saldo</p>
+                    <p class="report-label">Saldo (comparado con el presupuesto actual)</p>
                     <p class="report-value<?= $saldo < 0 ? ' is-out' : '' ?>"><?= ($saldo < 0 ? '-' : '') . $moneda(abs($saldo)) ?></p>
                 </div>
                 <div class="card report-card">
@@ -196,7 +196,7 @@ $valorHasta = es_fecha_valida($hasta) ? $hasta : '';
                                     <td class="text-right is-in"><?= $moneda($fila['total_ingresos']) ?></td>
                                     <td class="text-right is-out"><?= $moneda($fila['total_gastos']) ?></td>
                                     <td class="text-right<?= $fila['saldo'] < 0 ? ' is-out' : '' ?>">
-                                        <?= ($fila['saldo'] < 0 ? '-' : '') . $moneda(abs($fila['saldo'])) ?>
+                                        -
                                     </td>
                                     <td class="text-right"><?= $pct($fila['pct_gastos']) ?></td>
                                 </tr>

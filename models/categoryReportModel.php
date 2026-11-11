@@ -28,8 +28,6 @@ function category_report_liberar_resultados(): void
  *
  * Devuelve un arreglo (vacío si no hay filas) o null si el procedimiento falló.
  * Así el controlador puede avisar del error en vez de mostrar un reporte vacío.
- *
- * @return array<int, array<string, mixed>>|null
  */
 function category_report_ejecutar_sp(
     string $procedimiento,
@@ -111,6 +109,25 @@ function category_report_ejecutar_sp(
  *
  * Procedimiento almacenado: sp_reporte_por_categoria
  */
+function obtener_presupuesto_usuario(int $idUsuario): float {
+    global $conn;
+
+    $sql = 'SELECT presupuesto_mensual FROM usuarios WHERE id_usuario = ?';
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if (!$stmt) {
+        error_log(mysqli_error($conn));
+        return 0.0;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'i', $idUsuario);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $presupuesto);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return (float) ($presupuesto ?? 0.0);
+}
 function obtener_reporte_por_categoria(
     int $idUsuario,
     string $desde,
