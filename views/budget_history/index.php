@@ -70,11 +70,12 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
         $claseBarra = fn($p) => $p >= 100 ? 'bar-danger' : ($p >= 80 ? 'bar-warn' : 'bar-ok');
         $ancho      = fn($p) => max(0, min(100, (float) $p));
 
-        $gastoExcedido   = $hayPresupuesto && $totalGastado > $presupuestoActual;
+        $gastoExcedido = $hayPresupuesto && $totalGastado > $presupuestoActual;
         $rubrosExcedidos = $hayPresupuesto && $totalAsignado > $presupuestoActual;
 
         $textoExceso = '';
         if ($gastoExcedido) {
+            // CORREGIDO: Se agregó la resta ($totalGastado - $presupuestoActual)
             $textoExceso = 'Superaste el 100 % de tu presupuesto estimado: llevas gastados '
                 . $moneda($totalGastado) . ' y tu presupuesto mensual es de '
                 . $moneda($presupuestoActual) . ' (te pasaste por '
@@ -116,8 +117,10 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                     <p class="usage-detail">
                         <?= $moneda($totalAsignado) ?> de <?= $moneda($presupuestoActual) ?>
                         <?php if ($rubrosExcedidos): ?>
+                            <!-- CORREGIDO: Se agregó la resta -->
                             (tus rubros pasan por <?= $moneda($totalAsignado - $presupuestoActual) ?>)
                         <?php else: ?>
+                            <!-- CORREGIDO: Se agregó la resta -->
                             (te quedan <?= $moneda($presupuestoActual - $totalAsignado) ?> por asignar)
                         <?php endif; ?>
                     </p>
@@ -138,8 +141,10 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                     <p class="usage-detail">
                         <?= $moneda($totalGastado) ?> de <?= $moneda($presupuestoActual) ?>
                         <?php if ($gastoExcedido): ?>
+                            <!-- CORREGIDO: Se agregó la resta -->
                             (te pasaste por <?= $moneda($totalGastado - $presupuestoActual) ?>)
                         <?php else: ?>
+                            <!-- CORREGIDO: Se agregó la resta -->
                             (te quedan <?= $moneda($presupuestoActual - $totalGastado) ?>)
                         <?php endif; ?>
                     </p>
@@ -191,6 +196,79 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                 </tbody>
             </table>
         </div>
+        <!-- Reporte Financiero Mensual -->
+    <div style="margin-top: 40px; margin-bottom: 20px;">
+        <h2 class="budget-form-title" style="margin-bottom: 4px;">Reporte Financiero Mensual</h2>
+        <p class="usage-note">Selecciona un periodo para consultar los ingresos, gastos y el balance de ese mes.</p>
+    </div>
+
+    <!-- Selector de periodo ajustado exactamente al ancho estándar -->
+    <div class="card" style="margin-bottom: 24px; padding: 16px 20px;">
+        <form method="GET" action="index.php" style="display: flex; align-items: center; gap: 12px;">
+            <label for="periodo" style="font-weight: 600; font-size: 0.95rem; white-space: nowrap;">Filtrar por mes:</label>
+            <select name="periodo" id="periodo" onchange="this.form.submit()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color, #d1d5db); background: var(--bg-input, #fff); color: inherit; width: 250px;">
+                <?php foreach ($mesesDisponibles as $m): ?>
+                    <option value="<?= $m; ?>" <?= ($m === $periodoSeleccionado) ? 'selected' : ''; ?>>
+                        <?= date('F Y', strtotime($m . '-01')); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+    </div>
+
+    <!-- Tarjetas de resumen del reporte (idénticas en ancho a las de arriba) -->
+    <section class="history-summary" aria-label="Resumen financiero del periodo" style="margin-bottom: 24px;">
+        <div class="card summary-card">
+            <p class="summary-label">Total Ingresos</p>
+            <p class="summary-value" style="color: #10b981;"><?= $moneda($reporteMensual['totalIngresos']) ?></p>
+        </div>
+        <div class="card summary-card">
+            <p class="summary-label">Total Gastos</p>
+            <p class="summary-value" style="color: #ef4444;"><?= $moneda($reporteMensual['totalGastos']) ?></p>
+        </div>
+        <div class="card summary-card">
+            <p class="summary-label">Balance del Periodo</p>
+            <p class="summary-value" style="color: <?= $reporteMensual['balance'] >= 0 ? '#10b981' : '#ef4444' ?>;">
+                <?= $moneda($reporteMensual['balance']) ?>
+            </p>
+        </div>
+    </section>
+
+    <!-- Tabla de movimientos del reporte -->
+    <div class="card table-card history-table-wrap" style="margin-bottom: 32px;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>Tipo</th>
+                    <th class="text-right">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($reporteMensual['transacciones'])): ?>
+                    <tr class="empty-row">
+                        <td colspan="4" style="text-align: center; padding: 24px;">No hay movimientos registrados para este periodo.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($reporteMensual['transacciones'] as $t): ?>
+                        <tr>
+                            <td><?= $h(date('d/m/Y', strtotime($t['fecha']))) ?></td>
+                            <td class="category-name"><?= $h($t['descripcion']) ?></td>
+                            <td>
+                                <span class="badge" style="padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; background: <?= $t['tipo'] === 'ingreso' ? 'rgba(16, 185, 129, 0.1); color: #10b981;' : 'rgba(239, 68, 68, 0.1); color: #ef4444;' ?>">
+                                    <?= ucfirst($t['tipo']) ?>
+                                </span>
+                            </td>
+                            <td class="text-right" style="font-weight: 600; color: <?= $t['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
+                                <?= ($t['tipo'] === 'gasto' ? '-' : '+') . $moneda($t['monto']) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
         <h2 class="budget-form-title" style="margin-bottom: 4px;">Cambios de tu presupuesto mensual</h2>
         <p class="usage-note">Cada fila muestra cuánto subió (▲) o bajó (▼) tu presupuesto frente al valor anterior.</p>

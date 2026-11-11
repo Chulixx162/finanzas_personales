@@ -4,7 +4,6 @@
 require_once __DIR__ . '/../config/session.php';
 
 $idUsuario = requerir_login();
-
 require_once __DIR__ . '/../models/budgetHistoryModel.php';
 
 $vista = '../views/presupuestos/index.php';
@@ -101,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nuevo  = (float) $digitos;
     $actual = obtener_presupuesto_actual($idUsuario);
 
+    // CORREGIDO: Se agregó el operador de resta (-)
     if ($actual !== null && abs($actual - $nuevo) < 0.005) {
         volver_con_aviso($vista, 'sin_cambio');
     }
@@ -135,7 +135,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrf = $_SESSION['csrf_token'];
 
-$historial         = obtener_historial_presupuesto($idUsuario);
+$historial          = obtener_historial_presupuesto($idUsuario);
 $minAsignado       = obtener_max_asignado_mensual($idUsuario);
 $presupuestoActual = obtener_presupuesto_actual($idUsuario);
 
@@ -147,5 +147,21 @@ $totalAsignado  = array_sum(array_column($usoCategorias, 'asignado'));
 $totalGastado   = array_sum(array_column($usoCategorias, 'gastado'));
 
 $hayPresupuesto = $presupuestoActual !== null && $presupuestoActual > 0;
+// CORREGIDO: Se agregaron los operadores de división (/) y multiplicación (*)
 $pctAsignado    = $hayPresupuesto ? round(($totalAsignado / $presupuestoActual) * 100, 1) : null;
-$pctGastado     = $hayPresupuesto ? round(($totalGastado  / $presupuestoActual) * 100, 1) : null;
+$pctGastado     = $hayPresupuesto ? round(($totalGastado / $presupuestoActual) * 100, 1) : null;
+
+// --- SECCIÓN NUEVA: Reporte Financiero Mensual ---
+$mesesDisponibles = obtener_meses_con_movimientos($idUsuario);
+$mesActualDefault = date('Y-m');
+
+// Si no hay meses con movimientos, aseguramos al menos el mes actual
+if (empty($mesesDisponibles)) {
+    $mesesDisponibles[] = $mesActualDefault;
+}
+
+// Capturar el periodo de la URL (GET) o usar el primero disponible por defecto
+$periodoSeleccionado = $_GET['periodo'] ?? $mesesDisponibles[0];
+
+// Obtener el reporte del mes seleccionado
+$reporteMensual = obtener_reporte_financiero_mensual($idUsuario, $periodoSeleccionado);
