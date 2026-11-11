@@ -32,7 +32,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                 <h1>Historial de Presupuesto</h1>
                 <p class="subtitle">Consulta el uso de tu presupuesto y cada modificación en orden cronológico</p>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div class="page-actions">
                 <button type="button" class="btn btn-secondary" id="btnOpenExportModal" title="Exportar reporte de movimientos">
                     Exportar Reportes
                 </button>
@@ -204,9 +204,9 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
 
     <!-- Selector de periodo ajustado exactamente al ancho estándar -->
     <div class="card" style="margin-bottom: 24px; padding: 16px 20px;">
-        <form method="GET" action="index.php" style="display: flex; align-items: center; gap: 12px;">
+        <form method="GET" action="index.php" style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px;">
             <label for="periodo" style="font-weight: 600; font-size: 0.95rem; white-space: nowrap;">Filtrar por mes:</label>
-            <select name="periodo" id="periodo" onchange="this.form.submit()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color, #d1d5db); background: var(--bg-input, #fff); color: inherit; width: 250px;">
+            <select name="periodo" id="periodo" onchange="this.form.submit()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color, #d1d5db); background: var(--bg-input, #fff); color: inherit; width: 250px; max-width: 100%;">
                 <?php foreach ($mesesDisponibles as $m): ?>
                     <option value="<?= $m; ?>" <?= ($m === $periodoSeleccionado) ? 'selected' : ''; ?>>
                         <?= date('F Y', strtotime($m . '-01')); ?>

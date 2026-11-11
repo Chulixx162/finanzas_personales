@@ -64,8 +64,15 @@ $logoDestino = $logueado
 
             <span class="brand-name">Finanzas</span>
         </a>
-        </a>
 
+        <?php if ($logueado): ?>
+            <a class="nav-profile"
+                href="<?= $h($base . 'views/users/profile.php') ?>"
+                aria-label="Ir a mi perfil"
+                <?= $active === 'perfil' ? 'aria-current="page"' : '' ?>>
+                <span class="user-avatar" aria-hidden="true"><?= $h($inicial) ?></span>
+            </a>
+        <?php endif; ?>
         <button class="nav-toggle"
             type="button"
             aria-expanded="false"
@@ -133,15 +140,13 @@ $logoDestino = $logueado
 
                 <?php if ($logueado): ?>
 
-                    <span class="user-chip">
-                        <a href="<?= $h($base . 'views/users/profile.php') ?>" class="user-avatar" aria-label="Ir a mi perfil">
-                            <?= $h($inicial) ?>
-                        </a>
-
-                        <span class="user-name">
-                            <?= $h($primerNombre) ?>
-                        </span>
-                    </span>
+                    <a class="user-chip"
+                        href="<?= $h($base . 'views/users/profile.php') ?>"
+                        aria-label="Ir a mi perfil"
+                        <?= $active === 'perfil' ? 'aria-current="page"' : '' ?>>
+                        <span class="user-avatar" aria-hidden="true"><?= $h($inicial) ?></span>
+                        <span class="user-name"><?= $h($primerNombre) ?></span>
+                    </a>
                     <form id="logout-form" action="<?= $h($base) ?>controllers/logoutController.php" method="POST" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                     </form>

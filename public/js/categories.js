@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const confirmed = await alerta(
                 '¿Eliminar categoría?',
-                `¿Estás seguro de que deseas eliminar "${categoryName}", si la eliminas se eliminarán los rubros y movimientos asociados?`,
+                `¿Estás seguro de que deseas eliminar "${categoryName}"? Solo se puede eliminar si no tiene rubros ni movimientos asociados. Esta acción no se puede deshacer.`,
                 'warning',
                 'Sí, eliminar',
                 'Cancelar'

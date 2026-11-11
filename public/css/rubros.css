@@ -1,4 +1,4 @@
-/* public/css/categories.css - Estilos completos del sistema */
+/* public/css/rubros.css - Estilos completos del sistema */
 
 
 /* Reset Base */
@@ -450,4 +450,76 @@ body {
 .field-hint.is-over {
     color: var(--danger-color);
     font-weight: 600;
+}
+
+/* ---------- Responsive: tablas, cabecera y formularios ---------- */
+/* La tarjeta tenía overflow:hidden y recortaba las columnas en celular:
+   ahora la tabla se desplaza horizontalmente dentro de la tarjeta. */
+.table-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-card .data-table {
+    min-width: 640px;
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.page-header {
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .search-box input {
+        max-width: none;
+    }
+
+    /* 16px evita el zoom automático de iOS al enfocar un campo */
+    .search-box input,
+    .form-group input,
+    .form-group select {
+        font-size: 16px;
+    }
+
+    /* Botones Editar / Eliminar más fáciles de tocar */
+    .btn-action {
+        padding: 0.55rem 0.9rem;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* ---------- Cabecera de página: título + botones ---------- */
+.page-header > div:first-child {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .page-header > .btn,
+    .page-actions {
+        width: 100%;
+    }
+
+    .page-header > .btn {
+        text-align: center;
+    }
+
+    .page-actions .btn {
+        flex: 1 1 auto;
+        text-align: center;
+    }
 }
