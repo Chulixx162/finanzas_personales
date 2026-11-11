@@ -6,7 +6,7 @@
 // (el .sql también se ve como texto). Los .docx y .xlsx solo se descargan.
 
 const CARPETA_DOCUMENTOS = __DIR__ . '/../public/docs/';
-const EXTENSIONES_DOCUMENTO = ['pdf', 'docx', 'xlsx', 'sql'];
+const EXTENSIONES_DOCUMENTO = ['pdf', 'docx', 'xlsx', 'sql', 'jpeg'];
 
 /**
  * Grupos de documentos: clave => [título, descripción, nombre base del archivo].
@@ -40,7 +40,7 @@ function catalogo_documentos(): array
             'mer' => [
                 'MER',
                 'Modelo entidad-relación y diccionario de datos.',
-                'mer',
+                'MER',
             ],
             'sql' => [
                 'Script SQL',
