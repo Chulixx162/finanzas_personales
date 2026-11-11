@@ -42,11 +42,6 @@ function catalogo_documentos(): array
                 'Modelo entidad-relación y diccionario de datos.',
                 'MER',
             ],
-            'sql' => [
-                'Script SQL',
-                'Tablas y procedimientos almacenados de la base de datos.',
-                'schema',
-            ],
             'error_log' => [
                 'Log de errores y sugerencias',
                 'Registro de errores encontrados y mejoras propuestas.',

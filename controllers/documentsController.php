@@ -23,7 +23,6 @@ if ($doc === null) {
 
 $tipos = [
     'pdf'  => 'application/pdf',
-    'sql'  => 'text/plain; charset=utf-8',
     'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ];
