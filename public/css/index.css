@@ -237,6 +237,42 @@
 .step p { max-width: 32ch; margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
 
 
+/* ---------- Video ---------- */
+.video-demo {
+  padding: 96px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.video-head { margin-bottom: 40px; }
+
+.video-frame {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.video-frame video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 478 / 850;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  background: var(--deep);
+}
+
+.video-caption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .video-demo { padding: 64px 0; }
+  .video-head { margin-bottom: 28px; }
+}
+
 /* ---------- Equipo de desarrollo ---------- */
 .team {
   padding: 88px 0;
