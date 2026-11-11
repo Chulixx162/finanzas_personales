@@ -10,13 +10,22 @@ require_once __DIR__ . '/../../controllers/profileController.php';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
-$nombre = $usuario['nombre'];
-$correo = $usuario['correo'];
+$nombre = $usuario['nombre'] ?? '';
+$correo = $usuario['correo'] ?? '';
 $inicial = $nombre !== '' ? mb_strtoupper(mb_substr($nombre, 0, 1)) : '?';
 $mensaje = is_string($_GET['mensaje'] ?? null) ? $_GET['mensaje'] : '';
 $error = is_string($_GET['error'] ?? null) ? $_GET['error'] : '';
 
 $textoExito = 'Tu perfil se actualizó correctamente.';
+
+// Íconos de las tarjetas de documentos, según la extensión del archivo.
+$svgBase = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">';
+$iconos = [
+    'DOCX' => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+    'PDF'  => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>',
+    'XLSX' => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><line x1="12" y1="11" x2="12" y2="19"></line></svg>',
+    'SQL'  => $svgBase . '<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>',
+];
 
 $errores = [
     'datos' => 'Verifica los datos ingresados.',
@@ -41,6 +50,7 @@ $errores = [
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/profile.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/docs.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
 </head>
@@ -92,7 +102,7 @@ $errores = [
 
                         <form class="profile-form" id="form-profile" action="../../controllers/profileController.php" method="POST"
                             data-login="<?= $h($base) ?>views/auth/login.php">
-                            <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= $h($csrf ?? '') ?>">
                             <input type="hidden" name="accion" value="actualizar">
 
                             <div class="form-grid">
@@ -138,6 +148,66 @@ $errores = [
                         </form>
                     </section>
 
+                    <!-- Manuales y anexos -->
+                    <section class="profile-card manx" aria-labelledby="titulo-docs">
+                        <details class="manx-details">
+                            <summary class="manx-head">
+                                <div>
+                                    <h2 id="titulo-docs">Manuales y anexos</h2>
+                                    <p>Documentos de apoyo para el desarrollo y el uso de la página.</p>
+                                </div>
+                                <span class="manx-side">
+                                    <span class="manx-count"><?= (int) $docsListos ?> de <?= (int) $totalDocs ?> disponibles</span>
+                                    <span class="manx-chevron" aria-hidden="true"></span>
+                                </span>
+                            </summary>
+
+                            <div class="manx-body">
+                                <?php foreach ($documentos as $grupo => $lista): ?>
+                                    <div class="manx-group">
+                                        <h3 class="manx-group-title"><?= $h($grupo) ?> <span><?= count($lista) ?></span></h3>
+
+                                        <ul class="manx-grid">
+                                            <?php foreach ($lista as $doc):
+                                                $icono = $iconos[$doc['extension']] ?? $iconos['PDF'];
+                                                $ruta  = $base . 'controllers/documentsController.php?doc=' . rawurlencode($doc['clave']);
+                                            ?>
+                                                <li class="manx-item">
+                                                    <div class="manx-card<?= $doc['disponible'] ? '' : ' is-pending' ?>">
+                                                        <span class="manx-top">
+                                                            <span class="manx-icon"><?= $icono ?></span>
+                                                            <?php if ($doc['extension'] !== ''): ?>
+                                                                <span class="manx-type"><?= $h($doc['extension']) ?></span>
+                                                            <?php endif; ?>
+                                                        </span>
+                                                        <span class="manx-title"><?= $h($doc['titulo']) ?></span>
+                                                        <span class="manx-detail"><?= $h($doc['detalle']) ?></span>
+                                                        <span class="manx-foot">
+                                                            <?php if ($doc['disponible']): ?>
+                                                                <span class="manx-links">
+                                                                    <?php if ($doc['verse']): ?>
+                                                                        <a class="manx-link" href="<?= $h($ruta . '&modo=ver') ?>"
+                                                                            target="_blank" rel="noopener"
+                                                                            aria-label="Ver <?= $h($doc['titulo']) ?>">Ver</a>
+                                                                    <?php endif; ?>
+                                                                    <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=descargar') ?>"
+                                                                        aria-label="Descargar <?= $h($doc['titulo']) ?>">Descargar</a>
+                                                                </span>
+                                                                <span class="manx-size"><?= $h($doc['tamano']) ?></span>
+                                                            <?php else: ?>
+                                                                <span class="manx-soon">Próximamente</span>
+                                                            <?php endif; ?>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                    </section>
+
                     <!-- Eliminar cuenta -->
                     <section class="profile-card danger-card" aria-labelledby="titulo-eliminar">
                         <header class="card-head">
@@ -146,7 +216,7 @@ $errores = [
                         </header>
 
                         <form class="profile-form" id="form-eliminar" action="../../controllers/profileController.php" method="POST">
-                            <input type="hidden" name="csrf_token" value="<?= $h($csrf) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= $h($csrf ?? '') ?>">
                             <input type="hidden" name="accion" value="eliminar">
 
                             <div class="field">

@@ -12,6 +12,7 @@ require_once __DIR__ . '/../config/session.php';
 iniciar_sesion_segura();
 
 require_once __DIR__ . '/../models/usersModel.php';
+require_once __DIR__ . '/../config/documents.php';
 
 // Ruta hacia las vistas según desde dónde se ejecute este archivo:
 //   directo (formulario o fetch) -> estamos en controllers/ -> ../views/
@@ -87,6 +88,33 @@ function campo(string $nombre): string
 {
     $valor = $_POST[$nombre] ?? '';
     return is_string($valor) ? $valor : '';
+}
+
+/* ---------- Manuales y anexos ---------- */
+
+// Prepara los documentos del catálogo (config/documents.php) para la vista.
+// Si un archivo no está en public/docs/, la tarjeta aparece como "Próximamente".
+function listar_documentos(): array
+{
+    $resultado = [];
+
+    foreach (catalogo_documentos() as $grupo => $lista) {
+        foreach ($lista as $clave => [$titulo, $detalle]) {
+            $doc = buscar_documento($clave);
+
+            $resultado[$grupo][] = [
+                'clave'      => $clave,
+                'titulo'     => $titulo,
+                'detalle'    => $detalle,
+                'extension'  => $doc ? strtoupper($doc['extension']) : '',
+                'disponible' => $doc !== null,
+                'verse'      => $doc !== null && in_array($doc['extension'], ['pdf', 'sql'], true),
+                'tamano'     => $doc ? max(1, (int) round(filesize($doc['ruta']) / 1024)) . ' KB' : '',
+            ];
+        }
+    }
+
+    return $resultado;
 }
 
 /* ---------- Acciones ---------- */
@@ -258,3 +286,17 @@ if (empty($_SESSION['csrf_token'])) {
 }
 
 $csrf = $_SESSION['csrf_token'];
+
+// Manuales y anexos que muestra la vista.
+$documentos = listar_documentos();
+$totalDocs  = 0;
+$docsListos = 0;
+
+foreach ($documentos as $lista) {
+    foreach ($lista as $doc) {
+        $totalDocs++;
+        if ($doc['disponible']) {
+            $docsListos++;
+        }
+    }
+}

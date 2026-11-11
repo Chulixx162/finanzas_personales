@@ -917,6 +917,82 @@ BEGIN
             AND c.id_usuario   = p_id_usuario) AS movimientos;
 END$$
  
+
+-- 8.24 Reporte de movimientos agrupados por categoria
+-- Devuelve los alias que consume models/categoryReportModel.php:
+-- id_categoria, categoria, total_movimientos, total_ingresos y total_gastos.
+
+DROP PROCEDURE IF EXISTS sp_reporte_por_categoria$$
+CREATE PROCEDURE sp_reporte_por_categoria(
+    IN p_id_usuario INT,
+    IN p_desde DATE,
+    IN p_hasta DATE
+)
+BEGIN
+    SELECT
+        c.id_categoria,
+        c.nombre AS categoria,
+        COUNT(m.id_movimiento) AS total_movimientos,
+        COALESCE(SUM(
+            CASE
+                WHEN m.tipo = 'ingreso' THEN m.monto
+                ELSE 0
+            END
+        ), 0) AS total_ingresos,
+        COALESCE(SUM(
+            CASE
+                WHEN m.tipo = 'gasto' THEN m.monto
+                ELSE 0
+            END
+        ), 0) AS total_gastos
+    FROM movimientos m
+    INNER JOIN rubros r
+        ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c
+        ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+      AND m.fecha >= p_desde
+      AND m.fecha < DATE_ADD(p_hasta, INTERVAL 1 DAY)
+    GROUP BY c.id_categoria, c.nombre
+    ORDER BY total_gastos DESC, c.nombre ASC;
+END$$
+
+
+-- 8.25 Totales generales del periodo para validar el reporte
+-- Devuelve los alias que consume models/categoryReportModel.php:
+-- ingresos, gastos y movimientos.
+
+DROP PROCEDURE IF EXISTS sp_reporte_totales_periodo$$
+CREATE PROCEDURE sp_reporte_totales_periodo(
+    IN p_id_usuario INT,
+    IN p_desde DATE,
+    IN p_hasta DATE
+)
+BEGIN
+    SELECT
+        COALESCE(SUM(
+            CASE
+                WHEN m.tipo = 'ingreso' THEN m.monto
+                ELSE 0
+            END
+        ), 0) AS ingresos,
+        COALESCE(SUM(
+            CASE
+                WHEN m.tipo = 'gasto' THEN m.monto
+                ELSE 0
+            END
+        ), 0) AS gastos,
+        COUNT(m.id_movimiento) AS movimientos
+    FROM movimientos m
+    INNER JOIN rubros r
+        ON r.id_rubro = m.id_rubro
+    INNER JOIN categorias c
+        ON c.id_categoria = r.id_categoria
+    WHERE c.id_usuario = p_id_usuario
+      AND m.fecha >= p_desde
+      AND m.fecha < DATE_ADD(p_hasta, INTERVAL 1 DAY);
+END$$
+
 DELIMITER ;
 
 
