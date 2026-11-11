@@ -39,6 +39,9 @@ $logoDestino = $logueado
 
 ?>
 
+<?php /* layout.css con versión: si el archivo cambia, el navegador no usa la copia vieja en caché */ ?>
+<link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css?v=<?= filemtime(__DIR__ . '/../../public/css/layout.css') ?>">
+
 <header class="site-header">
     <nav class="navbar" aria-label="Navegación principal">
 
