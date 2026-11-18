@@ -7,9 +7,10 @@
   <br><br>
   Aplicación web para la gestión de finanzas personales y presupuestos.
   <br><br>
-  <a href="https://finanzas.nexohuila.com">
+  <!-- <a href="https://finanzas.nexohuila.com">
     <img src="https://img.shields.io/badge/Visitar_aplicación-6D28D9?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Visitar aplicación">
-  </a>
+  </a> -->
+  NO DISPONIBLE
 </p>
 
 ---
@@ -145,7 +146,7 @@ La aplicación sigue un proceso sencillo de planificación y seguimiento financi
   <br>
   <strong>¡Comienza a organizar tus finanzas!</strong>
   <br><br>
-  <a href="https://finanzas.nexohuila.com">
+  <!-- <a href="https://finanzas.nexohuila.com"> -->
     <img src="https://img.shields.io/badge/ACCEDER_A_FINANZAS_PERSONALES-6D28D9?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Acceder a Finanzas Personales">
   </a>
   <br><br>
