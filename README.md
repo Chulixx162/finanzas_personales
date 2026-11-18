@@ -24,6 +24,13 @@ La aplicación ofrece una solución práctica que permite registrar movimientos 
 
 Su propósito es convertir la administración del dinero en un proceso más sencillo, organizado y consciente.
 
+##  Integrantes del Equipo
+- Julio Andrés Casanova Ramírez
+- Karoll Nikol Coronado Bermeo
+- Jaime Andrés Ladino Montealegre
+- Laura Daniela Isanoa Estrada
+- Juan Manuel Barreiro Polo
+
 ##  Objetivo
 
 Desarrollar una herramienta digital que permita a cada usuario gestionar sus ingresos y gastos, distribuir sus recursos mediante presupuestos por periodos y categorías, y consultar su situación financiera para mejorar sus hábitos de consumo, fomentar el ahorro y facilitar la toma de decisiones económicas.
