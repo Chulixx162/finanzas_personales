@@ -150,7 +150,7 @@ La aplicación sigue un proceso sencillo de planificación y seguimiento financi
     <img src="https://img.shields.io/badge/ACCEDER_A_FINANZAS_PERSONALES-6D28D9?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Acceder a Finanzas Personales">
   </a>
   <br><br>
-  <a href="https://finanzas.nexohuila.com">https://finanzas.nexohuila.com</a>
+  <!-- <a href="https://finanzas.nexohuila.com">https://finanzas.nexohuila.com</a> -->
 </p>
 
 ##  Privacidad de la información
