@@ -25,10 +25,10 @@ $inicial = $nombre !== ''
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
-    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
+    'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
     'categorias'   => ['Categorías', 'views/categories/index.php'],
     'rubros'       => ['Rubros', 'views/rubros/index.php'],
-    'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
+    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
     'historial'    => ['Historial', 'views/budget_history/index.php'],
     'reportes'     => ['Reportes', 'views/reports/category_report.php'],
 ];
