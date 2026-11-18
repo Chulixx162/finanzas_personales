@@ -121,10 +121,10 @@ $logoDestino = $logueado
                     <?php endforeach; ?>
 
                 <?php else: ?>
-                    <li><a class="nav-link" href="../public/index.php#inicio">Inicio</a></li>
-                    <li><a class="nav-link" href="../public/index.php#funciones">Funciones</a></li>
-                    <li><a class="nav-link" href="../public/index.php#como-funciona">Cómo funciona</a></li>
-                    <li><a class="nav-link" href="../public/index.php#equipo">Equipo</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#inicio') ?>">Inicio</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#funciones') ?>">Funciones</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#como-funciona') ?>">Cómo funciona</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#equipo') ?>">Equipo</a></li>
                 <?php endif; ?>
 
             </ul>
@@ -146,8 +146,8 @@ $logoDestino = $logueado
                         <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                     </form>
                 <?php else: ?>
-                    <a class="btn btn-sm btn-ghost" href="../views/auth/login.php">Iniciar sesión</a>
-                    <a class="btn btn-sm btn-primary" href="../views/auth/register.php">Crear cuenta</a>
+                    <a class="btn btn-sm btn-ghost" href="<?= $h($base . 'views/auth/login.php') ?>">Iniciar sesión</a>
+                    <a class="btn btn-sm btn-primary" href="<?= $h($base . 'views/auth/register.php') ?>">Crear cuenta</a>
                 <?php endif; ?>
 
             </div>
