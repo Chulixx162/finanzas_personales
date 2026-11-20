@@ -108,7 +108,7 @@ function listar_documentos(): array
                 'detalle'    => $detalle,
                 'extension'  => $doc ? strtoupper($doc['extension']) : '',
                 'disponible' => $doc !== null,
-                'verse'      => $doc !== null && in_array($doc['extension'], ['pdf', 'sql'], true),
+                'verse'      => $doc !== null && in_array($doc['extension'], ['md', 'pdf', 'sql'], true),
                 'tamano'     => $doc ? max(1, (int) round(filesize($doc['ruta']) / 1024)) . ' KB' : '',
             ];
         }
@@ -188,16 +188,19 @@ if (
         responder(['ok' => false, 'error' => 'sesion'], 401);
     }
 
-    header('Location: ' . RUTA_VISTAS . 'auth/login.php?error=sesion');
-    exit;
+    // Sin sesión -> inicio; sesión expirada por inactividad -> login con aviso.
+    redirigir_sin_sesion();
 }
 
 $idUsuario = (int) $_SESSION['user_id'];
 
+// Cada petición del perfil cuenta como actividad (reinicia los 30 minutos).
+registrar_actividad();
+
 
 // Que el navegador no guarde la página privada.
 if (!headers_sent()) {
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    enviar_cabeceras_privadas();
 }
 
 /* ---------- Ruta POST: acciones del formulario ---------- */

@@ -20,6 +20,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
+    <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
 </head>
 
 <body>
@@ -202,19 +203,25 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
         <p class="usage-note">Selecciona un periodo para consultar los ingresos, gastos y el balance de ese mes.</p>
     </div>
 
-    <!-- Selector de periodo ajustado exactamente al ancho estándar -->
-    <div class="card" style="margin-bottom: 24px; padding: 16px 20px;">
-        <form method="GET" action="index.php" style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <label for="periodo" style="font-weight: 600; font-size: 0.95rem; white-space: nowrap;">Filtrar por mes:</label>
-            <select name="periodo" id="periodo" onchange="this.form.submit()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color, #d1d5db); background: var(--bg-input, #fff); color: inherit; width: 250px; max-width: 100%;">
-                <?php foreach ($mesesDisponibles as $m): ?>
-                    <option value="<?= $m; ?>" <?= ($m === $periodoSeleccionado) ? 'selected' : ''; ?>>
-                        <?= date('F Y', strtotime($m . '-01')); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </form>
-    </div>
+    <!-- Filtro por mes -->
+    <form class="card filter-card" method="GET" action="index.php">
+        <div class="filter-grid">
+            <div class="filter-field">
+                <label for="periodo">Mes</label>
+                <select name="periodo" id="periodo" class="filter-control">
+                    <?php foreach ($mesesDisponibles as $m): ?>
+                        <option value="<?= $m; ?>" <?= ($m === $periodoSeleccionado) ? 'selected' : ''; ?>>
+                            <?= date('F Y', strtotime($m . '-01')); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button type="submit" class="filter-btn filter-btn--apply">Aplicar filtros</button>
+            <a class="filter-btn filter-btn--clear" href="index.php">Limpiar filtros</a>
+        </div>
+    </form>
 
     <!-- Tarjetas de resumen del reporte (idénticas en ancho a las de arriba) -->
     <section class="history-summary" aria-label="Resumen financiero del periodo" style="margin-bottom: 24px;">
@@ -324,23 +331,25 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
             <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Filtra tus registros y descarga tu reporte en formato CSV o PDF.</p>
 
             <form action="../../controllers/budgetHistoryController.php" method="GET" target="_blank">
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label for="filtro_tipo" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Tipo de movimiento:</label>
-                    <select id="filtro_tipo" name="tipo" class="custom-select" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
-                        <option value="">Todos los movimientos</option>
-                        <option value="ingreso">Solo Ingresos</option>
-                        <option value="gasto">Solo Gastos</option>
-                    </select>
-                </div>
+                <div class="filter-stack">
+                    <div class="filter-field">
+                        <label for="filtro_tipo">Tipo de movimiento</label>
+                        <select id="filtro_tipo" name="tipo" class="filter-control">
+                            <option value="">Todos los movimientos</option>
+                            <option value="ingreso">Solo Ingresos</option>
+                            <option value="gasto">Solo Gastos</option>
+                        </select>
+                    </div>
 
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label for="filtro_desde" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Desde:</label>
-                    <input type="date" id="filtro_desde" name="desde" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
-                </div>
+                    <div class="filter-field">
+                        <label for="filtro_desde">Desde</label>
+                        <input type="date" id="filtro_desde" name="desde" class="filter-control">
+                    </div>
 
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="filtro_hasta" style="display: block; margin-bottom: 0.4rem; font-weight: 600;">Hasta:</label>
-                    <input type="date" id="filtro_hasta" name="hasta" style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); outline: none;">
+                    <div class="filter-field">
+                        <label for="filtro_hasta">Hasta</label>
+                        <input type="date" id="filtro_hasta" name="hasta" class="filter-control">
+                    </div>
                 </div>
 
                 <!-- Botones parejos distribuidos equitativamente -->

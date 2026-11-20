@@ -40,6 +40,10 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
     $_SESSION['user_nombre'] = $usuario['nombre'];
     $_SESSION['user_email'] = $usuario['correo'];
 
+    // Inicia el contador de inactividad (30 min) y limpia avisos de sesiones anteriores.
+    registrar_actividad();
+    unset($_SESSION['sesion_expirada']);
+
     // Abrir el Dashboard (la vista llama al controlador).
     header('Location: ../views/users/dashboard.php');
     exit;

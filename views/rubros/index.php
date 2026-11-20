@@ -16,6 +16,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
+    <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
 </head>
 
 <body>
@@ -31,9 +32,15 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
             <a href="create.php" class="btn btn-primary">+ Nuevo Rubro</a>
         </div>
 
-        <div class="table-toolbar" style="margin-bottom: 1rem;">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar rubro o categoría..." autocomplete="off">
+        <div class="card filter-card filter-card--search" role="search">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label for="searchInput">Buscar</label>
+                    <input type="text" id="searchInput" class="filter-control" placeholder="Buscar rubro o categoría..." autocomplete="off">
+                </div>
+                <div class="filter-actions">
+                    <button type="button" class="filter-btn filter-btn--clear" data-filter-clear>Limpiar filtros</button>
+                </div>
             </div>
         </div>
 
@@ -97,6 +104,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
         </div>
     </main>
 
+    <script src="../../public/js/filters.js?v=<?= filemtime(__DIR__ . '/../../public/js/filters.js') ?>"></script>
     <script src="../../public/js/rubros.js?v=<?= filemtime(__DIR__ . '/../../public/js/rubros.js') ?>"></script>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

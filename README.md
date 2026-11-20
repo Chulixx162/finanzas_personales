@@ -132,6 +132,18 @@ La aplicación sigue un proceso sencillo de planificación y seguimiento financi
 - **Control de versiones:** Git y GitHub.
 - **Despliegue:** Hosting web.
 
+##  Documentación
+
+Toda la documentación del proyecto está en Markdown dentro de [`public/docs/`](public/docs/README.md):
+
+- [Manual de usuario](public/docs/user_manual.md)
+- [Manual técnico](public/docs/technical_manual.md)
+- [Plan de Aseguramiento de Calidad (PAC)](public/docs/pac.md)
+- [Especificación de requisitos (SRS)](public/docs/srs.md)
+- [Modelo entidad-relación (MER)](public/docs/mer.md)
+- [Log de errores y sugerencias](public/docs/error_log.md)
+- [Instrumentos de calidad](public/docs/quality_instruments.md)
+
 ##  Aplicación desplegada
 
 <p align="center">
@@ -168,4 +180,4 @@ Más que registrar números, buscamos facilitar mejores decisiones financieras.
   <sub>Tu dinero, tus decisiones, tu futuro.</sub>
   <br><br>
   <sub>Desarrollado como proyecto de formación.</sub>
-</p>
+</p>

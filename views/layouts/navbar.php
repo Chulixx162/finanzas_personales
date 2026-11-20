@@ -167,3 +167,10 @@ $logoDestino = $logueado
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $h($base) ?>public/js/alerts.js"></script>
 <script src="<?= $h($base) ?>public/js/navbar.js"></script>
+<?php if ($logueado): ?>
+    <!-- Control de inactividad (30 min) y protección del botón "atrás" -->
+    <script src="<?= $h($base) ?>public/js/session.js"
+        data-status-url="<?= $h($base) ?>controllers/sessionController.php"
+        data-inicio-url="<?= $h($base) ?>public/index.php"
+        data-login-url="<?= $h($base) ?>views/auth/login.php?error=expirada"></script>
+<?php endif; ?>

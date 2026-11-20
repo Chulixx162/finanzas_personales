@@ -9,6 +9,11 @@ $base = '../';  // desde public/ hasta la raíz del proyecto
 $active = '';
 $logueado = isset($_SESSION['user_id']);
 
+// Con sesión iniciada la página muestra datos del usuario: que el navegador no la guarde.
+if ($logueado) {
+    enviar_cabeceras_privadas();
+}
+
 $ctaRuta = $logueado ? '../views/users/dashboard.php' : '../views/auth/register.php';
 $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 
@@ -403,23 +408,17 @@ if ($logueado) {
         <section class="video-demo" id="video" aria-labelledby="video-titulo">
             <div class="wrap">
                 <div class="video-head">
-                    <h2 class="section-title" id="video-titulo">Conoce la aplicación en acción</h2>
-                    <p class="section-lead">
-                        Mira en pocos minutos cómo registrar movimientos y controlar tu presupuesto.
-                    </p>
+                    <h2 class="section-title" id="video-titulo">Mira la app en acción</h2>
+                    <p class="section-lead">Recorrido corto: movimientos y presupuesto.</p>
                 </div>
 
                 <?php if ($videoUrl !== ''): ?>
                     <figure class="video-frame">
                         <video controls preload="metadata" playsinline
-                            aria-describedby="video-descripcion">
+                            aria-label="Video de presentación de Finanzas personales">
                             <source src="<?= $h($videoUrl) ?>" type="video/mp4">
                             Tu navegador no soporta la reproducción de video.
                         </video>
-                        <figcaption class="video-caption" id="video-descripcion">
-                            Video de presentación de Finanzas personales.
-                            <a href="<?= $h($videoUrl) ?>" target="_blank" rel="noopener">Abrir en una pestaña nueva</a>
-                        </figcaption>
                     </figure>
                 <?php else: ?>
                     <p class="video-caption">El video todavía no está disponible.</p>
@@ -432,49 +431,42 @@ if ($logueado) {
         <section class="team" id="equipo" aria-labelledby="equipo-titulo">
             <div class="wrap">
                 <div class="team-head">
-                    <p class="team-eyebrow">Nuestro proyecto</p>
-                    <h2 class="section-title" id="equipo-titulo">
-                        Equipo de desarrollo
-                    </h2>
+                    <h2 class="section-title" id="equipo-titulo">Equipo de desarrollo</h2>
                     <p class="section-lead">
-                        Finanzas personales es un proyecto académico creado
-                        para practicar el análisis, diseño y desarrollo de
-                        una aplicación web para organizar ingresos y gastos.
+                        Aplicación web multiusuario para controlar ingresos, gastos y presupuestos,
+                        construida en PHP con arquitectura MVC y base de datos MySQL.
+                        Proyecto académico del programa ADSO del SENA.
                     </p>
                 </div>
 
                 <div class="team-grid">
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">01</span>
-                        <h3>Análisis y organización</h3>
-                        <p>
-                            Definición de las necesidades del usuario,
-                            requisitos y estructura de las funcionalidades.
-                        </p>
+                        <h3>Arquitectura y backend</h3>
+                        <ul>
+                            <li>PHP organizado en modelos, controladores y vistas.</li>
+                            <li>Acceso a MySQL con mysqli y sentencias preparadas.</li>
+                            <li>Composer: phpdotenv para la configuración y PHPMailer para recuperar la contraseña.</li>
+                        </ul>
                     </article>
 
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">02</span>
-                        <h3>Desarrollo web</h3>
-                        <p>
-                            Construcción de las vistas y la lógica de la
-                            aplicación con PHP, HTML, CSS y JavaScript.
-                        </p>
+                        <h3>Interfaz y frontend</h3>
+                        <ul>
+                            <li>HTML5, CSS3 y JavaScript sin frameworks, con diseño responsive.</li>
+                            <li>Filtros y búsqueda en tiempo real sobre ingresos, gastos, categorías y rubros.</li>
+                            <li>Alertas con SweetAlert2 y reportes exportables en CSV y PDF.</li>
+                        </ul>
                     </article>
 
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">03</span>
-                        <h3>Base de datos y pruebas</h3>
-                        <p>
-                            Organización de la información en MySQL y
-                            verificación del funcionamiento de los módulos.
-                        </p>
+                        <h3>Datos, seguridad y calidad</h3>
+                        <ul>
+                            <li>MySQL (InnoDB) con 6 tablas relacionadas por llaves foráneas.</li>
+                            <li>Contraseñas con bcrypt, sesiones regeneradas y token CSRF en acciones críticas.</li>
+                            <li>Documentación: SRS, modelo entidad-relación, manuales y plan de calidad (PAC).</li>
+                        </ul>
                     </article>
                 </div>
-
-                <p class="team-note">
-                    Proyecto académico del programa ADSO del SENA.
-                </p>
             </div>
         </section>
 

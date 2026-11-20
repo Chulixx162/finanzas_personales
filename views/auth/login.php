@@ -6,7 +6,8 @@ $status = $_GET['status'] ?? '';
 $error_messages = [
     'email_invalido' => ['field' => 'email', 'msg' => 'Formato de correo no válido.'],
     'credenciales'   => ['field' => '', 'msg' => 'El correo o la contraseña no son correctos.'],
-    'campos_vacios'  => ['field' => '', 'msg' => 'Por favor, completa todos los campos.']
+    'campos_vacios'  => ['field' => '', 'msg' => 'Por favor, completa todos los campos.'],
+    'expirada'       => ['field' => '', 'msg' => 'Tu sesión se cerró por 30 minutos de inactividad. Inicia sesión de nuevo.']
 ];
 
 $server_error_field = $error_messages[$error]['field'] ?? '';

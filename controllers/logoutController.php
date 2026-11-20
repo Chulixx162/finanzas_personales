@@ -1,36 +1,38 @@
 <?php
 // controllers/logoutController.php
+// Cierra la sesión y lleva al usuario a la página de inicio.
 
-// Iniciar o reanudar la sesión existente
-session_start();
+require_once __DIR__ . '/../config/session.php';
+iniciar_sesion_segura();
 
-// Validar que la petición sea estrictamente por método POST
+$raiz = ruta_a_raiz();
+
+// Solo se cierra sesión por POST (el botón "Cerrar sesión" del navbar).
+// Si alguien entra escribiendo la URL (GET) no se cierra nada.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    // Si intentan acceder directamente por URL (GET), redirigir al panel o login
-    header("Location: ../views/usersdashboard.php");
+    $destino = isset($_SESSION['user_id'])
+        ? 'views/users/dashboard.php'
+        : 'public/index.php';
+
+    header('Location: ' . $raiz . $destino);
     exit;
 }
 
-// 1. Limpiar todas las variables de la sesión superglobal
-$_SESSION = [];
+// 1. Borrar variables, cookie y archivo de sesión.
+destruir_sesion();
 
-// 2. Si se desea destruir la cookie de sesión del navegador (seguridad adicional)
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(
-        session_name(),
-        '',
-        time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
-    );
+// 2. Que el navegador no conserve ninguna página privada en su caché
+//    (así el botón "atrás" no puede mostrar la cuenta).
+enviar_cabeceras_privadas();
+
+$https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (($_SERVER['SERVER_PORT'] ?? '') === '443');
+
+if ($https && !headers_sent()) {
+    // Vacía la caché del sitio en los navegadores que lo soportan (solo HTTPS).
+    header('Clear-Site-Data: "cache"');
 }
 
-// 3. Destruir la sesión completamente en el servidor
-session_destroy();
-
-// 4. Redirigir al formulario de inicio de sesión
-header("Location: ../views/auth/login.php");
+// 3. Volver a la página de inicio.
+header('Location: ' . $raiz . 'public/index.php');
 exit;

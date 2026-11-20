@@ -65,7 +65,11 @@ switch ($action) {
         $rubros = obtenerRubrosParaSelect($conn, $user_id);
         break;
 
-    default: // 'index'
-        $movimientos = obtenerMovimientosPorUsuario($conn, $user_id);
+    default: // 'index': historial con filtros (periodo, tipo y categoría)
+        $categorias  = obtenerCategoriasParaFiltro($conn, $user_id);
+        $filtros     = normalizarFiltrosMovimientos($_GET, $categorias);
+        $movimientos = obtenerMovimientosFiltrados($conn, $user_id, $filtros);
+        $resumen     = resumirMovimientos($movimientos);
+        $hayFiltros  = hayFiltrosActivos($filtros);
         break;
 }

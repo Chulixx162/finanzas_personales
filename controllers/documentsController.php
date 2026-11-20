@@ -1,7 +1,7 @@
 <?php
 // controllers/documentsController.php
 // Entrega un manual o anexo de public/docs/ solo a usuarios con sesión.
-//   ?doc=<clave>&modo=ver        -> lo abre en el navegador (PDF y SQL)
+//   ?doc=<clave>&modo=ver        -> lo abre en el navegador (.md con el visor, PDF y SQL)
 //   ?doc=<clave>&modo=descargar  -> lo descarga
 // Solo se entregan los documentos del catálogo (config/documents.php).
 
@@ -21,13 +21,27 @@ if ($doc === null) {
     exit;
 }
 
+// Los documentos Markdown se muestran con el visor (views/docs/viewer.php).
+if ($doc['extension'] === 'md' && $modo === 'ver') {
+    $claveDoc    = $clave;
+    $tituloDoc   = titulo_documento($clave) ?: $doc['archivo'];
+    $contenidoMd = (string) file_get_contents($doc['ruta']);
+
+    header('Content-Type: text/html; charset=utf-8');
+    require __DIR__ . '/../views/docs/viewer.php';
+    exit;
+}
+
 $tipos = [
+    'md'   => 'text/markdown; charset=utf-8',
     'pdf'  => 'application/pdf',
     'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'sql'  => 'text/plain; charset=utf-8',
+    'jpeg' => 'image/jpeg',
 ];
 
-// Solo PDF y SQL se pueden mostrar en el navegador; lo demás se descarga.
+// Solo PDF y SQL se pueden mostrar directo en el navegador; lo demás se descarga.
 $sePuedeVer  = in_array($doc['extension'], ['pdf', 'sql'], true);
 $disposicion = ($modo === 'ver' && $sePuedeVer) ? 'inline' : 'attachment';
 

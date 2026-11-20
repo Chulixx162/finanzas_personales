@@ -35,6 +35,7 @@ $valorHasta = es_fecha_valida($hasta) ? $hasta : '';
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
     <link rel="stylesheet" href="../../public/css/category_report.css?v=<?= filemtime(__DIR__ . '/../../public/css/category_report.css') ?>">
+    <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
 </head>
 
@@ -50,31 +51,39 @@ $valorHasta = es_fecha_valida($hasta) ? $hasta : '';
             </div>
         </div>
 
-        <!-- Selector de periodo -->
-        <form class="card report-filters" id="reportForm" method="GET" action="">
-            <div class="form-group">
-                <label for="periodo">Periodo</label>
-                <select id="periodo" name="periodo">
-                    <?php foreach ($periodos as $clave => $etiqueta): ?>
-                        <option value="<?= $h($clave) ?>" <?= $periodo === $clave ? 'selected' : '' ?>>
-                            <?= $h($etiqueta) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+        <!-- Filtro de periodo -->
+        <form class="card filter-card" id="reportForm" method="GET" action="">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label for="periodo">Periodo</label>
+                    <select id="periodo" name="periodo" class="filter-control">
+                        <?php foreach ($periodos as $clave => $etiqueta): ?>
+                            <option value="<?= $h($clave) ?>" <?= $periodo === $clave ? 'selected' : '' ?>>
+                                <?= $h($etiqueta) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="filter-dates" id="customDates" <?= $periodo === 'personalizado' ? '' : 'hidden' ?>>
+                    <div class="filter-field">
+                        <label for="desde">Desde</label>
+                        <input type="date" id="desde" name="desde" class="filter-control"
+                            value="<?= $h($periodo === 'personalizado' ? $desdeEntrada : $valorDesde) ?>"
+                            <?= $periodo === 'personalizado' ? '' : 'disabled' ?>>
+                    </div>
+                    <div class="filter-field">
+                        <label for="hasta">Hasta</label>
+                        <input type="date" id="hasta" name="hasta" class="filter-control"
+                            value="<?= $h($periodo === 'personalizado' ? $hastaEntrada : $valorHasta) ?>"
+                            <?= $periodo === 'personalizado' ? '' : 'disabled' ?>>
+                    </div>
+                </div>
             </div>
 
-            <div class="custom-dates" id="customDates" <?= $periodo === 'personalizado' ? '' : 'hidden' ?>>
-                <div class="form-group">
-                    <label for="desde">Desde</label>
-                    <input type="date" id="desde" name="desde" value="<?= $h($periodo === 'personalizado' ? $desdeEntrada : $valorDesde) ?>"
-                        <?= $periodo === 'personalizado' ? '' : 'disabled' ?>>
-                </div>
-                <div class="form-group">
-                    <label for="hasta">Hasta</label>
-                    <input type="date" id="hasta" name="hasta" value="<?= $h($periodo === 'personalizado' ? $hastaEntrada : $valorHasta) ?>"
-                        <?= $periodo === 'personalizado' ? '' : 'disabled' ?>>
-                </div>
-                <button type="submit" class="btn btn-primary">Aplicar</button>
+            <div class="filter-actions">
+                <button type="submit" class="filter-btn filter-btn--apply">Aplicar filtros</button>
+                <a class="filter-btn filter-btn--clear" href="category_report.php">Limpiar filtros</a>
             </div>
         </form>
 

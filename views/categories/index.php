@@ -14,6 +14,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <link rel="icon" href="../../public/img/icon.webp" type="image/x-icon">
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
+    <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
 </head>
 
 <body>
@@ -35,9 +36,15 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
                 data-texto="<?= htmlspecialchars($aviso[1]) ?>"></div>
         <?php endif; ?>
 
-        <div class="table-toolbar">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar categoría..." autocomplete="off">
+        <div class="card filter-card filter-card--search" role="search">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label for="searchInput">Buscar</label>
+                    <input type="text" id="searchInput" class="filter-control" placeholder="Buscar categoría..." autocomplete="off">
+                </div>
+                <div class="filter-actions">
+                    <button type="button" class="filter-btn filter-btn--clear" data-filter-clear>Limpiar filtros</button>
+                </div>
             </div>
         </div>
 
@@ -85,6 +92,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../public/js/alerts.js?v=<?= filemtime(__DIR__ . '/../../public/js/alerts.js') ?>"></script>
+    <script src="../../public/js/filters.js?v=<?= filemtime(__DIR__ . '/../../public/js/filters.js') ?>"></script>
     <script src="../../public/js/categories.js?v=<?= filemtime(__DIR__ . '/../../public/js/categories.js') ?>"></script>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
