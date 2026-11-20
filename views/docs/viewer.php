@@ -8,6 +8,16 @@
 //   $contenidoMd  texto Markdown del archivo
 //   $claveDoc     clave del documento (para el enlace de descarga)
 
+/** @var string $tituloDoc   */
+/** @var string $claveDoc    */
+/** @var string $contenidoMd */
+
+// Si alguien abre este archivo directo (sin pasar por el controlador), vuelve al perfil.
+if (!isset($tituloDoc, $claveDoc, $contenidoMd)) {
+    header('Location: ../users/profile.php');
+    exit;
+}
+
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
 // Opciones que hacen seguro el JSON dentro de <script> (sin cerrar la etiqueta por accidente).

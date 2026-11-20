@@ -12,7 +12,7 @@ $logueado = isset($_SESSION['user_id']);
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
 // Cambia la fecha solo cuando cambien los términos.
-$ultimaActualizacion = '27 de octubre de 2026';
+$ultimaActualizacion = '20 de noviembre de 2026';
 $correoContacto      = 'f.personales1.1@gmail.com';
 
 // El botón de regreso depende de si hay sesión.
@@ -67,6 +67,15 @@ $volverTexto = $logueado ? 'Ir a mi panel' : 'Registrarme ahora';
                 <p>La aplicación te permite registrar y consultar tus movimientos
                     financieros, organizados por categorías y rubros, para llevar un
                     control de tus ingresos y gastos.</p>
+                <p>Sobre los movimientos registrados rigen estas políticas:</p>
+                <ul>
+                    <li>Los movimientos no se pueden eliminar; si cometes un error, puedes
+                        editarlo para corregir el monto, el rubro, la fecha o la descripción.</li>
+                    <li>Al eliminar tu cuenta se borran todos tus datos, incluidos tus movimientos.</li>
+                    <li>Cuando tus gastos del mes superan el 80 % de tu presupuesto mensual, la
+                        aplicación te muestra una alerta; al superar el 100 % te lo vuelve a
+                        advertir, pero el gasto se registra igual.</li>
+                </ul>
             </section>
 
             <section id="cuenta">

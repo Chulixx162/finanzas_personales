@@ -38,6 +38,7 @@ $saldo = $totalIngresos - $totalGastos;
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
+    <link rel="stylesheet" href="../../public/css/movement_alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/movement_alerts.css') ?>">
 </head>
 
 <body>
@@ -52,6 +53,30 @@ $saldo = $totalIngresos - $totalGastos;
             </div>
             <a href="create.php" class="btn btn-primary">+ Nuevo Movimiento</a>
         </div>
+
+        <?php if (in_array($alertaPresupuesto['nivel'], ['aviso', 'excedido'], true)): ?>
+            <?php $excedido = $alertaPresupuesto['nivel'] === 'excedido'; ?>
+            <div class="budget-banner <?= $excedido ? 'budget-banner--danger' : 'budget-banner--warning' ?>" role="alert">
+                <div class="budget-banner__text">
+                    <strong>
+                        <?= $excedido
+                            ? 'Superaste el 100 % de tu presupuesto mensual'
+                            : 'Ya usaste más del ' . (int) UMBRAL_ALERTA_PRESUPUESTO . ' % de tu presupuesto mensual' ?>
+                    </strong>
+                    <span>
+                        Llevas gastados <?= $moneda($alertaPresupuesto['gastado']) ?> de
+                        <?= $moneda($alertaPresupuesto['presupuesto']) ?>
+                        (<?= number_format($alertaPresupuesto['porcentaje'], 1, ',', '.') ?> %).
+                        <?= $excedido
+                            ? 'Te pasaste por ' . $moneda($alertaPresupuesto['gastado'] - $alertaPresupuesto['presupuesto']) . '.'
+                            : 'Te quedan ' . $moneda($alertaPresupuesto['disponible']) . ' disponibles.' ?>
+                    </span>
+                </div>
+                <div class="budget-bar" aria-hidden="true">
+                    <span style="width: <?= (int) min(100, round($alertaPresupuesto['porcentaje'])) ?>%;"></span>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <!-- Filtro único: periodo, tipo, categoría y búsqueda -->
         <form class="card filter-card filter-card--inline" id="filterForm" action="#" novalidate>
@@ -129,12 +154,13 @@ $saldo = $totalIngresos - $totalGastos;
                         <th>Rubro / Categoría</th>
                         <th>Tipo</th>
                         <th class="text-right">Monto</th>
+                        <th class="text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($movimientos)): ?>
                         <tr class="empty-row">
-                            <td colspan="5">No tienes movimientos registrados aún.</td>
+                            <td colspan="6">No tienes movimientos registrados aún.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($movimientos as $mov): ?>
@@ -162,12 +188,24 @@ $saldo = $totalIngresos - $totalGastos;
                                 <td class="text-right" style="font-weight: 800; color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
                                     <?= $mov['tipo'] === 'ingreso' ? '+' : '-' ?><?= $moneda($mov['monto']) ?>
                                 </td>
+                                <td class="text-right">
+                                    <a href="edit.php?id=<?= (int) $mov['id_movimiento'] ?>"
+                                        class="btn-action btn-edit" title="Editar movimiento"
+                                        aria-label="Editar el movimiento del <?= $h($fecha($mov['fecha'])) ?>">
+                                        Editar
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
+
+        <p class="policy-note">
+            Por políticas del sistema los movimientos no se pueden eliminar.
+            Si te equivocaste, usa <strong>Editar</strong> para corregirlo.
+        </p>
     </main>
 
     <script src="../../public/js/transactions.js?v=<?= filemtime(__DIR__ . '/../../public/js/transactions.js') ?>"></script>

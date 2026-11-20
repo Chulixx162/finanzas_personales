@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const filterForm = document.getElementById('filterForm');
     const createForm = document.getElementById('createMovimientoForm');
+    const editForm = document.getElementById('editMovimientoForm');
 
     if (filterForm) {
         iniciarFiltros(filterForm);
@@ -30,6 +31,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (confirmed) {
                 createForm.submit();
+            }
+        });
+    }
+
+    // Confirmación antes de guardar los cambios de un movimiento
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const tipo = editForm.querySelector('#tipo').value;
+            const monto = Number(editForm.querySelector('#monto').value);
+            const select = editForm.querySelector('#id_rubro');
+            const rubro = select.options[select.selectedIndex].text.replace(/\s+/g, ' ').trim();
+
+            const confirmed = await alerta(
+                '¿Guardar los cambios?',
+                `El movimiento quedará como ${tipo} de $${monto.toLocaleString('es-CO')} en "${rubro}".`,
+                'question',
+                'Sí, guardar',
+                'Cancelar'
+            );
+
+            if (confirmed) {
+                editForm.submit();
             }
         });
     }
@@ -71,14 +96,16 @@ function iniciarFiltros(form) {
 
     // Texto de búsqueda de cada fila, calculado una sola vez.
     filas.forEach((fila) => {
-        fila.dataset.busqueda = normalizar(fila.textContent.replace(/\s+/g, ' '));
+        // Se excluye la última columna (Acciones) para que "Editar" no cuente como texto.
+        const texto = Array.from(fila.cells).slice(0, -1).map((celda) => celda.textContent).join(' ');
+        fila.dataset.busqueda = normalizar(texto.replace(/\s+/g, ' '));
     });
 
     // Fila que se muestra cuando ningún movimiento coincide.
     const filaVacia = document.createElement('tr');
     filaVacia.className = 'empty-row';
     filaVacia.hidden = true;
-    filaVacia.innerHTML = '<td colspan="5">No hay movimientos con esos filtros.</td>';
+    filaVacia.innerHTML = '<td colspan="6">No hay movimientos con esos filtros.</td>';
     if (cuerpo && filas.length > 0) {
         cuerpo.appendChild(filaVacia);
     }
@@ -193,22 +220,23 @@ function iniciarFiltros(form) {
     actualizarFechas();
 }
 
-// Aviso que envía el servidor (?success=created o ?error=...)
+// Aviso que envía el servidor (?success=created|updated, ?alerta80=1, ?excede=1 o ?error=...)
 function mostrarAvisoDelServidor() {
     const params = new URLSearchParams(window.location.search);
+    const exito = params.get('success');
+    const guardado = exito === 'created' || exito === 'updated';
+    const accion = exito === 'updated' ? 'actualizó' : 'registró';
 
-    if (params.get('success') === 'created' && params.get('excede') === '1') {
-        // El gasto se registró, pero el mes ya superó el presupuesto estimado.
-        const pesos = (n) => '$' + Number(n).toLocaleString('es-CO');
-        const gastado = Number(params.get('gastado')) || 0;
-        const presupuesto = Number(params.get('presupuesto')) || 0;
-        const texto = 'El gasto se registró, pero superaste el 100 % de tu presupuesto estimado: llevas gastados '
-            + pesos(gastado) + ' y tu presupuesto mensual es de ' + pesos(presupuesto)
-            + ' (te pasaste por ' + pesos(gastado - presupuesto) + ').';
+    const pesos = (n) => '$' + Number(n).toLocaleString('es-CO');
+    const gastado = Number(params.get('gastado')) || 0;
+    const presupuesto = Number(params.get('presupuesto')) || 0;
+    const porcentaje = (Number(params.get('porcentaje')) || 0).toLocaleString('es-CO', { maximumFractionDigits: 1 });
 
+    // Alerta emergente (SweetAlert) o, si no está disponible, el aviso normal.
+    const alertaEmergente = (titulo, texto) => {
         if (typeof Swal !== 'undefined' && typeof opcionesAlerta === 'function') {
             Swal.fire(Object.assign(opcionesAlerta(true), {
-                title: '¡Superaste el 100 % de tu presupuesto!',
+                title: titulo,
                 text: texto,
                 icon: 'warning',
                 confirmButtonText: 'Entendido'
@@ -216,12 +244,36 @@ function mostrarAvisoDelServidor() {
         } else {
             mostrarAviso('error', texto);
         }
+    };
+
+    if (guardado && params.get('excede') === '1') {
+        // El gasto se guardó, pero el mes ya superó el 100 % del presupuesto.
+        alertaEmergente(
+            '¡Superaste el 100 % de tu presupuesto!',
+            'El movimiento se ' + accion + ', pero superaste el 100 % de tu presupuesto estimado: llevas gastados '
+            + pesos(gastado) + ' y tu presupuesto mensual es de ' + pesos(presupuesto)
+            + ' (te pasaste por ' + pesos(gastado - presupuesto) + ').'
+        );
         window.history.replaceState(null, '', window.location.pathname);
-    } else if (params.get('success') === 'created') {
+    } else if (guardado && params.get('alerta80') === '1') {
+        // El gasto se guardó y la suma de los rubros pasó el 80 % del presupuesto.
+        alertaEmergente(
+            'Ya usaste más del 80 % de tu presupuesto',
+            'El movimiento se ' + accion + '. Llevas gastados ' + pesos(gastado) + ' de tu presupuesto mensual de '
+            + pesos(presupuesto) + ' (' + porcentaje + ' %). Te quedan ' + pesos(Math.max(0, presupuesto - gastado))
+            + ' disponibles.'
+        );
+        window.history.replaceState(null, '', window.location.pathname);
+    } else if (exito === 'created') {
         mostrarAviso('ok', 'El movimiento se registró correctamente.');
+        window.history.replaceState(null, '', window.location.pathname);
+    } else if (exito === 'updated') {
+        mostrarAviso('ok', 'El movimiento se actualizó correctamente.');
         window.history.replaceState(null, '', window.location.pathname);
     } else if (params.has('error')) {
         mostrarAviso('error', params.get('error'));
-        window.history.replaceState(null, '', window.location.pathname);
+        // En la página de edición se conserva ?id=... para poder seguir corrigiendo.
+        const id = params.get('id');
+        window.history.replaceState(null, '', window.location.pathname + (id ? '?id=' + encodeURIComponent(id) : ''));
     }
 }
