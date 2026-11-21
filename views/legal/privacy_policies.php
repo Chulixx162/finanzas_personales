@@ -5,7 +5,8 @@
 require_once __DIR__ . '/../../config/session.php';
 iniciar_sesion_segura();
 
-$base = '../../';  // desde views/legal/ hasta la raíz del proyecto
+require_once __DIR__ . '/../../config/app.php';
+$base = app_base();  // prefijo de la app en la URL (config/app.php)
 $active = '';  // las páginas legales no están en el menú principal
 $logueado = isset($_SESSION['user_id']);
 

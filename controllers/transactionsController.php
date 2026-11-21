@@ -1,9 +1,5 @@
 <?php
 // controllers/transactionsController.php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Sesión y guardia de ruta privada (igual que el resto de controladores).
 require_once __DIR__ . '/../config/session.php';
 
@@ -12,7 +8,7 @@ $user_id = requerir_login();
 $base = '../';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../views/auth/login.php");
+    redirigir('views/auth/login.php');
     exit();
 }
 
@@ -47,8 +43,7 @@ switch ($action) {
                 $destino .= parametrosAlertaPresupuesto($user_id, $tipo, (string) $fecha);
             }
 
-            header("Location: ../views/transactions/index.php?" . $destino);
-            exit();
+            redirigir('views/transactions/index.php?' . $destino);
         }
         break;
 
@@ -69,19 +64,19 @@ switch ($action) {
 
     case 'update':
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: ../views/transactions/index.php");
+            redirigir('views/transactions/index.php');
             exit();
         }
 
         $id_movimiento = (int) ($_POST['id_movimiento'] ?? 0);
-        $volver        = "../views/transactions/edit.php?id=" . $id_movimiento . "&";
+        $volver        = "views/transactions/edit.php?id=" . $id_movimiento . "&";
 
         // Protección CSRF (mismo token que usa el formulario de presupuesto)
         $tokenSesion     = $_SESSION['csrf_token'] ?? '';
         $tokenFormulario = is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : '';
 
         if ($tokenSesion === '' || !hash_equals($tokenSesion, $tokenFormulario)) {
-            header("Location: " . $volver . "error=" . urlencode('La sesión del formulario expiró. Recarga la página e inténtalo de nuevo.'));
+            redirigir($volver . "error=" . urlencode('La sesión del formulario expiró. Recarga la página e inténtalo de nuevo.'));
             exit();
         }
 
@@ -93,18 +88,17 @@ switch ($action) {
 
         if ($id_movimiento <= 0 || $id_rubro <= 0 || !in_array($tipo, ['ingreso', 'gasto'], true)
             || $monto <= 0 || $monto > $MAX_MONTO || $fecha === null || mb_strlen($descripcion) > 255) {
-            header("Location: " . $volver . "error=" . urlencode('Revisa los datos: el monto, la fecha, el rubro y la descripción (máx. 255 caracteres).'));
+            redirigir($volver . "error=" . urlencode('Revisa los datos: el monto, la fecha, el rubro y la descripción (máx. 255 caracteres).'));
             exit();
         }
 
         if (!actualizarMovimiento($conn, $user_id, $id_movimiento, $id_rubro, $tipo, $monto, $fecha, $descripcion)) {
-            header("Location: " . $volver . "error=" . urlencode('No se pudo actualizar el movimiento.'));
+            redirigir($volver . "error=" . urlencode('No se pudo actualizar el movimiento.'));
             exit();
         }
 
-        header("Location: ../views/transactions/index.php?success=updated"
+        redirigir('views/transactions/index.php?success=updated'
             . parametrosAlertaPresupuesto($user_id, $tipo, $fecha));
-        exit();
 
     default: // 'index': historial con filtros (periodo, tipo y categoría)
         $categorias  = obtenerCategoriasParaFiltro($conn, $user_id);

@@ -1,0 +1,39 @@
+LICENCIA DE USO ACADÉMICO Y NO COMERCIAL
+Finanzas Personales
+
+Copyright (c) 2026 Equipo de desarrollo de Finanzas Personales
+Programa de formación Análisis y Desarrollo de Software (ADSO), SENA, ficha 3407799.
+
+Se concede, sin costo, permiso a cualquier persona que obtenga una copia de este
+software y de su documentación asociada (SRS, PAC, manuales y demás anexos), en
+adelante "el Software", para usarlo, copiarlo, estudiarlo, probarlo, evaluarlo y
+modificarlo con fines educativos, de formación y de investigación, SIN fines
+comerciales, sujeto a las siguientes condiciones:
+
+1. AVISO. Todas las copias o partes sustanciales del Software deben conservar el
+   aviso de copyright y este texto de licencia.
+
+2. USO NO COMERCIAL. No se permite vender el Software, ofrecerlo como servicio de
+   pago ni incorporarlo a un producto o servicio comercial sin autorización previa
+   y por escrito del equipo de desarrollo.
+
+3. REDISTRIBUCIÓN. Se pueden compartir copias, con o sin modificaciones, bajo estos
+   mismos términos y señalando de forma clara los cambios realizados.
+
+4. COMPONENTES DE TERCEROS. Las tecnologías y bibliotecas que usa el Software (por
+   ejemplo PHP, MySQL, Apache, PHPMailer, phpdotenv y las bibliotecas de interfaz
+   cargadas desde CDN) se rigen por sus propias licencias, que no cambian por esta.
+
+5. EVOLUCIÓN DEL PROYECTO. Por tratarse de un proyecto académico en evolución, los
+   términos de licenciamiento de versiones futuras (por ejemplo, un despliegue
+   comercial o productivo) podrán ser distintos y serán definidos por el equipo de
+   desarrollo. Las copias ya obtenidas bajo esta licencia conservan estos términos.
+
+6. DATOS PERSONALES. El Software maneja datos personales y financieros de sus
+   usuarios. Quien lo despliegue es responsable de tratarlos conforme a la
+   normativa aplicable (en Colombia, la Ley 1581 de 2012).
+
+EL SOFTWARE SE ENTREGA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA,
+INCLUIDAS, ENTRE OTRAS, LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN
+PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES SERÁN RESPONSABLES POR
+RECLAMACIONES, DAÑOS U OTRAS RESPONSABILIDADES DERIVADAS DEL USO DEL SOFTWARE.

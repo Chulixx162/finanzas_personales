@@ -15,7 +15,7 @@ $usuario = obtener_usuario_por_id($idUsuario);
 if (!$usuario) {
     destruir_sesion();
 
-    header('Location: ../views/auth/login.php?error=sesion');
+    redirigir('views/auth/login.php?error=sesion');
     exit;
 }
 

@@ -14,7 +14,7 @@
 
 // Si alguien abre este archivo directo (sin pasar por el controlador), vuelve al perfil.
 if (!isset($tituloDoc, $claveDoc, $contenidoMd)) {
-    header('Location: ../users/profile.php');
+    redirigir('views/users/profile.php');
     exit;
 }
 
@@ -30,14 +30,14 @@ $jsonSeguro = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $h($tituloDoc) ?> · Finanzas</title>
-    <link rel="icon" href="../public/img/icon.webp" type="image/x-icon">
-    <link rel="stylesheet" href="../public/css/docs_viewer.css?v=<?= filemtime(__DIR__ . '/../../public/css/docs_viewer.css') ?>">
+    <link rel="icon" href="<?= app_url('public/img/icon.webp') ?>" type="image/x-icon">
+    <link rel="stylesheet" href="<?= app_url('public/css/docs_viewer.css') ?>?v=<?= filemtime(__DIR__ . '/../../public/css/docs_viewer.css') ?>">
 </head>
 
 <body>
 
     <header class="doc-bar">
-        <a class="doc-back" href="../views/users/profile.php">&larr; Volver a mi perfil</a>
+        <a class="doc-back" href="<?= app_url('views/users/profile.php') ?>">&larr; Volver a mi perfil</a>
         <span class="doc-name"><?= $h($tituloDoc) ?></span>
         <a class="doc-download"
             href="documentsController.php?doc=<?= rawurlencode($claveDoc) ?>&amp;modo=descargar">Descargar .md</a>
@@ -54,7 +54,7 @@ $jsonSeguro = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON
     <script>
         (function() {
             const markdown = <?= json_encode((string) $contenidoMd, $jsonSeguro) ?>;
-            const docsUrl = '../public/docs/'; // desde controllers/ hasta public/docs/
+            const docsUrl = '<?= app_url('public/docs/') ?>';
             const body = document.getElementById('markdownBody');
 
             try {

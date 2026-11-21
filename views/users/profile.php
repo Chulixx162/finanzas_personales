@@ -1,7 +1,8 @@
 <?php
 // views/users/profile.php
 // Perfil del usuario: editar datos de la cuenta y eliminarla.
-$base = '../../';  // desde views/users/ hasta la raíz del proyecto
+require_once __DIR__ . '/../../config/app.php';
+$base = app_base();  // prefijo de la app en la URL (config/app.php)
 $active = 'perfil';  // el perfil no está en el menú principal, pero se marca en el chip del usuario
 
 // La vista se abre primero y llama al controlador: este valida la sesión
@@ -24,6 +25,7 @@ $iconos = [
     'DOCX' => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
     'MD'   => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 17v-4l2 2 2-2v4"></path></svg>',
     'PDF'  => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>',
+    'MP4'  => $svgBase . '<rect x="3" y="5" width="18" height="14" rx="2"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg>',
     'XLSX' => $svgBase . '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><line x1="12" y1="11" x2="12" y2="19"></line></svg>',
 ];
 

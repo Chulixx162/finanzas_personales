@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/session.php';
 $idUsuario = requerir_login();
 require_once __DIR__ . '/../models/budgetHistoryModel.php';
 
-$vista = '../views/presupuestos/index.php';
+$vista = 'views/presupuestos/index.php';
 
 // 2. Exportación a CSV con filtros aplicados y delimitador compatible con Excel
 if (isset($_GET['action']) && $_GET['action'] === 'export_csv') {
@@ -81,7 +81,7 @@ $mensajes = [
 // Redirige a la vista con un aviso y detiene el script
 function volver_con_aviso(string $vista, string $aviso): void
 {
-    header('Location: ' . $vista . '?aviso=' . $aviso);
+    redirigir($vista . '?aviso=' . $aviso);
     exit;
 }
 
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $minimo = obtener_max_asignado_mensual($idUsuario);
 
     if ($nuevo + 0.005 < $minimo && ($actual === null || $nuevo < $actual)) {
-        header('Location: ' . $vista . '?aviso=menor_asignado&min=' . (int) ceil($minimo));
+        redirigir($vista . '?aviso=menor_asignado&min=' . (int) ceil($minimo));
         exit;
     }
 
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // 6. Si acceden al controlador directamente por GET sin action, redirigir a la vista
 if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
-    header('Location: ' . $vista);
+    redirigir($vista);
     exit;
 }
 

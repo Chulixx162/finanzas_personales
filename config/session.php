@@ -3,13 +3,15 @@
 // Configuración central de la sesión. Todo archivo que necesite sesión debe
 // incluir este archivo y llamar a iniciar_sesion_segura() en lugar de session_start().
 
+require_once __DIR__ . '/app.php';
+
 // RNF-05 / CP-08: la sesión expira tras 30 minutos sin actividad.
 const SESION_INACTIVIDAD = 1800;
 
 /**
- * Ruta relativa desde el script que se está ejecutando hasta la raíz del proyecto
- * ('' en la raíz, '../' en controllers/, '../../' en views/x/, etc.).
- * Sirve para redirigir bien sin importar desde qué carpeta se incluya este archivo.
+ * @deprecated Usa redirigir() / app_url() de config/app.php.
+ * Ruta relativa desde el script que se está ejecutando hasta la raíz del proyecto.
+ * Se conserva solo por compatibilidad; ya nada del proyecto la usa.
  */
 function ruta_a_raiz(): string
 {
@@ -42,8 +44,8 @@ function iniciar_sesion_segura(): void
     // El servidor puede borrar los archivos de sesión inactivos pasado el límite.
     ini_set('session.gc_maxlifetime', (string) SESION_INACTIVIDAD);
 
-    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (($_SERVER['SERVER_PORT'] ?? '') === '443');
+    // Detrás de un proxy (Docker en producción) se apoya en X-Forwarded-Proto.
+    $https = app_es_https();
 
     session_set_cookie_params([
         'lifetime' => 0,          // se borra al cerrar el navegador
@@ -136,8 +138,7 @@ function redirigir_sin_sesion(): void
         ? 'views/auth/login.php?error=expirada'
         : 'public/index.php';
 
-    header('Location: ' . ruta_a_raiz() . $destino);
-    exit;
+    redirigir($destino);
 }
 
 /**

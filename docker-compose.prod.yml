@@ -1,0 +1,70 @@
+# ============================================================
+# PRODUCCIÓN
+#   cp .env.example .env.production      (y rellénalo con valores reales)
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# - El código va dentro de la imagen; no se monta nada del host.
+# - La app solo escucha en 127.0.0.1: pon delante un proxy con HTTPS
+#   (Nginx, Caddy, Traefik...) que reenvíe a ese puerto y envíe
+#   X-Forwarded-Proto / X-Forwarded-For.
+# - La base de datos NO se publica fuera de la red de Docker.
+# - La base no se llena sola (el schema.sql trae usuarios de prueba): importa
+#   solo la estructura la primera vez (ver README, sección Docker).
+# ============================================================
+name: finanzas-personales-prod
+
+services:
+  app:
+    build:
+      context: .
+      target: production
+    image: finanzas-personales:${APP_VERSION:-latest}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+    environment:
+      APP_NAME: "${APP_NAME:-Finanzas Personales}"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: "${APP_URL:?Define APP_URL en .env.production (ej. https://finanzas.nexohuila.com)}"
+      APP_BASE_PATH: "${APP_BASE_PATH:-auto}"
+      APP_TRUST_PROXY: "true"
+      APP_TIMEZONE: "${APP_TIMEZONE:-America/Bogota}"
+      APP_LOCALE: "${APP_LOCALE:-es_CO}"
+      APP_CURRENCY: "${APP_CURRENCY:-COP}"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: "${DB_NAME:-finanzas_personales}"
+      DB_USER: "${DB_USER:?Define DB_USER en .env.production}"
+      DB_PASS: "${DB_PASS:?Define DB_PASS en .env.production}"
+      MAIL_HOST: "${MAIL_HOST:-smtp.gmail.com}"
+      MAIL_PORT: "${MAIL_PORT:-587}"
+      MAIL_USERNAME: "${MAIL_USERNAME:-}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-}"
+      MAIL_FROM_NAME: "${MAIL_FROM_NAME:-Finanzas Personales}"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env.production}"
+      MYSQL_DATABASE: "${DB_NAME:-finanzas_personales}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASS}"
+      TZ: "${APP_TIMEZONE:-America/Bogota}"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  db_data:

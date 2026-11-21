@@ -14,11 +14,6 @@ iniciar_sesion_segura();
 require_once __DIR__ . '/../models/usersModel.php';
 require_once __DIR__ . '/../config/documents.php';
 
-// Ruta hacia las vistas según desde dónde se ejecute este archivo:
-//   directo (formulario o fetch) -> estamos en controllers/ -> ../views/
-//   incluido por la vista        -> estamos en views/users/ -> ../
-define('RUTA_VISTAS', $accesoDirecto ? '../views/' : '../');
-
 $esAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
 /* ---------- Respuestas ---------- */
@@ -60,7 +55,7 @@ function fallar(string $codigo)
         responder(['ok' => false, 'error' => $codigo], ESTADOS_ERROR[$codigo] ?? 400);
     }
 
-    header('Location: ' . RUTA_VISTAS . 'users/profile.php?error=' . $codigo);
+    redirigir('views/users/profile.php?error=' . $codigo);
     exit;
 }
 
@@ -92,6 +87,16 @@ function campo(string $nombre): string
 
 /* ---------- Manuales y anexos ---------- */
 
+// 5 KB, 850 KB, 24,2 MB...
+function tamano_legible(int $bytes): string
+{
+    if ($bytes >= 1048576) {
+        return number_format($bytes / 1048576, 1, ',', '.') . ' MB';
+    }
+
+    return max(1, (int) round($bytes / 1024)) . ' KB';
+}
+
 // Prepara los documentos del catálogo (config/documents.php) para la vista.
 // Si un archivo no está en public/docs/, la tarjeta aparece como "Próximamente".
 function listar_documentos(): array
@@ -99,7 +104,7 @@ function listar_documentos(): array
     $resultado = [];
 
     foreach (catalogo_documentos() as $grupo => $lista) {
-        foreach ($lista as $clave => [$titulo, $detalle]) {
+        foreach ($lista as $clave => [$titulo, $detalle]) { // el resto de valores (archivo, carpeta) los usa buscar_documento()
             $doc = buscar_documento($clave);
 
             $resultado[$grupo][] = [
@@ -108,8 +113,8 @@ function listar_documentos(): array
                 'detalle'    => $detalle,
                 'extension'  => $doc ? strtoupper($doc['extension']) : '',
                 'disponible' => $doc !== null,
-                'verse'      => $doc !== null && in_array($doc['extension'], ['md', 'pdf', 'sql'], true),
-                'tamano'     => $doc ? max(1, (int) round(filesize($doc['ruta']) / 1024)) . ' KB' : '',
+                'verse'      => $doc !== null && in_array($doc['extension'], ['md', 'pdf', 'sql', 'mp4'], true),
+                'tamano'     => $doc ? tamano_legible((int) filesize($doc['ruta'])) : '',
             ];
         }
     }
@@ -159,7 +164,7 @@ function actualizar_perfil(int $idUsuario)
         responder(['ok' => true, 'nombre' => $nombre, 'correo' => $correo]);
     }
 
-    header('Location: ' . RUTA_VISTAS . 'users/profile.php?mensaje=actualizado');
+    redirigir('views/users/profile.php?mensaje=actualizado');
     exit;
 }
 
@@ -174,7 +179,7 @@ function eliminar_cuenta(int $idUsuario)
     }
 
     cerrar_sesion();
-    header('Location: ' . RUTA_VISTAS . 'auth/login.php');
+    redirigir('views/auth/login.php');
     exit;
 }
 
@@ -226,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 responder(['ok' => false, 'error' => 'sesion'], 401);
             }
 
-            header('Location: ' . RUTA_VISTAS . 'auth/login.php');
+            redirigir('views/auth/login.php');
             exit;
         }
 
@@ -265,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($accesoDirecto) {
     // Escribieron la dirección del controlador: llevarlos a la vista.
-    header('Location: ../views/users/profile.php');
+    redirigir('views/users/profile.php');
     exit;
 }
 
@@ -275,7 +280,7 @@ $usuario = obtener_usuario_por_id($idUsuario);
 if (!$usuario) {
     cerrar_sesion();
 
-    header('Location: ' . RUTA_VISTAS . 'auth/login.php?error=sesion');
+    redirigir('views/auth/login.php?error=sesion');
     exit;
 }
 

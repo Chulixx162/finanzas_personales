@@ -4,7 +4,6 @@
 
 require_once __DIR__ . '/../config/session.php';
 
-$base = '../';
 
 $user_id = requerir_login();
 
@@ -12,7 +11,7 @@ require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/../models/categoriesModel.php';
 
 $action  = $_GET['action'] ?? 'index';
-$listado = $base . 'views/categories/index.php';
+$listado = 'views/categories/index.php';
 
 // Mensajes que se muestran en las vistas: [tipo, texto]
 $mensajes = [
@@ -47,22 +46,22 @@ function validar_categoria(string $nombre, string $descripcion): ?string
 switch ($action) {
     case 'store':
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . $listado);
+            redirigir($listado);
             exit;
         }
 
         $nombre      = trim($_POST['nombre'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
-        $formulario  = $base . 'views/categories/create.php';
+        $formulario  = 'views/categories/create.php';
 
         $error = validar_categoria($nombre, $descripcion);
         if ($error) {
-            header('Location: ' . $formulario . '?aviso=' . $error);
+            redirigir($formulario . '?aviso=' . $error);
             exit;
         }
 
         if (categoriaNombreExiste($conn, $user_id, $nombre)) {
-            header('Location: ' . $formulario . '?aviso=duplicada');
+            redirigir($formulario . '?aviso=duplicada');
             exit;
         }
 
@@ -73,12 +72,12 @@ switch ($action) {
             $guardada = false;
         }
 
-        header('Location: ' . ($guardada ? $listado . '?aviso=creada' : $formulario . '?aviso=error_guardar'));
+        redirigir(($guardada ? $listado . '?aviso=creada' : $formulario . '?aviso=error_guardar'));
         exit;
 
     case 'update':
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . $listado);
+            redirigir($listado);
             exit;
         }
 
@@ -87,20 +86,20 @@ switch ($action) {
         $descripcion = trim($_POST['descripcion'] ?? '');
 
         if (!$id || !obtenerCategoriaPorId($conn, $user_id, $id)) {
-            header('Location: ' . $listado . '?aviso=no_existe');
+            redirigir($listado . '?aviso=no_existe');
             exit;
         }
 
-        $formulario = $base . 'views/categories/editar.php?id=' . $id;
+        $formulario = 'views/categories/editar.php?id=' . $id;
 
         $error = validar_categoria($nombre, $descripcion);
         if ($error) {
-            header('Location: ' . $formulario . '&aviso=' . $error);
+            redirigir($formulario . '&aviso=' . $error);
             exit;
         }
 
         if (categoriaNombreExiste($conn, $user_id, $nombre, $id)) {
-            header('Location: ' . $formulario . '&aviso=duplicada');
+            redirigir($formulario . '&aviso=duplicada');
             exit;
         }
 
@@ -111,21 +110,21 @@ switch ($action) {
             $guardada = false;
         }
 
-        header('Location: ' . ($guardada ? $listado . '?aviso=actualizada' : $formulario . '&aviso=error_guardar'));
+        redirigir(($guardada ? $listado . '?aviso=actualizada' : $formulario . '&aviso=error_guardar'));
         exit;
 
     case 'delete':
         $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
 
         if (!$id || !obtenerCategoriaPorId($conn, $user_id, $id)) {
-            header('Location: ' . $listado . '?aviso=no_existe');
+            redirigir($listado . '?aviso=no_existe');
             exit;
         }
 
         // No eliminar si tiene rubros o movimientos asociados.
         $relaciones = contarRelacionesCategoria($conn, $user_id, $id);
         if ($relaciones['rubros'] > 0 || $relaciones['movimientos'] > 0) {
-            header('Location: ' . $listado . '?aviso=con_relaciones');
+            redirigir($listado . '?aviso=con_relaciones');
             exit;
         }
 
@@ -137,7 +136,7 @@ switch ($action) {
             $eliminada = false;
         }
 
-        header('Location: ' . $listado . '?aviso=' . ($eliminada ? 'eliminada' : 'con_relaciones'));
+        redirigir($listado . '?aviso=' . ($eliminada ? 'eliminada' : 'con_relaciones'));
         exit;
 
     case 'edit':

@@ -426,3 +426,69 @@ function validarRubroContraPresupuesto(
 
     return null;
 }
+
+/* ==========================================================
+   LÍMITE ALCANZADO
+   Cuando los rubros del mes actual ya suman el 100 % del presupuesto mensual
+   estimado, no se pueden crear más rubros (la vista lo avisa y el servidor lo
+   bloquea). También se marca cada rubro cuyos gastos llegaron al 100 % de su
+   propio monto proyectado.
+   ========================================================== */
+
+/**
+ * Estado del presupuesto mensual frente a los rubros del mes actual.
+ * Devuelve: presupuesto (float|null), asignado, disponible, porcentaje y alcanzado (bool).
+ * "alcanzado" es true cuando lo asignado a rubros ya iguala o supera el presupuesto.
+ */
+function obtenerEstadoCupoRubros(mysqli $conn, int $user_id): array
+{
+    $cupo        = obtenerCupoRubros($conn, $user_id);
+    $presupuesto = $cupo['presupuesto'];
+    $mes         = rubro_mes_actual();
+    $asignado    = 0.0;
+
+    foreach ($cupo['rubros'] as $r) {
+        if ($r['ini'] <= $mes && $mes <= $r['fin']) {
+            $asignado += $r['monto'];
+        }
+    }
+
+    // Sin presupuesto definido (o en 0) no hay "100 %" que medir: eso ya lo
+    // explica validarRubroContraPresupuesto().
+    $definido = $presupuesto !== null && $presupuesto > 0;
+
+    return [
+        'presupuesto' => $presupuesto,
+        'asignado'    => $asignado,
+        'disponible'  => $definido ? max(0.0, $presupuesto - $asignado) : 0.0,
+        'porcentaje'  => $definido ? round(($asignado / $presupuesto) * 100, 1) : 0.0,
+        'alcanzado'   => $definido && ($asignado + 0.005) >= $presupuesto,
+    ];
+}
+
+/**
+ * Texto que explica por qué no se puede crear otro rubro.
+ */
+function rubro_mensaje_limite(array $estado): string
+{
+    return 'Ya alcanzaste el límite de tu presupuesto mensual: '
+        . rubro_pesos($estado['asignado']) . ' de ' . rubro_pesos($estado['presupuesto'])
+        . ' asignados a rubros. Para crear otro, sube tu presupuesto en «Presupuestos» '
+        . 'o reduce o elimina un rubro existente.';
+}
+
+/**
+ * Qué porcentaje del monto proyectado de un rubro ya se gastó (fila de
+ * obtenerRubrosPorUsuario). Un rubro con monto 0 y algún gasto cuenta como 100 %.
+ */
+function rubro_uso_porcentaje(array $rubro): float
+{
+    $monto  = (float) ($rubro['monto_proyectado'] ?? 0);
+    $gastos = (float) ($rubro['total_gastos'] ?? 0);
+
+    if ($monto <= 0) {
+        return $gastos > 0 ? 100.0 : 0.0;
+    }
+
+    return round(($gastos / $monto) * 100, 1);
+}

@@ -1,10 +1,6 @@
 <?php
 // controllers/rubrosController.php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Iniciar y verificar sesión
 require_once __DIR__ . '/../config/session.php';
 
@@ -26,6 +22,12 @@ switch ($action) {
     case 'store':
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // Límite alcanzado: no se crean más rubros (aunque manden el formulario a mano).
+            $estadoCupo = obtenerEstadoCupoRubros($conn, (int) $idUsuario);
+            if ($estadoCupo['alcanzado']) {
+                redirigir('views/rubros/index.php', ['error' => rubro_mensaje_limite($estadoCupo)]);
+            }
 
             $id_categoria = $_POST['id_categoria'] ?? null;
             $nombre = trim($_POST['nombre'] ?? '');
@@ -70,8 +72,7 @@ switch ($action) {
                 ? 'success=created'
                 : 'error=' . urlencode($error ?? 'No se pudo crear el rubro. Revisa los datos.');
 
-            header("Location: ../views/rubros/index.php?" . $destino);
-            exit();
+            redirigir('views/rubros/index.php?' . $destino);
         }
 
         break;
@@ -137,8 +138,7 @@ switch ($action) {
                 ? 'success=updated'
                 : 'error=' . urlencode($error ?? 'No se pudo actualizar el rubro. Revisa los datos.');
 
-            header("Location: ../views/rubros/index.php?" . $destino);
-            exit();
+            redirigir('views/rubros/index.php?' . $destino);
         }
 
         break;
@@ -158,13 +158,13 @@ switch ($action) {
             if (!$resultado['success']) {
 
                 $mensaje = urlencode($resultado['message']);
-                header("Location: ../views/rubros/index.php?error=$mensaje");
+                redirigir('views/rubros/index.php?error=' . $mensaje);
                 exit();
             }
-            header("Location: ../views/rubros/index.php?success=deleted");
+            redirigir('views/rubros/index.php?success=deleted');
             exit();
         }
-        header("Location: ../views/rubros/index.php");
+        redirigir('views/rubros/index.php');
         exit();
 
         break;
@@ -174,6 +174,12 @@ switch ($action) {
     // FORMULARIO DE CREACIÓN
     // ==========================================
     case 'create':
+
+        // Límite alcanzado: el formulario ni se abre, se vuelve al listado con el aviso.
+        $estadoCupo = obtenerEstadoCupoRubros($conn, (int) $idUsuario);
+        if ($estadoCupo['alcanzado']) {
+            redirigir('views/rubros/index.php', ['error' => rubro_mensaje_limite($estadoCupo)]);
+        }
 
         $categorias = obtenerCategoriasParaSelect(
             $conn,
@@ -218,6 +224,9 @@ switch ($action) {
             $conn,
             $idUsuario
         );
+
+        // Para la alerta y el botón "Nuevo Rubro" bloqueado de la vista.
+        $estadoCupo = obtenerEstadoCupoRubros($conn, (int) $idUsuario);
 
         break;
 }

@@ -5,7 +5,7 @@
 require_once __DIR__ . '/../config/session.php';
 iniciar_sesion_segura();
 
-$base = '../';  // desde public/ hasta la raíz del proyecto
+$base = app_base();  // prefijo de la app en la URL ('/' o '/subcarpeta/'), ver config/app.php
 $active = '';
 $logueado = isset($_SESSION['user_id']);
 
@@ -14,7 +14,7 @@ if ($logueado) {
     enviar_cabeceras_privadas();
 }
 
-$ctaRuta = $logueado ? '../views/users/dashboard.php' : '../views/auth/register.php';
+$ctaRuta = $logueado ? $base . 'views/users/dashboard.php' : $base . 'views/auth/register.php';
 $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -32,7 +32,7 @@ if (!is_file($videoCarpeta . $videoArchivo)) {
     $videosMp4 = glob($videoCarpeta . '*.mp4') ?: [];
     $videoArchivo = $videosMp4 ? basename($videosMp4[0]) : '';
 }
-$videoUrl = $videoArchivo !== '' ? 'video/' . rawurlencode($videoArchivo) : '';
+$videoUrl = $videoArchivo !== '' ? $base . 'public/video/' . rawurlencode($videoArchivo) : '';
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
@@ -45,29 +45,29 @@ $enlacesInternos = [
 ];
 
 $logoDestino = $logueado
-    ? '../views/users/dashboard.php'
+    ? 'views/users/dashboard.php'
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
-        ['Inicio', '../views/users/dashboard.php'],
-        ['Movimientos', '../views/transactions/index.php'],
-        ['Categorías', '../views/categories/index.php'],
-        ['Rubros', '../views/rubros/index.php'],
-        ['Presupuestos', '../views/presupuestos/index.php'],
-        ['Terminos de uso', '../views/legal/terms_of_use.php'],
-        ['Política de privacidad', '../views/legal/privacy_policies.php']
+        ['Inicio', $base . 'views/users/dashboard.php'],
+        ['Movimientos', $base . 'views/transactions/index.php'],
+        ['Categorías', $base . 'views/categories/index.php'],
+        ['Rubros', $base . 'views/rubros/index.php'],
+        ['Presupuestos', $base . 'views/presupuestos/index.php'],
+        ['Terminos de uso', $base . 'views/legal/terms_of_use.php'],
+        ['Política de privacidad', $base . 'views/legal/privacy_policies.php']
     ];
 } else {
     $enlaces = [
-        ['Inicio', 'index.php'],
-        ['Funciones', 'index.php#funciones'],
-        ['Cómo funciona', 'index.php#como-funciona'],
-        ['Video', 'index.php#video'],
-        ['Equipo de desarrollo', 'index.php#equipo'],
-        ['Crea tu cuenta', '../views/auth/register.php'],
-        ['Inicia sesión', '../views/auth/login.php'],
-        ['Terminos de uso', '../views/legal/terms_of_use.php'],
-        ['Política de privacidad', '../views/legal/privacy_policies.php']
+        ['Inicio', $base . 'public/index.php'],
+        ['Funciones', $base . 'public/index.php#funciones'],
+        ['Cómo funciona', $base . 'public/index.php#como-funciona'],
+        ['Video', $base . 'public/index.php#video'],
+        ['Equipo de desarrollo', $base . 'public/index.php#equipo'],
+        ['Crea tu cuenta', $base . 'views/auth/register.php'],
+        ['Inicia sesión', $base . 'views/auth/login.php'],
+        ['Terminos de uso', $base . 'views/legal/terms_of_use.php'],
+        ['Política de privacidad', $base . 'views/legal/privacy_policies.php']
     ];
 }
 ?>
@@ -85,7 +85,7 @@ if ($logueado) {
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/index.css?v=<?= filemtime(__DIR__ . '/css/index.css') ?>">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
-    <link rel="stylesheet" href="css/alerts.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
 </head>
 
 <body class="layout">
@@ -171,11 +171,11 @@ if ($logueado) {
                         <?php endforeach; ?>
 
                     <?php else: ?>
-                        <li><a class="nav-link" href="../public/index.php#inicio">Inicio</a></li>
-                        <li><a class="nav-link" href="../public/index.php#funciones">Funciones</a></li>
-                        <li><a class="nav-link" href="../public/index.php#como-funciona">Cómo funciona</a></li>
-                        <li><a class="nav-link" href="../public/index.php#video">Video</a></li>
-                        <li><a class="nav-link" href="../public/index.php#equipo">Equipo</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#inicio">Inicio</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#video">Video</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
                     <?php endif; ?>
 
                 </ul>
@@ -203,8 +203,8 @@ if ($logueado) {
                             <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                         </form>
                     <?php else: ?>
-                        <a class="btn btn-sm btn-ghost" href="../views/auth/login.php">Iniciar sesión</a>
-                        <a class="btn btn-sm btn-primary" href="../views/auth/register.php">Crear cuenta</a>
+                        <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
+                        <a class="btn btn-sm btn-primary" href="<?= $h($base) ?>views/auth/register.php">Crear cuenta</a>
                     <?php endif; ?>
 
                 </div>
@@ -227,7 +227,7 @@ if ($logueado) {
                     <div class="hero-actions">
                         <a class="btn btn-gold" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                         <?php if (!$logueado): ?>
-                            <a class="btn btn-outline-light" href="../views/auth/login.php">Ya tengo cuenta</a>
+                            <a class="btn btn-outline-light" href="<?= $h($base) ?>views/auth/login.php">Ya tengo cuenta</a>
                         <?php endif; ?>
                     </div>
                     <?php if (!$logueado): ?>
@@ -481,7 +481,7 @@ if ($logueado) {
                 <div class="cta-actions">
                     <a class="btn btn-white" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                     <?php if (!$logueado): ?>
-                        <a class="btn btn-outline-light" href="../views/auth/login.php">Iniciar sesión</a>
+                        <a class="btn btn-outline-light" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -527,8 +527,8 @@ if ($logueado) {
             <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="js/alerts.js" defer></script>
-        <script src="js/navbar.js" defer></script>
+        <script src="<?= $base ?>public/js/alerts.js" defer></script>
+        <script src="<?= $base ?>public/js/navbar.js" defer></script>
     </footer>
 
 </body>

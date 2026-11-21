@@ -7,10 +7,16 @@
 // los .docx y .xlsx solo se descargan.
 
 const CARPETA_DOCUMENTOS = __DIR__ . '/../public/docs/';
-const EXTENSIONES_DOCUMENTO = ['md', 'pdf', 'docx', 'xlsx', 'sql', 'jpeg'];
+const EXTENSIONES_DOCUMENTO = ['md', 'pdf', 'docx', 'xlsx', 'sql', 'jpeg', 'mp4'];
+
+// Carpeta de los videos (public/video/). Un documento puede vivir ahí si en el
+// catálogo se le indica 'video' como cuarto valor.
+const CARPETA_VIDEOS = __DIR__ . '/../public/video/';
 
 /**
- * Grupos de documentos: clave => [título, descripción, nombre base del archivo].
+ * Grupos de documentos: clave => [título, descripción, nombre base del archivo,
+ * carpeta opcional]. Sin carpeta, el archivo está en public/docs/; con 'video',
+ * en public/video/.
  */
 function catalogo_documentos(): array
 {
@@ -53,6 +59,12 @@ function catalogo_documentos(): array
                 'Formatos e instrumentos usados para verificar la calidad.',
                 'quality_instruments',
             ],
+            'team_presentation' => [
+                'Video del equipo',
+                'Presentación en video del equipo de desarrollo.',
+                'team_presentation',
+                'video',
+            ],
         ],
     ];
 }
@@ -69,10 +81,11 @@ function buscar_documento(string $clave): ?array
             continue;
         }
 
-        $base = $lista[$clave][2];
+        $base    = $lista[$clave][2];
+        $carpeta = (($lista[$clave][3] ?? '') === 'video') ? CARPETA_VIDEOS : CARPETA_DOCUMENTOS;
 
         foreach (EXTENSIONES_DOCUMENTO as $extension) {
-            $ruta = CARPETA_DOCUMENTOS . $base . '.' . $extension;
+            $ruta = $carpeta . $base . '.' . $extension;
 
             if (is_file($ruta)) {
                 return [

@@ -1,17 +1,16 @@
 <?php
+// config/connection.php
+// Conexión a MySQL. Las credenciales salen de las variables de entorno:
+//   - Docker:  DB_HOST=db  (nombre del servicio en docker-compose)
+//   - Laragon: archivo .env con DB_HOST=127.0.0.1
 
-// Cargar las variables del archivo .env
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/app.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->safeLoad();
-
-// Obtener las credenciales
-$host = $_ENV['DB_HOST'] ?? '127.0.0.1';
-$port = (int) ($_ENV['DB_PORT'] ?? 3306);
-$user = $_ENV['DB_USER'] ?? 'root';
-$password = $_ENV['DB_PASS'] ?? '';
-$database = $_ENV['DB_NAME'] ?? 'finanzas_personales';
+$host     = (string) app_env('DB_HOST', '127.0.0.1');
+$port     = (int) app_env('DB_PORT', 3306);
+$user     = (string) app_env('DB_USER', 'root');
+$password = (string) app_env('DB_PASS', '');
+$database = (string) app_env('DB_NAME', 'finanzas_personales');
 
 // Conectar a MySQL
 $conn = mysqli_connect(

@@ -1,0 +1,23 @@
+# Nada de esto entra a la imagen.
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Secretos: se pasan por variables de entorno, nunca dentro de la imagen.
+.env
+.env.*
+!.env.example
+
+# vendor/ se instala dentro de la imagen con Composer.
+vendor
+
+# Docker
+docker-compose*.yml
+Dockerfile
+.dockerignore
+
+*.log

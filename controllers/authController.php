@@ -5,7 +5,7 @@ require_once __DIR__ . '/../config/session.php';
 iniciar_sesion_segura();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../views/auth/login.php");
+    redirigir('views/auth/login.php');
     exit;
 }
 
@@ -16,12 +16,12 @@ $password = $_POST['password'] ?? '';
 
 // 1. Validaciones del lado del servidor
 if (empty($email) || empty($password)) {
-    header("Location: ../views/auth/login.php?error=campos_vacios");
+    redirigir('views/auth/login.php?error=campos_vacios');
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: ../views/auth/login.php?error=email_invalido");
+    redirigir('views/auth/login.php?error=email_invalido');
     exit;
 }
 
@@ -45,9 +45,9 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
     unset($_SESSION['sesion_expirada']);
 
     // Abrir el Dashboard (la vista llama al controlador).
-    header('Location: ../views/users/dashboard.php');
+    redirigir('views/users/dashboard.php');
     exit;
 } else {
-    header('Location: ../views/auth/login.php?error=credenciales');
+    redirigir('views/auth/login.php?error=credenciales');
     exit;
 }

@@ -10,7 +10,8 @@ require_once __DIR__ . '/../../controllers/dashboardController.php';
 
 
 // Ruta base para CSS, JavaScript e imágenes.
-$base = '../../';
+require_once __DIR__ . '/../../config/app.php';
+$base = app_base();  // prefijo de la app en la URL (config/app.php)
 $active = 'inicio';
 
 // Escapar contenido HTML.

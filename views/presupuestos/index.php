@@ -1,6 +1,7 @@
 <?php
 // views/presupuestos/index.php
-$base   = '../../';
+require_once __DIR__ . '/../../config/app.php';
+$base = app_base();  // prefijo de la app en la URL (config/app.php)
 $active = 'presupuestos';
 
 // La vista se ejecuta primero y llama al controlador
