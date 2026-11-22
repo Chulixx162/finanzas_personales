@@ -1,0 +1,10 @@
+# storage/logs/.htaccess
+# El log contiene rutas internas y datos de depuración: nunca se sirve por la web.
+# (Laragon/Apache lo lee; en Docker lo refuerza docker/apache/finanzas.conf.)
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

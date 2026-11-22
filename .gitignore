@@ -12,3 +12,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Logs automáticos de errores (se conserva la carpeta, no el contenido)
+/storage/logs/*.md

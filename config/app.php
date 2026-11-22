@@ -38,6 +38,10 @@ function app_configurar_errores(): void
 app_configurar_errores();
 date_default_timezone_set((string) app_env('APP_TIMEZONE', 'America/Bogota'));
 
+// Manejador global de errores: registra en storage/logs/error_log.md y muestra una
+// página amigable (controllers/errorController.php). Debe ir DESPUÉS de fijar la zona horaria.
+require_once __DIR__ . '/error_handler.php';
+
 /* ==========================================================
    HTTPS y proxy inverso
    ========================================================== */
