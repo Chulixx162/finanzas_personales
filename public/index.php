@@ -5,11 +5,16 @@
 require_once __DIR__ . '/../config/session.php';
 iniciar_sesion_segura();
 
-$base = '../';  // desde public/ hasta la raíz del proyecto
+$base = app_base();  // prefijo de la app en la URL ('/' o '/subcarpeta/'), ver config/app.php
 $active = '';
 $logueado = isset($_SESSION['user_id']);
 
-$ctaRuta = $logueado ? '../views/users/dashboard.php' : '../views/auth/register.php';
+// Con sesión iniciada la página muestra datos del usuario: que el navegador no la guarde.
+if ($logueado) {
+    enviar_cabeceras_privadas();
+}
+
+$ctaRuta = $logueado ? $base . 'views/users/dashboard.php' : $base . 'views/auth/register.php';
 $ctaTexto = $logueado ? 'Ir a mi panel' : 'Crear mi cuenta';
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -19,6 +24,15 @@ $primerNombre = explode(' ', trim($nombre))[0] ?? '';
 $inicial = $nombre !== ''
     ? mb_strtoupper(mb_substr($nombre, 0, 1))
     : '?';
+
+// Video de presentación: usa presentation.mp4 y, si no existe, el primer .mp4 de public/video/
+$videoCarpeta = __DIR__ . '/video/';
+$videoArchivo = 'presentation.mp4';
+if (!is_file($videoCarpeta . $videoArchivo)) {
+    $videosMp4 = glob($videoCarpeta . '*.mp4') ?: [];
+    $videoArchivo = $videosMp4 ? basename($videosMp4[0]) : '';
+}
+$videoUrl = $videoArchivo !== '' ? $base . 'public/video/' . rawurlencode($videoArchivo) : '';
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
@@ -35,24 +49,25 @@ $logoDestino = $logueado
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
-        ['Inicio', '../views/users/dashboard.php'],
-        ['Movimientos', '../views/transactions/index.php'],
-        ['Categorías', '../views/categories/index.php'],
-        ['Rubros', '../views/rubros/index.php'],
-        ['Presupuestos', '../views/presupuestos/index.php'],
-        ['Terminos de uso', '../views/legal/terms_of_use.php'],
-        ['Política de privacidad', '../views/legal/privacy_policies.php']
+        ['Inicio', $base . 'views/users/dashboard.php'],
+        ['Movimientos', $base . 'views/transactions/index.php'],
+        ['Categorías', $base . 'views/categories/index.php'],
+        ['Rubros', $base . 'views/rubros/index.php'],
+        ['Presupuestos', $base . 'views/presupuestos/index.php'],
+        ['Terminos de uso', $base . 'views/legal/terms_of_use.php'],
+        ['Política de privacidad', $base . 'views/legal/privacy_policies.php']
     ];
 } else {
     $enlaces = [
-        ['Inicio', 'index.php'],
-        ['Funciones', 'index.php#funciones'],
-        ['Cómo funciona', 'index.php#como-funciona'],
-        ['Equipo de desarrollo', 'index.php#equipo'],
-        ['Crea tu cuenta', '../views/auth/register.php'],
-        ['Inicia sesión', '../views/auth/login.php'],
-        ['Terminos de uso', '../views/legal/terms_of_use.php'],
-        ['Política de privacidad', '../views/legal/privacy_policies.php']
+        ['Inicio', $base . 'public/index.php'],
+        ['Funciones', $base . 'public/index.php#funciones'],
+        ['Cómo funciona', $base . 'public/index.php#como-funciona'],
+        ['Video', $base . 'public/index.php#video'],
+        ['Equipo de desarrollo', $base . 'public/index.php#equipo'],
+        ['Crea tu cuenta', $base . 'views/auth/register.php'],
+        ['Inicia sesión', $base . 'views/auth/login.php'],
+        ['Terminos de uso', $base . 'views/legal/terms_of_use.php'],
+        ['Política de privacidad', $base . 'views/legal/privacy_policies.php']
     ];
 }
 ?>
@@ -68,9 +83,9 @@ if ($logueado) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
-    <link rel="stylesheet" href="<?= $base ?>public/css/index.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/index.css?v=<?= filemtime(__DIR__ . '/css/index.css') ?>">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
-    <link rel="stylesheet" href="css/alerts.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
 </head>
 
 <body class="layout">
@@ -99,7 +114,6 @@ if ($logueado) {
                 </span>
 
                 <span class="brand-name">Finanzas</span>
-            </a>
             </a>
 
             <button class="nav-toggle"
@@ -157,10 +171,11 @@ if ($logueado) {
                         <?php endforeach; ?>
 
                     <?php else: ?>
-                        <li><a class="nav-link" href="../public/index.php#inicio">Inicio</a></li>
-                        <li><a class="nav-link" href="../public/index.php#funciones">Funciones</a></li>
-                        <li><a class="nav-link" href="../public/index.php#como-funciona">Cómo funciona</a></li>
-                        <li><a class="nav-link" href="../public/index.php#equipo">Equipo</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#inicio">Inicio</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#video">Video</a></li>
+                        <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
                     <?php endif; ?>
 
                 </ul>
@@ -188,8 +203,8 @@ if ($logueado) {
                             <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                         </form>
                     <?php else: ?>
-                        <a class="btn btn-sm btn-ghost" href="../views/auth/login.php">Iniciar sesión</a>
-                        <a class="btn btn-sm btn-primary" href="../views/auth/register.php">Crear cuenta</a>
+                        <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
+                        <a class="btn btn-sm btn-primary" href="<?= $h($base) ?>views/auth/register.php">Crear cuenta</a>
                     <?php endif; ?>
 
                 </div>
@@ -212,7 +227,7 @@ if ($logueado) {
                     <div class="hero-actions">
                         <a class="btn btn-gold" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                         <?php if (!$logueado): ?>
-                            <a class="btn btn-outline-light" href="../views/auth/login.php">Ya tengo cuenta</a>
+                            <a class="btn btn-outline-light" href="<?= $h($base) ?>views/auth/login.php">Ya tengo cuenta</a>
                         <?php endif; ?>
                     </div>
                     <?php if (!$logueado): ?>
@@ -389,54 +404,69 @@ if ($logueado) {
             </div>
         </section>
 
+        <!-- Video demostrativo -->
+        <section class="video-demo" id="video" aria-labelledby="video-titulo">
+            <div class="wrap">
+                <div class="video-head">
+                    <h2 class="section-title" id="video-titulo">Mira la app en acción</h2>
+                    <p class="section-lead">Recorrido corto: movimientos y presupuesto.</p>
+                </div>
+
+                <?php if ($videoUrl !== ''): ?>
+                    <figure class="video-frame">
+                        <video controls preload="metadata" playsinline
+                            aria-label="Video de presentación de Finanzas personales">
+                            <source src="<?= $h($videoUrl) ?>" type="video/mp4">
+                            Tu navegador no soporta la reproducción de video.
+                        </video>
+                    </figure>
+                <?php else: ?>
+                    <p class="video-caption">El video todavía no está disponible.</p>
+                <?php endif; ?>
+            </div>
+        </section>
+
 
         <!-- Equipo de desarrollo -->
         <section class="team" id="equipo" aria-labelledby="equipo-titulo">
             <div class="wrap">
                 <div class="team-head">
-                    <p class="team-eyebrow">Nuestro proyecto</p>
-                    <h2 class="section-title" id="equipo-titulo">
-                        Equipo de desarrollo
-                    </h2>
+                    <h2 class="section-title" id="equipo-titulo">Equipo de desarrollo</h2>
                     <p class="section-lead">
-                        Finanzas personales es un proyecto académico creado
-                        para practicar el análisis, diseño y desarrollo de
-                        una aplicación web para organizar ingresos y gastos.
+                        Aplicación web multiusuario para controlar ingresos, gastos y presupuestos,
+                        construida en PHP con arquitectura MVC y base de datos MySQL.
+                        Proyecto académico del programa ADSO del SENA.
                     </p>
                 </div>
 
                 <div class="team-grid">
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">01</span>
-                        <h3>Análisis y organización</h3>
-                        <p>
-                            Definición de las necesidades del usuario,
-                            requisitos y estructura de las funcionalidades.
-                        </p>
+                        <h3>Arquitectura y backend</h3>
+                        <ul>
+                            <li>PHP organizado en modelos, controladores y vistas.</li>
+                            <li>Acceso a MySQL con mysqli y sentencias preparadas.</li>
+                            <li>Composer: phpdotenv para la configuración y PHPMailer para recuperar la contraseña.</li>
+                        </ul>
                     </article>
 
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">02</span>
-                        <h3>Desarrollo web</h3>
-                        <p>
-                            Construcción de las vistas y la lógica de la
-                            aplicación con PHP, HTML, CSS y JavaScript.
-                        </p>
+                        <h3>Interfaz y frontend</h3>
+                        <ul>
+                            <li>HTML5, CSS3 y JavaScript sin frameworks, con diseño responsive.</li>
+                            <li>Filtros y búsqueda en tiempo real sobre ingresos, gastos, categorías y rubros.</li>
+                            <li>Alertas con SweetAlert2 y reportes exportables en CSV y PDF.</li>
+                        </ul>
                     </article>
 
                     <article class="team-card">
-                        <span class="team-symbol" aria-hidden="true">03</span>
-                        <h3>Base de datos y pruebas</h3>
-                        <p>
-                            Organización de la información en MySQL y
-                            verificación del funcionamiento de los módulos.
-                        </p>
+                        <h3>Datos, seguridad y calidad</h3>
+                        <ul>
+                            <li>MySQL (InnoDB) con 6 tablas relacionadas por llaves foráneas.</li>
+                            <li>Contraseñas con bcrypt, sesiones regeneradas y token CSRF en acciones críticas.</li>
+                            <li>Documentación: SRS, modelo entidad-relación, manuales y plan de calidad (PAC).</li>
+                        </ul>
                     </article>
                 </div>
-
-                <p class="team-note">
-                    Proyecto académico del programa ADSO del SENA.
-                </p>
             </div>
         </section>
 
@@ -451,7 +481,7 @@ if ($logueado) {
                 <div class="cta-actions">
                     <a class="btn btn-white" href="<?= $ctaRuta ?>"><?= $ctaTexto ?></a>
                     <?php if (!$logueado): ?>
-                        <a class="btn btn-outline-light" href="../views/auth/login.php">Iniciar sesión</a>
+                        <a class="btn btn-outline-light" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -497,8 +527,8 @@ if ($logueado) {
             <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="js/alerts.js" defer></script>
-        <script src="js/navbar.js" defer></script>
+        <script src="<?= $base ?>public/js/alerts.js" defer></script>
+        <script src="<?= $base ?>public/js/navbar.js" defer></script>
     </footer>
 
 </body>

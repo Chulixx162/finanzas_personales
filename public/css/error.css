@@ -1,0 +1,100 @@
+/* public/css/error.css
+   Página de error amigable. Usa las variables de layout.css (--primary, --tint, etc.). */
+
+.error-page {
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+}
+
+.error-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 40px 32px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(30, 27, 75, 0.08);
+}
+
+.error-code {
+  margin: 0 0 8px;
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+}
+
+.error-card h1 {
+  margin: 0 0 12px;
+  font-size: 26px;
+  line-height: 1.25;
+  color: var(--deep);
+}
+
+.error-text {
+  margin: 0 auto 20px;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.error-ref {
+  margin: 0 0 24px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--tint);
+  border-radius: var(--radius);
+  overflow-wrap: anywhere;
+}
+
+.error-ref strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--deep);
+  user-select: all;
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.error-debug {
+  margin-top: 28px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.error-debug summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.error-debug pre {
+  margin: 10px 0 0;
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .error-card { padding: 32px 20px; }
+  .error-code { font-size: 52px; }
+  .error-actions .btn { width: 100%; }
+}

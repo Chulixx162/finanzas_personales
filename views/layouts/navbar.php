@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../../config/session.php';
 iniciar_sesion_segura();
 
-$base     = '../../';   // desde views/layouts/navbar.php hasta la raíz del proyecto
+$base     = app_base();   // prefijo de la app en la URL ('/' o '/subcarpeta/'), ver config/app.php
 $active   = $active ?? '';
 $logueado = isset($_SESSION['user_id']);
 
@@ -25,10 +25,10 @@ $inicial = $nombre !== ''
 
 $enlacesInternos = [
     'inicio'       => ['Inicio', 'views/users/dashboard.php'],
-    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
+    'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
     'categorias'   => ['Categorías', 'views/categories/index.php'],
     'rubros'       => ['Rubros', 'views/rubros/index.php'],
-    'presupuestos' => ['Presupuestos', 'views/presupuestos/index.php'],
+    'movimientos'  => ['Movimientos', 'views/transactions/index.php'],
     'historial'    => ['Historial', 'views/budget_history/index.php'],
     'reportes'     => ['Reportes', 'views/reports/category_report.php'],
 ];
@@ -159,3 +159,10 @@ $logoDestino = $logueado
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $h($base) ?>public/js/alerts.js"></script>
 <script src="<?= $h($base) ?>public/js/navbar.js"></script>
+<?php if ($logueado): ?>
+    <!-- Control de inactividad (30 min) y protección del botón "atrás" -->
+    <script src="<?= $h($base) ?>public/js/session.js"
+        data-status-url="<?= $h($base) ?>controllers/sessionController.php"
+        data-inicio-url="<?= $h($base) ?>public/index.php"
+        data-login-url="<?= $h($base) ?>views/auth/login.php?error=expirada"></script>
+<?php endif; ?>

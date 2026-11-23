@@ -40,7 +40,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
                     <a href="../../views/rubros/create.php" class="btn btn-primary">+ Crear Rubro</a>
                 </div>
             <?php else: ?>
-                <form action="../../controllers/transactionsController.php?action=store" method="POST">
+                <form action="../../controllers/transactionsController.php?action=store" method="POST" id="createMovimientoForm">
 
                     <div class="form-group">
                         <label for="tipo">Tipo de Movimiento:</label>
@@ -86,7 +86,7 @@ $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
         </div>
     </main>
 
-    <script src="../../public/js/movimientos.js?v=<?= filemtime(__DIR__ . '/../../public/js/movimientos.js') ?>"></script>
+    <script src="../../public/js/transactions.js?v=<?= filemtime(__DIR__ . '/../../public/js/transactions.js') ?>"></script>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

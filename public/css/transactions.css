@@ -1,0 +1,249 @@
+/* public/css/transactions.css
+   Filtros avanzados del historial de movimientos (periodo, tipo y categoría).
+   Usa las variables de layout.css (--surface, --border, --text, --muted, --primary, --tint, --radius). */
+
+/* ---------- Tarjeta de filtros ---------- */
+.filters-card {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e4dff7);
+    border-radius: var(--radius, 12px);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.filters-grid,
+.filters-dates {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.filters-dates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1rem;
+}
+
+.filters-dates[hidden],
+.filters-error[hidden] {
+    display: none;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.filter-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--muted, #5b5580);
+}
+
+/* ---------- Menú desplegable estilo listado ---------- */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle,
+.filter-date {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background-color: var(--surface, #fff);
+    color: var(--text, #1f1b3a);
+    border: 1px solid var(--border, #e4dff7);
+    border-radius: var(--radius, 12px);
+    font: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+    border-color: var(--soft, #a78bfa);
+}
+
+.dropdown-toggle:focus-visible,
+.filter-date:focus,
+.dropdown.is-open .dropdown-toggle {
+    border-color: var(--primary, #6d28d9);
+    box-shadow: 0 0 0 3px var(--tint, #ede9fe);
+}
+
+.dropdown-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dropdown-chevron {
+    flex-shrink: 0;
+    color: var(--muted, #5b5580);
+    transition: transform 0.2s ease;
+}
+
+.dropdown.is-open .dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: 260px;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    overflow-y: auto;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e4dff7);
+    border-radius: var(--radius, 12px);
+    box-shadow: 0 12px 28px rgba(30, 27, 75, 0.16);
+    outline: none;
+}
+
+.dropdown-menu[hidden] {
+    display: none;
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.93rem;
+    color: var(--text, #1f1b3a);
+    cursor: pointer;
+}
+
+.dropdown-option.is-active,
+.dropdown-option:hover {
+    background: var(--tint, #ede9fe);
+}
+
+.dropdown-option[aria-selected="true"] {
+    font-weight: 700;
+    color: var(--primary-dark, #5b21b6);
+}
+
+/* Marca de verificación en la opción elegida */
+.dropdown-option[aria-selected="true"]::after {
+    content: "";
+    width: 6px;
+    height: 11px;
+    margin-right: 4px;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+}
+
+/* ---------- Fechas, mensajes y acciones ---------- */
+.filter-date {
+    min-height: 44px;
+}
+
+.filters-error {
+    margin: 0.9rem 0 0;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    background: rgba(185, 28, 28, 0.08);
+    color: var(--danger, #b91c1c);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.filters-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+/* ---------- Resumen de resultados ---------- */
+.filters-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    color: var(--muted, #5b5580);
+}
+
+.filters-summary strong {
+    color: var(--text, #1f1b3a);
+}
+
+.filters-summary .is-income {
+    color: #10b981;
+}
+
+.filters-summary .is-expense {
+    color: #ef4444;
+}
+
+.empty-row td,
+.no-results-row td {
+    text-align: center;
+    color: var(--muted, #5b5580);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+
+    .filters-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+
+    .filters-card {
+        padding: 1rem;
+    }
+
+    .filters-grid,
+    .filters-dates {
+        grid-template-columns: 1fr;
+    }
+
+    /* 16px evita el zoom automático de iOS al enfocar un campo */
+    .dropdown-toggle,
+    .filter-date {
+        font-size: 16px;
+    }
+
+    /* Opciones más grandes para tocarlas con el dedo */
+    .dropdown-option {
+        padding: 0.8rem 0.75rem;
+    }
+
+    .filters-actions .btn {
+        flex: 1 1 140px;
+        text-align: center;
+    }
+
+    /* La tabla se desplaza hacia los lados en vez de romper la página */
+    .table-card {
+        overflow-x: auto;
+    }
+
+    .table-card .data-table {
+        min-width: 640px;
+    }
+}

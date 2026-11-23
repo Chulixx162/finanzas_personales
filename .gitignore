@@ -1,5 +1,7 @@
-# Secretos: nunca se suben
+# Secretos: nunca se suben (el .env.example sí)
 .env
+.env.*
+!.env.example
 
 # Dependencias (se reinstalan con: composer install)
 /vendor/
@@ -10,3 +12,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Logs automáticos de errores (se conserva la carpeta, no el contenido)
+/storage/logs/*.md

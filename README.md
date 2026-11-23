@@ -132,6 +132,18 @@ La aplicación sigue un proceso sencillo de planificación y seguimiento financi
 - **Control de versiones:** Git y GitHub.
 - **Despliegue:** Hosting web.
 
+##  Documentación
+
+Toda la documentación del proyecto está en Markdown dentro de [`public/docs/`](public/docs/README.md):
+
+- [Manual de usuario](public/docs/user_manual.md)
+- [Manual técnico](public/docs/technical_manual.md)
+- [Plan de Aseguramiento de Calidad (PAC)](public/docs/pac.md)
+- [Especificación de requisitos (SRS)](public/docs/srs.md)
+- [Modelo entidad-relación (MER)](public/docs/mer.md)
+- [Log de errores y sugerencias](public/docs/error_log.md)
+- [Instrumentos de calidad](public/docs/quality_instruments.md)
+
 ##  Aplicación desplegada
 
 <p align="center">
@@ -144,6 +156,36 @@ La aplicación sigue un proceso sencillo de planificación y seguimiento financi
   <br><br>
   <a href="https://finanzas.nexohuila.com">https://finanzas.nexohuila.com</a>
 </p>
+
+##  Ejecutar con Docker
+
+Requisitos: Docker y Docker Compose. No hace falta instalar PHP ni MySQL.
+
+**Desarrollo**
+
+```bash
+docker compose up --build        # http://localhost:8080
+docker compose --profile tools up   # además, phpMyAdmin en http://localhost:8081
+docker compose down -v           # borra la base para empezar de cero
+```
+
+El código se monta desde la carpeta del proyecto (guardas y recargas) y la base se crea sola la primera vez con `database/schema.sql`.
+
+**Producción**
+
+```bash
+cp .env.example .env.production   # rellena APP_URL, DB_USER, DB_PASS, DB_ROOT_PASSWORD, MAIL_*
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+```
+
+- La app queda en `127.0.0.1:8080`: pon delante un proxy con HTTPS (Nginx, Caddy, Traefik) que envíe `X-Forwarded-Proto`.
+- La primera vez importa solo la **estructura** de la base con `database/structure.sql` (el `schema.sql` incluye usuarios de prueba y un `DROP DATABASE` que no deben ejecutarse en producción):
+  `docker compose -f docker-compose.prod.yml --env-file .env.production exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < database/structure.sql`
+- Las rutas y redirecciones salen de `config/app.php` (`app_url()` y `redirigir()`): si la app cuelga de una subcarpeta o el proxy quita un prefijo, define `APP_BASE_PATH`.
+
+##  Licencia
+
+Licencia de uso académico y no comercial. Consulta el archivo [LICENSE](LICENSE).
 
 ##  Privacidad de la información
 

@@ -1,0 +1,8 @@
+* text=auto
+
+# Docker y scripts de shell deben terminar en LF aunque se clonen en Windows (Laragon).
+Dockerfile text eol=lf
+docker/** text eol=lf
+*.sh text eol=lf
+docker-compose*.yml text eol=lf
+.dockerignore text eol=lf

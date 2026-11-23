@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../models/usersModel.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -6,7 +7,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 // Verificar que la petición llegue por el método POST tradicional
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../views/auth/register.php");
+    redirigir('views/auth/register.php');
     exit;
 }
 
@@ -19,28 +20,28 @@ $terms    = isset($_POST['terms']);
 
 // 1. Validaciones del lado del servidor
 if (empty($nombre) || strlen($nombre) < 2) {
-    header("Location: ../views/auth/register.php?error=nombre_invalido");
+    redirigir('views/auth/register.php?error=nombre_invalido');
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: ../views/auth/register.php?error=email_invalido");
+    redirigir('views/auth/register.php?error=email_invalido');
     exit;
 }
 
 if (strlen($password) < 8 || $password !== $confirm) {
-    header("Location: ../views/auth/register.php?error=password_invalida");
+    redirigir('views/auth/register.php?error=password_invalida');
     exit;
 }
 
 if (!$terms) {
-    header("Location: ../views/auth/register.php?error=terminos_no_aceptados");
+    redirigir('views/auth/register.php?error=terminos_no_aceptados');
     exit;
 }
 
 // 2. Verificar disponibilidad de correo mediante el modelo
 if (obtener_usuario_por_email($email)) {
-    header("Location: ../views/auth/register.php?error=email_registrado");
+    redirigir('views/auth/register.php?error=email_registrado');
     exit;
 }
 
@@ -52,17 +53,17 @@ if ($guardado) {
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
-        $mail->Host = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+        $mail->Host = app_env('MAIL_HOST', 'smtp.gmail.com');
         $mail->SMTPAuth = true;
-        $mail->Username = $_ENV['MAIL_USERNAME'] ?? '';
-        $mail->Password = $_ENV['MAIL_PASSWORD'] ?? '';
-        $mail->SMTPSecure = $_ENV['MAIL_PORT'] === 465
+        $mail->Username = app_env('MAIL_USERNAME', '');
+        $mail->Password = app_env('MAIL_PASSWORD', '');
+        $mail->SMTPSecure = (int) app_env('MAIL_PORT', 587) === 465
             ? PHPMailer::ENCRYPTION_SMTPS
             : PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = $_ENV['MAIL_PORT'] ?? 587;
+        $mail->Port = (int) app_env('MAIL_PORT', 587);
         $mail->CharSet = 'UTF-8';
 
-        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? '', $_ENV['MAIL_FROM_NAME'] ?? 'Finanzas Personales');
+        $mail->setFrom((string) app_env('MAIL_FROM_ADDRESS', ''), (string) app_env('MAIL_FROM_NAME', 'Finanzas Personales'));
         $mail->addAddress($email, $nombre);
 
         $mail->isHTML(true);
@@ -139,7 +140,7 @@ if ($guardado) {
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 12px 0;">
                                 <tr>
                                 <td align="center">
-                                    <a href="finanzas.nexohuila.com/views/auth/login.php" target="_blank" style="display: inline-block; background-color: #6D28D9; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25); text-align: center;">
+                                    <a href="' . htmlspecialchars(app_url_absoluta('views/auth/login.php'), ENT_QUOTES, 'UTF-8') . '" target="_blank" style="display: inline-block; background-color: #6D28D9; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25); text-align: center;">
                                     Iniciar sesión ahora
                                     </a>
                                 </td>
@@ -186,9 +187,9 @@ if ($guardado) {
         echo "Error al enviar el correo: {$mail->ErrorInfo}";
     }
     // Redirigir a la vista de éxito o de inicio de sesión
-    header("Location: ../views/auth/register.php?status=exito");
+    redirigir('views/auth/register.php?status=exito');
     exit;
 } else {
-    header("Location: ../views/auth/register.php?error=error_bd");
+    redirigir('views/auth/register.php?error=error_bd');
     exit;
 }

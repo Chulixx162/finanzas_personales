@@ -12,7 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  header('Location: ../views/auth/forgot-password.php');
+  redirigir('views/auth/forgot-password.php');
   exit;
 }
 
@@ -21,41 +21,41 @@ $tokenSesion = $_SESSION['csrf_token'] ?? '';
 $tokenForm = $_POST['csrf_token'] ?? '';
 
 if ($tokenSesion === '' || !hash_equals($tokenSesion, $tokenForm)) {
-  header('Location: ../views/auth/forgot-password.php?error=csrf');
+  redirigir('views/auth/forgot-password.php?error=csrf');
   exit;
 }
 
 $email = strtolower(trim($_POST['email'] ?? ''));
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-  header('Location: ../views/auth/forgot-password.php?error=email');
+  redirigir('views/auth/forgot-password.php?error=email');
   exit;
 }
 
 // Respuesta idéntica exista o no el correo (no revela qué correos están registrados).
-$destino = '../views/auth/forgot-password.php?status=solicitado';
+$destino = 'views/auth/forgot-password.php?status=solicitado';
 
 $usuario = obtener_usuario_por_email($email);
 
 if (!$usuario || empty($usuario['id_usuario'])) {
-  header('Location: ' . $destino);
+  redirigir($destino);
   exit;
 }
 
 try {
-  // connection.php ya cargó el .env en $_ENV.
-  $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
-  $appEnv = $_ENV['APP_ENV'] ?? 'production';
-  $mailHost = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
-  $mailPort = (int) ($_ENV['MAIL_PORT'] ?? 587);
-  $mailUser = $_ENV['MAIL_USERNAME'] ?? '';
-  $mailPass = $_ENV['MAIL_PASSWORD'] ?? '';
-  $from = $_ENV['MAIL_FROM_ADDRESS'] ?? $mailUser;
-  $fromName = $_ENV['MAIL_FROM_NAME'] ?? 'Finanzas Personales';
+  // app_env() lee las variables de Docker y, si no hay, el archivo .env.
+  $appUrl = rtrim((string) app_env('APP_URL', ''), '/');
+  $appEnv = (string) app_env('APP_ENV', 'production');
+  $mailHost = (string) app_env('MAIL_HOST', 'smtp.gmail.com');
+  $mailPort = (int) app_env('MAIL_PORT', 587);
+  $mailUser = (string) app_env('MAIL_USERNAME', '');
+  $mailPass = (string) app_env('MAIL_PASSWORD', '');
+  $from = (string) app_env('MAIL_FROM_ADDRESS', $mailUser);
+  $fromName = (string) app_env('MAIL_FROM_NAME', 'Finanzas Personales');
 
   if ($appUrl === '') {
     error_log('Recuperación: falta APP_URL en .env.');
-    header('Location: ' . $destino);
+    redirigir($destino);
     exit;
   }
 
@@ -72,7 +72,7 @@ try {
   // La expiración (60 min) se calcula dentro de MySQL.
   if (!crear_token_recuperacion((int) $usuario['id_usuario'], $tokenHash, 60)) {
     error_log('Recuperación: no se creó el token (error o límite por hora).');
-    header('Location: ' . $destino);
+    redirigir($destino);
     exit;
   }
 
@@ -86,7 +86,7 @@ try {
 
   if (!$correoListo) {
     error_log('Recuperación: MAIL_* vacío o PHPMailer sin instalar; no se envió correo.');
-    header('Location: ' . $destino);
+    redirigir($destino);
     exit;
   }
 
@@ -212,5 +212,5 @@ try {
   error_log('Error en recuperación de contraseña: ' . $e->getMessage());
 }
 
-header('Location: ' . $destino);
+redirigir($destino);
 exit;

@@ -1,33 +1,81 @@
-version: '3.8'
+# ============================================================
+# DESARROLLO  ->  docker compose up --build
+#   App:        http://localhost:8080        (cambia el puerto con APP_PORT)
+#   phpMyAdmin: docker compose --profile tools up   ->  http://localhost:8081
+#
+# - El código se monta desde esta carpeta: guardas y recargas.
+# - La base se crea sola la primera vez con database/schema.sql (incluye datos
+#   de prueba). Para volver a empezar de cero:  docker compose down -v
+# - Las credenciales de abajo son SOLO para desarrollo.
+# ============================================================
+name: finanzas-personales
 
 services:
-  # Servidor Web con PHP y Apache
-  web:
-    image: php:8.2-apache
-    container_name: finanzas_personales_web
-    restart: always
+  app:
+    build:
+      context: .
+      target: development
     ports:
-      - "8080:80"
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_NAME: "Finanzas Personales"
+      APP_ENV: development
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:${APP_PORT:-8080}"
+      APP_BASE_PATH: auto
+      APP_TRUST_PROXY: "false"
+      APP_TIMEZONE: America/Bogota
+      APP_LOCALE: es_CO
+      APP_CURRENCY: COP
+      # En Docker la base NO está en 127.0.0.1: es el servicio "db".
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: finanzas_personales
+      DB_USER: finanzas
+      DB_PASS: finanzas
+      # Correo (recuperar contraseña): se toma de tu .env si lo defines.
+      MAIL_HOST: "${MAIL_HOST:-smtp.gmail.com}"
+      MAIL_PORT: "${MAIL_PORT:-587}"
+      MAIL_USERNAME: "${MAIL_USERNAME:-}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-}"
+      MAIL_FROM_NAME: "Finanzas Personales"
     volumes:
       - .:/var/www/html
-      - ./default.conf:/etc/apache2/sites-available/000-default.conf
-    environment:
-      - APACHE_DOCUMENT_ROOT=/var/www/html/public
     depends_on:
-      - mysql_db
+      db:
+        condition: service_healthy
 
-  # Base de Datos MySQL
-  mysql_db:
+  db:
     image: mysql:8.0
-    container_name: finanzas_mysql
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: abcd1234
-      MYSQL_DATABASE: finanzas_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: finanzas_personales
+      MYSQL_USER: finanzas
+      MYSQL_PASSWORD: finanzas
+      TZ: America/Bogota
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
-      - "3306:3306"
+      - "${DB_PORT_HOST:-3307}:3306"   # para conectar un cliente SQL desde tu PC
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    profiles: ["tools"]
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
 
 volumes:
-  mysql_data:
+  db_data:

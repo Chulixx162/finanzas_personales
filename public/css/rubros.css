@@ -521,3 +521,50 @@ body {
         text-align: center;
     }
 }
+
+/* ---------- Alertas de límite (rubros al 100 %) ---------- */
+/* Los avisos usan .notice de alerts.css; aquí solo el botón bloqueado y la fila marcada. */
+.btn.is-disabled,
+.btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.35);
+}
+
+.btn.is-disabled:hover,
+.btn[aria-disabled="true"]:hover {
+    background: var(--accent-primary);
+}
+
+.rubro-row--limite td {
+    background: #FFFBEB;
+}
+
+.rubro-row--limite td:first-child {
+    box-shadow: inset 4px 0 0 #B45309;
+}
+
+.rubro-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 10px;
+    border: 1px solid;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.5;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.rubro-badge--limite {
+    border-color: #F6DFA0;
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.rubro-badge--superado {
+    border-color: #F3C4C4;
+    background: #FDF2F2;
+    color: var(--danger-color);
+}

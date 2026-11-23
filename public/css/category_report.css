@@ -2,33 +2,7 @@
    Estilos propios del reporte por categoría.
    Se carga DESPUÉS de rubros.css y layout.css y reutiliza sus variables. */
 
-/* ---------- Filtros ---------- */
-
-.report-filters {
-    display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 20px 24px;
-    margin-bottom: 12px;
-    overflow: visible;
-}
-
-.report-filters .form-group {
-    margin-bottom: 0;
-    min-width: 200px;
-}
-
-.custom-dates {
-    display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.custom-dates[hidden] {
-    display: none;
-}
+/* Los filtros usan el estilo compartido de filters.css */
 
 .report-error {
     min-height: 1.2em;
@@ -267,9 +241,4 @@
         grid-template-columns: 1fr;
     }
 
-    .report-filters,
-    .custom-dates {
-        flex-direction: column;
-        align-items: stretch;
-    }
 }
