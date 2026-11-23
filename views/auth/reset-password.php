@@ -83,6 +83,7 @@ $mensajesError = [
             </section>
         </main>
     </div>
+    <script src="../../public/js/error_logger.js"></script>
 </body>
 
 </html>
