@@ -156,6 +156,8 @@ $logoDestino = $logueado
 
     </nav>
 </header>
+<!-- Registro automático de errores del navegador (los anota en storage/logs/error_log.md) -->
+<script src="<?= $h($base) ?>public/js/error_logger.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $h($base) ?>public/js/alerts.js"></script>
 <script src="<?= $h($base) ?>public/js/navbar.js"></script>

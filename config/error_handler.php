@@ -3,7 +3,9 @@
 // Manejador global de errores y excepciones.
 //
 // Qué hace:
-//   1. Captura errores (warnings, notices...), excepciones no capturadas y errores fatales.
+//   1. Captura errores (warnings, notices...), excepciones no capturadas y errores fatales
+//      del servidor, y los errores del navegador que envía public/js/error_logger.js
+//      (a través de controllers/clientErrorController.php).
 //   2. Los anota en storage/logs/error_log.md (Markdown), con una referencia ERR-AAAAMMDD-XXXXXX.
 //   3. Le muestra a la persona una página amigable (controllers/errorController.php +
 //      views/errors/error.php) en lugar de una pantalla en blanco o un volcado técnico.
@@ -174,6 +176,40 @@ final class ManejadorErrores
         }
     }
 
+    /**
+     * Anota un error que ocurrió en el NAVEGADOR (lo envía public/js/error_logger.js).
+     * Todo lo que llega del cliente se trata como texto no confiable: se recorta y se
+     * limpia en registrar() (una línea, sin acentos graves, largo acotado).
+     * Devuelve la referencia ERR-... para mostrársela a la persona.
+     */
+    public static function registrarCliente(
+        string $tipo,
+        string $mensaje,
+        string $archivo,
+        int $linea,
+        int $columna,
+        string $traza,
+        string $pagina
+    ): string {
+        try {
+            $ubicacion = $archivo !== '' ? $archivo . ':' . $linea . ':' . $columna : 'desconocida';
+
+            return self::registrar(
+                'Error de JavaScript',
+                $tipo,
+                $mensaje,
+                $ubicacion,
+                0,
+                [],
+                'JavaScript',
+                'GET ' . $pagina,
+                $traza
+            );
+        } catch (Throwable $falloAlRegistrar) {
+            return self::nuevaReferencia();
+        }
+    }
+
     /** Ruta absoluta del archivo de log. */
     public static function rutaLog(): string
     {
@@ -203,9 +239,12 @@ final class ManejadorErrores
         string $mensaje,
         string $archivo,
         int $linea,
-        array $traza
+        array $traza,
+        string $origen = 'PHP',
+        ?string $peticion = null,
+        string $trazaTexto = ''
     ): string {
-        $huella = md5($tipo . '|' . $archivo . '|' . $linea . '|' . $mensaje);
+        $huella = md5($origen . '|' . $tipo . '|' . $archivo . '|' . $linea . '|' . $mensaje);
 
         if (isset(self::$vistos[$huella])) {
             return self::$vistos[$huella];
@@ -235,16 +274,16 @@ final class ManejadorErrores
 
         $entrada = '### ' . $ref . ' · ' . self::linea($titulo) . "\n"
             . '- **Fecha:** ' . date('Y-m-d H:i:s') . ' (' . date_default_timezone_get() . ")\n"
-            . "- **Origen:** PHP\n"
+            . '- **Origen:** ' . self::linea($origen) . "\n"
             . '- **Tipo:** `' . self::linea($tipo) . "`\n"
             . '- **Mensaje:** `' . self::linea($mensaje) . "`\n"
-            . '- **Ubicación:** `' . self::linea(self::rutaRelativa($archivo)) . ':' . $linea . "`\n"
-            . '- **Petición:** `' . self::peticion() . "`\n"
+            . '- **Ubicación:** `' . self::linea(self::rutaRelativa($archivo)) . ($linea > 0 ? ':' . $linea : '') . "`\n"
+            . '- **Petición:** `' . ($peticion !== null ? self::linea($peticion) : self::peticion()) . "`\n"
             . '- **Usuario:** ' . $usuario . "\n"
             . '- **IP:** `' . self::linea((string) ($_SERVER['REMOTE_ADDR'] ?? 'cli')) . "`\n"
             . "- **Estado:** Pendiente de revisión\n";
 
-        $textoTraza = self::formatearTraza($traza);
+        $textoTraza = $trazaTexto !== '' ? self::limitar($trazaTexto) : self::formatearTraza($traza);
 
         if ($textoTraza !== '') {
             $entrada .= "- **Traza:**\n\n" . self::bloque($textoTraza) . "\n";
@@ -301,7 +340,7 @@ final class ManejadorErrores
     private static function cabecera(): string
     {
         return "# LOG AUTOMÁTICO DE ERRORES\n\n"
-            . "> Generado por `config/error_handler.php` (PHP) y `GlobalErrorHandler` (Java).\n"
+            . "> Generado por `config/error_handler.php` (servidor) y `public/js/error_logger.js` (navegador).\n"
             . "> No lo edites a mano: cada entrada tiene una referencia `ERR-AAAAMMDD-XXXXXX`\n"
             . "> que la persona ve en pantalla y que sirve para encontrar el error aquí.\n\n---\n\n";
     }
@@ -434,6 +473,14 @@ final class ManejadorErrores
     {
         $texto = trim((string) preg_replace('/\s+/u', ' ', $texto));
         $texto = str_replace('`', "'", $texto);
+
+        return mb_strlen($texto) > $max ? mb_substr($texto, 0, $max) . '…' : $texto;
+    }
+
+    /** Texto multilínea acotado (traza que llega del navegador). */
+    private static function limitar(string $texto, int $max = 3000): string
+    {
+        $texto = trim($texto);
 
         return mb_strlen($texto) > $max ? mb_substr($texto, 0, $max) . '…' : $texto;
     }
