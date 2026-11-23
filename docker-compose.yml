@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Servidor Web con PHP y Apache
+  web:
+    image: php:8.2-apache
+    container_name: finanzas_personales_web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./default.conf:/etc/apache2/sites-available/000-default.conf
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    depends_on:
+      - mysql_db
+
+  # Base de Datos MySQL
+  mysql_db:
+    image: mysql:8.0
+    container_name: finanzas_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: abcd1234
+      MYSQL_DATABASE: finanzas_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

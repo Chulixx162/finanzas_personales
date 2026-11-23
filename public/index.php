@@ -31,7 +31,7 @@ $enlacesInternos = [
 ];
 
 $logoDestino = $logueado
-    ? '../views/users/dashboard.php'
+    ? 'views/users/dashboard.php'
     : 'public/index.php';
 if ($logueado) {
     $enlaces = [
