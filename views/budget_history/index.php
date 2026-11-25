@@ -26,6 +26,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
 
     <?php require_once __DIR__ . '/../layouts/navbar.php'; ?>
 
+    
     <main class="container">
         <div class="page-header">
             <div>

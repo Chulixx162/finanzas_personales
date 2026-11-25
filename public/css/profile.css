@@ -91,7 +91,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 13px;
   line-height: 1.6;
-  color: var(--soft);
+  color: var(--soft-2);
 }
 
 /* ---------- Tarjetas (mismas medidas que .panel-card del panel) ---------- */
@@ -139,6 +139,11 @@
 }
 
 .field input:hover { border-color: var(--soft); }
+
+.field input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
 
 /* Campo de solo lectura (correo): se ve bloqueado y no se puede editar */
 .field input[readonly] {
