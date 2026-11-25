@@ -39,9 +39,6 @@ $logoDestino = $logueado
 
 ?>
 
-<?php /* layout.css con versión: si el archivo cambia, el navegador no usa la copia vieja en caché */ ?>
-<link rel="stylesheet" href="<?= $h($base) ?>public/css/layout.css?v=<?= filemtime(__DIR__ . '/../../public/css/layout.css') ?>">
-
 <header class="site-header">
     <nav class="navbar" aria-label="Navegación principal">
 
@@ -67,15 +64,8 @@ $logoDestino = $logueado
 
             <span class="brand-name">Finanzas</span>
         </a>
+        </a>
 
-        <?php if ($logueado): ?>
-            <a class="nav-profile"
-                href="<?= $h($base . 'views/users/profile.php') ?>"
-                aria-label="Ir a mi perfil"
-                <?= $active === 'perfil' ? 'aria-current="page"' : '' ?>>
-                <span class="user-avatar" aria-hidden="true"><?= $h($inicial) ?></span>
-            </a>
-        <?php endif; ?>
         <button class="nav-toggle"
             type="button"
             aria-expanded="false"
@@ -131,31 +121,33 @@ $logoDestino = $logueado
                     <?php endforeach; ?>
 
                 <?php else: ?>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#inicio">Inicio</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#funciones">Funciones</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#como-funciona">Cómo funciona</a></li>
-                    <li><a class="nav-link" href="<?= $h($base) ?>public/index.php#equipo">Equipo</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#inicio') ?>">Inicio</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#funciones') ?>">Funciones</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#como-funciona') ?>">Cómo funciona</a></li>
+                    <li><a class="nav-link" href="<?= $h($base . 'public/index.php#equipo') ?>">Equipo</a></li>
                 <?php endif; ?>
 
-            </ul>
+            </ul> 
 
             <div class="nav-actions">
 
                 <?php if ($logueado): ?>
 
-                    <a class="user-chip"
-                        href="<?= $h($base . 'views/users/profile.php') ?>"
-                        aria-label="Ir a mi perfil"
-                        <?= $active === 'perfil' ? 'aria-current="page"' : '' ?>>
-                        <span class="user-avatar" aria-hidden="true"><?= $h($inicial) ?></span>
-                        <span class="user-name"><?= $h($primerNombre) ?></span>
-                    </a>
+                    <span class="user-chip">
+                        <a href="<?= $h($base . 'views/users/profile.php') ?>" class="user-avatar" aria-label="Ir a mi perfil">
+                            <?= $h($inicial) ?>
+                        </a>
+
+                        <span class="user-name">
+                            <?= $h($primerNombre) ?>
+                        </span>
+                    </span>
                     <form id="logout-form" action="<?= $h($base) ?>controllers/logoutController.php" method="POST" style="display: inline;">
                         <button type="submit" class="btn btn-sm btn-ghost">Cerrar sesión</button>
                     </form>
                 <?php else: ?>
-                    <a class="btn btn-sm btn-ghost" href="<?= $h($base) ?>views/auth/login.php">Iniciar sesión</a>
-                    <a class="btn btn-sm btn-primary" href="<?= $h($base) ?>views/auth/register.php">Crear cuenta</a>
+                    <a class="btn btn-sm btn-ghost" href="<?= $h($base . 'views/auth/login.php') ?>">Iniciar sesión</a>
+                    <a class="btn btn-sm btn-primary" href="<?= $h($base . 'views/auth/register.php') ?>">Crear cuenta</a>
                 <?php endif; ?>
 
             </div>

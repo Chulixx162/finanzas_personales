@@ -235,6 +235,7 @@ $datosGraficos = array_replace_recursive(
                         </div>
                     </header>
 
+
                     <div class="table-wrap">
                         <table class="mov-table">
                             <thead>
