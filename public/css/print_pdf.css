@@ -135,10 +135,10 @@ body {
     font-weight: 800;
 }
 
-.amount-ingreso { color: #16a34a; }
-.amount-gasto { color: #dc2626; }
+.amount-ingreso { color: #15803D; }
+.amount-gasto { color: #B91C1C; }
 .amount-neto-pos { color: #2563eb; }
-.amount-neto-neg { color: #dc2626; }
+.amount-neto-neg { color: #B91C1C; }
 .amount-presupuesto { color: #4f46e5; }
 .amount-disponible { color: #0891b2; }
 

@@ -73,11 +73,11 @@ $fecha  = fn($valor) => date('d/m/Y h:i A', strtotime($valor));
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="btn-action" style="cursor: default; pointer-events: none; background: rgba(<?= $mov['tipo'] === 'ingreso' ? '16, 185, 129' : '239, 68, 68' ?>, 0.12); color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
+                                    <span class="btn-action" style="cursor: default; pointer-events: none; font-weight: 600; background: <?= $mov['tipo'] === 'ingreso' ? '#DCFCE7' : '#FEE2E2' ?>; color: <?= $mov['tipo'] === 'ingreso' ? '#15803D' : '#B91C1C' ?>;">
                                         <?= ucfirst($mov['tipo']) ?>
                                     </span>
                                 </td>
-                                <td class="text-right" style="font-weight: 800; color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
+                                <td class="text-right" style="font-weight: 800; color: <?= $mov['tipo'] === 'ingreso' ? '#15803D' : '#B91C1C' ?>;">
                                     <?= $mov['tipo'] === 'ingreso' ? '+' : '-' ?><?= $moneda($mov['monto']) ?>
                                 </td>
                             </tr>
