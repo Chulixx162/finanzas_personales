@@ -71,6 +71,13 @@ if ($logueado) {
     <div class="footer-bottom">
         <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../../public/js/alerts.js" defer></script>
 </footer>
+
+<div id="global-loader" class="global-loader" role="status" aria-live="polite">
+    <div class="global-loader__spinner"></div>
+    <span class="global-loader__texto">Cargando datos...</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../public/js/alerts.js" defer></script>
+<script src="../../public/js/loader.js" defer></script>
