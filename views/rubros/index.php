@@ -17,6 +17,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
+    <link rel="stylesheet" href="../../public/css/responsive_cards.css?v=<?= filemtime(__DIR__ . '/../../public/css/responsive_cards.css') ?>">
 </head>
 
 <body>
@@ -80,7 +81,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
         </div>
 
         <div class="card table-card">
-            <table class="data-table" id="rubrosTable">
+            <table class="data-table data-table--cards tabla-rubros" id="rubrosTable">
                 <thead>
                     <tr>
                         <th>Rubro</th>
@@ -103,7 +104,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
                             $superado = $uso > 100;
                             ?>
                             <tr class="<?= $alLimite ? 'rubro-row--limite' : '' ?>">
-                                <td class="category-name">
+                                <td class="category-name c-name">
                                     <?= $h($rubro['rubro']) ?>
                                     <?php if ($alLimite): ?>
                                         <span class="rubro-badge <?= $superado ? 'rubro-badge--superado' : 'rubro-badge--limite' ?>"
@@ -113,15 +114,15 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
                                     <?php endif; ?>
                                 </td>
 
-                                <td>
+                                <td class="c-cat" data-label="Categoría">
                                     <?= $h($rubro['categoria']) ?>
                                 </td>
 
-                                <td class="text-right">
+                                <td class="text-right c-monto">
                                     <?= '$' . number_format((float)($rubro['monto_proyectado'] ?? 0), 0, ',', '.') ?>
                                 </td>
 
-                                <td>
+                                <td class="c-periodo" data-label="Periodo">
                                     <?= !empty($rubro['fecha_inicio'])
                                         ? date('d/m/Y', strtotime($rubro['fecha_inicio']))
                                         : 'Sin fecha' ?>
@@ -131,7 +132,7 @@ require_once __DIR__ . '/../../controllers/rubrosController.php';
                                         : 'Sin fecha' ?>
                                 </td>
 
-                                <td class="text-right actions-cell">
+                                <td class="text-right actions-cell c-actions">
                                     <a href="edit.php?id=<?= urlencode($rubro['id_rubro']) ?>"
                                         class="btn-action btn-edit" title="Editar">
                                         Editar

@@ -114,6 +114,51 @@
 }
 .al-popup .al-btn-danger:focus-visible { outline-color: var(--al-danger); }
 
+/* Selector de formato de descarga (perfil -> manuales y anexos) */
+.al-popup .al-doc {
+  margin: 0;
+  color: var(--al-primary);
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.al-popup .al-ask { margin: 6px 0 14px; }
+
+.al-popup .al-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.al-popup .al-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 56px;
+  padding: 10px 14px;
+  border: 1px solid var(--al-border);
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: var(--al-text);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.al-popup .al-option:hover,
+.al-popup .al-option:focus-visible {
+  border-color: var(--al-primary);
+  background: var(--al-tint);
+  outline: none;
+}
+
+.al-popup .al-option:focus-visible { box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.25); }
+
+.al-popup .al-option-name { font-size: 15px; font-weight: 800; }
+.al-popup .al-option-name small { font-size: 12px; font-weight: 600; color: var(--al-muted); }
+.al-popup .al-option-hint { font-size: 12.5px; font-weight: 500; color: var(--al-muted); }
+
 /* ==========================================================
    2. Avisos dentro de la página
       <p class="notice notice-success" role="status">Texto</p>

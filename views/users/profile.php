@@ -53,7 +53,7 @@ $errores = [
     <link rel="stylesheet" href="<?= $base ?>public/css/layout.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/profile.css">
     <link rel="stylesheet" href="<?= $base ?>public/css/docs.css">
-    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css">
+    <link rel="stylesheet" href="<?= $base ?>public/css/alerts.css?v=<?= filemtime(__DIR__ . "/../../public/css/alerts.css") ?>">
     <link rel="icon" type="image/x-icon" href="<?= $base ?>public/img/icon.webp">
 </head>
 
@@ -192,15 +192,18 @@ $errores = [
                                                                             target="_blank" rel="noopener"
                                                                             aria-label="Ver <?= $h($doc['titulo']) ?>">Ver</a>
                                                                     <?php endif; ?>
-                                                                    <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=descargar') ?>"
-                                                                        aria-label="Descargar <?= $h($doc['titulo']) ?><?= $doc['extension'] === 'MD' ? ' en Markdown' : '' ?>"><?= $doc['extension'] === 'MD' ? 'Descargar .md' : 'Descargar' ?></a>
                                                                     <?php if ($doc['extension'] === 'MD'): ?>
-                                                                        <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=word') ?>"
-                                                                            target="_blank" rel="noopener"
-                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?> en Word">Word</a>
-                                                                        <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=pdf') ?>"
-                                                                            target="_blank" rel="noopener"
-                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?> en PDF">PDF</a>
+                                                                        <!-- Los .md se pueden bajar en Markdown, Word o PDF: se pregunta el formato -->
+                                                                        <button type="button" class="manx-link manx-link-alt" data-descarga
+                                                                            data-titulo="<?= $h($doc['titulo']) ?>"
+                                                                            data-md="<?= $h($ruta . '&modo=descargar') ?>"
+                                                                            data-word="<?= $h($ruta . '&modo=word') ?>"
+                                                                            data-pdf="<?= $h($ruta . '&modo=pdf') ?>"
+                                                                            aria-haspopup="dialog"
+                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?>: elegir formato">Descargar</button>
+                                                                    <?php else: ?>
+                                                                        <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=descargar') ?>"
+                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?>">Descargar</a>
                                                                     <?php endif; ?>
                                                                 </span>
                                                                 <span class="manx-size"><?= $h($doc['tamano']) ?></span>
@@ -257,6 +260,58 @@ $errores = [
 
     <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
+    <!-- Selector de formato para descargar los documentos .md -->
+
+    <dialog class="dl-dialog" id="dlDialog" aria-labelledby="dlTitulo">
+
+        <form method="dialog" class="dl-box">
+
+            <h2 class="dl-title" id="dlTitulo">Descargar documento</h2>
+
+            <p class="dl-doc" id="dlDoc"></p>
+
+            <p class="dl-ask">¿En qué formato lo quieres?</p>
+
+
+
+            <div class="dl-options">
+
+                <a class="dl-option" data-formato="word" href="#" target="_blank" rel="noopener">
+
+                    <span class="dl-name">Word <small>.docx</small></span>
+
+                    <span class="dl-hint">Para editarlo en Word.</span>
+
+                </a>
+
+                <a class="dl-option" data-formato="pdf" href="#" target="_blank" rel="noopener">
+
+                    <span class="dl-name">PDF <small>.pdf</small></span>
+
+                    <span class="dl-hint">Para leerlo, compartirlo o imprimirlo.</span>
+
+                </a>
+
+                <a class="dl-option" data-formato="md" href="#">
+
+                    <span class="dl-name">Markdown <small>.md</small></span>
+
+                    <span class="dl-hint">El archivo original, en texto.</span>
+
+                </a>
+
+            </div>
+
+
+
+            <button type="submit" class="dl-cancel">Cancelar</button>
+
+        </form>
+
+    </dialog>
+
+
+
     <!-- Avisos de la página (el JS escribe aquí) -->
     <div class="toast-region" id="toast-region" aria-live="polite"></div>
     <script type="application/json" id="profile-mensajes">
@@ -266,6 +321,7 @@ $errores = [
         ) ?>
     </script>
     <script src="<?= $base ?>public/js/profile.js" defer></script>
+    <script src="<?= $base ?>public/js/docs_download.js?v=<?= filemtime(__DIR__ . "/../../public/js/docs_download.js") ?>" defer></script>
 </body>
 
 </html>

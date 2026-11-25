@@ -219,3 +219,66 @@
   .manx-card, .manx-icon, .manx-link, .manx-chevron, .manx-chevron::before { transition: none; }
   .manx-card:not(.is-pending):hover { transform: none; }
 }
+
+/* ---------- Botón "Descargar" con selector de formato ---------- */
+button.manx-link {
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.dl-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card, #fff);
+  color: var(--text);
+  box-shadow: 0 24px 60px rgba(30, 27, 75, 0.35);
+}
+
+.dl-dialog::backdrop { background: rgba(30, 27, 75, 0.5); }
+
+.dl-box { display: flex; flex-direction: column; gap: 6px; padding: 22px; }
+.dl-title { margin: 0; font-size: 18px; font-weight: 800; }
+.dl-doc { margin: 0; font-size: 14px; font-weight: 700; color: var(--primary); overflow-wrap: anywhere; }
+.dl-ask { margin: 8px 0 4px; font-size: 14px; color: var(--muted); }
+
+.dl-options { display: flex; flex-direction: column; gap: 8px; }
+
+.dl-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 56px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dl-option:hover,
+.dl-option:focus-visible { border-color: var(--primary); background: var(--tint); outline: none; }
+.dl-option:focus-visible { box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.25); }
+
+.dl-name { font-size: 15px; font-weight: 800; }
+.dl-name small { margin-left: 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.dl-hint { font-size: 12.5px; color: var(--muted); }
+
+.dl-cancel {
+  margin-top: 8px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.dl-cancel:hover { background: var(--tint); color: var(--text); }
+.dl-cancel:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }

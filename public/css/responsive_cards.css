@@ -172,15 +172,63 @@
         color: var(--muted, #5B5580);
     }
 
-    .tabla-categorias .c-actions {
+    .tabla-categorias .c-actions,
+    .tabla-rubros .c-actions {
         display: flex;
         gap: 10px;
         margin-top: 8px;
         white-space: normal;
     }
 
-    .tabla-categorias .c-actions .btn-action {
+    .tabla-categorias .c-actions .btn-action,
+    .tabla-rubros .c-actions .btn-action {
         flex: 1 1 0;
+    }
+
+    /* ----- Rubros -----
+       fila 1: nombre (izq.) y monto proyectado (der.)
+       fila 2: categoría
+       fila 3: periodo
+       fila 4: Editar / Eliminar */
+    .data-table--cards.tabla-rubros tr {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "name    monto"
+            "cat     cat"
+            "periodo periodo"
+            "acc     acc";
+    }
+
+    .tabla-rubros .c-name    { grid-area: name; font-size: 1.05rem; font-weight: 700; color: var(--text, #1F1B3A); }
+    .tabla-rubros .c-monto   { grid-area: monto; text-align: right; font-size: 1.15rem; font-weight: 800; white-space: nowrap; }
+    .tabla-rubros .c-cat     { grid-area: cat; font-size: 0.95rem; }
+    .tabla-rubros .c-periodo { grid-area: periodo; font-size: 0.88rem; color: var(--muted, #5B5580); }
+    .tabla-rubros .c-actions { grid-area: acc; }
+
+    /* Etiqueta pequeña antes de categoría y periodo (los encabezados están ocultos) */
+    .tabla-rubros td[data-label]::before {
+        content: attr(data-label) ": ";
+        font-weight: 700;
+        color: var(--text, #1F1B3A);
+    }
+
+    /* La insignia "100 % gastado / Superado" pasa debajo del nombre y no se corta */
+    .tabla-rubros .c-name .rubro-badge {
+        display: inline-block;
+        margin: 4px 0 0;
+        white-space: normal;
+    }
+
+    /* Rubro al límite: toda la tarjeta en tono ámbar, no cada celda */
+    .tabla-rubros tr.rubro-row--limite {
+        background: #FFFBEB;
+        border-left: 4px solid #B45309;
+    }
+
+    .data-table--cards.tabla-rubros .rubro-row--limite td,
+    .data-table--cards.tabla-rubros .rubro-row--limite td:first-child {
+        background: transparent;
+        box-shadow: none;
     }
 }
 
