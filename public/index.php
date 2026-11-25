@@ -414,7 +414,8 @@ if ($logueado) {
 
                 <?php if ($videoUrl !== ''): ?>
                     <figure class="video-frame">
-                        <video controls preload="metadata" playsinline
+                        <video controls preload="none" playsinline
+                            poster="<?= $h($base . 'public/img/presentation.jpg') ?>"
                             aria-label="Video de presentación de Finanzas personales">
                             <source src="<?= $h($videoUrl) ?>" type="video/mp4">
                             Tu navegador no soporta la reproducción de video.

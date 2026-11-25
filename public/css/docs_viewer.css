@@ -182,3 +182,106 @@ body {
         text-align: left;
     }
 }
+
+
+/* ---------- Descarga en Word / PDF ---------- */
+.doc-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.doc-btn {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font: 700 0.85rem "Plus Jakarta Sans", system-ui, sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.doc-btn[data-export="pdf"] {
+    background: transparent;
+    color: var(--primary);
+}
+
+.doc-btn:hover:not(:disabled) {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #fff;
+}
+
+.doc-btn:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.doc-btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.doc-status {
+    max-width: 900px;
+    margin: 1rem auto 0;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--tint);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.doc-status.is-error {
+    border-color: #FCA5A5;
+    background: #FEF2F2;
+    color: #B91C1C;
+}
+
+/* Mientras se genera el PDF: sin marco, sombra ni bordes redondeados */
+.markdown-body.pdf-export {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+}
+
+.markdown-body.pdf-export pre {
+    background: #F3F0FF;
+    color: #1F1B3A;
+    white-space: pre-wrap;
+    overflow: visible;
+}
+
+@media (max-width: 600px) {
+    .doc-actions {
+        order: 2;
+        flex-basis: 100%;
+        flex-wrap: wrap;
+    }
+
+    .doc-btn {
+        flex: 1 1 auto;
+        padding: 0.7rem 0.9rem;
+    }
+}
+
+@media print {
+    .doc-bar,
+    .doc-status {
+        display: none;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .markdown-body {
+        border: 0;
+        padding: 0;
+    }
+}

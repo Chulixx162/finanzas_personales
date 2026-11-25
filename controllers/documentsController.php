@@ -3,6 +3,7 @@
 // Entrega un manual o anexo de public/docs/ solo a usuarios con sesión.
 //   ?doc=<clave>&modo=ver        -> lo abre en el navegador (.md con el visor, PDF y SQL)
 //   ?doc=<clave>&modo=descargar  -> lo descarga
+//   ?doc=<clave>&modo=word|pdf   -> (solo .md) abre el visor y descarga el documento en Word o PDF
 // Solo se entregan los documentos del catálogo (config/documents.php).
 // Los videos (.mp4) se abren en el reproductor del navegador y admiten adelantar.
 
@@ -12,7 +13,8 @@ require_once __DIR__ . '/../config/documents.php';
 requerir_login();
 
 $clave = is_string($_GET['doc'] ?? null) ? $_GET['doc'] : '';
-$modo  = ($_GET['modo'] ?? '') === 'descargar' ? 'descargar' : 'ver';
+$modoPedido = is_string($_GET['modo'] ?? null) ? $_GET['modo'] : '';
+$modo  = in_array($modoPedido, ['descargar', 'word', 'pdf'], true) ? $modoPedido : 'ver';
 $doc   = $clave !== '' ? buscar_documento($clave) : null;
 
 if ($doc === null) {
@@ -22,9 +24,18 @@ if ($doc === null) {
     exit;
 }
 
+// Word y PDF solo existen para los documentos Markdown; en cualquier otro tipo
+// se entrega el archivo original.
+$exportable = $doc['extension'] === 'md';
+if (!$exportable && in_array($modo, ['word', 'pdf'], true)) {
+    $modo = 'descargar';
+}
+
 // Los documentos Markdown se muestran con el visor (views/docs/viewer.php).
-if ($doc['extension'] === 'md' && $modo === 'ver') {
-    $claveDoc    = $clave;
+// Con modo=word o modo=pdf el visor, además, descarga el documento en ese formato.
+if ($exportable && $modo !== 'descargar') {
+    $claveDoc      = $clave;
+    $descargaAuto  = in_array($modo, ['word', 'pdf'], true) ? $modo : '';
     $tituloDoc   = titulo_documento($clave) ?: $doc['archivo'];
     $contenidoMd = (string) file_get_contents($doc['ruta']);
 

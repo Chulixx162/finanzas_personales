@@ -1,0 +1,196 @@
+/* public/css/responsive_cards.css
+   Tablas de Movimientos y Categorías -> lista de tarjetas en pantallas pequeñas.
+   - Hasta 768 px (celular y tablet vertical): cada fila se ve como una tarjeta.
+   - De 769 a 1024 px (tablet): la tabla se ajusta al ancho, sin scroll lateral.
+   Se carga DESPUÉS de rubros.css / categories.css para poder reemplazar sus reglas.
+   Uso: <table class="data-table data-table--cards"> con clases c-* en las celdas. */
+
+/* ---------- Escritorio: la fecha no se parte en dos líneas ---------- */
+.tabla-movimientos .c-fecha {
+    white-space: nowrap;
+    color: var(--muted, #5B5580);
+}
+
+/* ---------- Tablet: que la tabla quepa sin desplazarse ---------- */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .table-card .data-table.data-table--cards {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .data-table--cards th,
+    .data-table--cards td {
+        padding: 0.8rem 0.65rem;
+    }
+
+    .data-table--cards .c-fecha {
+        white-space: normal;
+    }
+}
+
+/* ---------- Celular y tablet vertical: tarjetas ---------- */
+@media (max-width: 768px) {
+
+    /* La tarjeta contenedora ya no recorta ni hace scroll: cada fila es su propia tarjeta */
+    .table-card {
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+        border: 0;
+    }
+
+    .table-card .data-table.data-table--cards {
+        display: block;
+        min-width: 0;
+        width: 100%;
+        border-collapse: separate;
+    }
+
+    /* Encabezados ocultos a la vista, pero disponibles para lectores de pantalla */
+    .data-table--cards thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .data-table--cards tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .data-table--cards tr {
+        display: grid;
+        gap: 6px 12px;
+        padding: 14px 16px;
+        background: var(--surface, #fff);
+        border: 1px solid var(--border, #E4DFF7);
+        border-radius: var(--radius, 12px);
+        box-shadow: 0 1px 2px rgba(30, 27, 75, 0.06);
+        min-width: 0;
+    }
+
+    /* El buscador/filtros ocultan filas con [hidden]; display:grid lo anularía */
+    .data-table--cards tr[hidden] {
+        display: none !important;
+    }
+
+    .data-table--cards td {
+        display: block;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+
+    .data-table--cards .text-right {
+        text-align: left;
+    }
+
+    /* Botones Editar / Eliminar: grandes, completos y fáciles de tocar */
+    .data-table--cards .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        margin: 0;
+        padding: 0 16px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+
+    .data-table--cards .btn-edit {
+        color: #4338CA;
+        background: rgba(99, 102, 241, 0.14);
+    }
+
+    .data-table--cards .btn-delete {
+        color: #B91C1C;
+        background: rgba(239, 68, 68, 0.12);
+    }
+
+    /* Fila vacía / sin resultados */
+    .data-table--cards tr.empty-row {
+        display: block;
+        text-align: center;
+    }
+
+    .data-table--cards .empty-row td {
+        padding: 12px 0;
+        text-align: center;
+    }
+
+    /* ----- Movimientos -----
+       fila 1: descripción (izq.) y monto (der., siempre visible)
+       fila 2: rubro / categoría
+       fila 3: tipo y fecha
+       fila 4: botón Editar */
+    .data-table--cards.tabla-movimientos tr {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "desc  monto"
+            "rubro rubro"
+            "tipo  fecha"
+            "acc   acc";
+    }
+
+    .tabla-movimientos .c-desc  { grid-area: desc; font-weight: 700; color: var(--text, #1F1B3A); }
+    .tabla-movimientos .c-monto { grid-area: monto; text-align: right; font-size: 1.15rem; white-space: nowrap; }
+    .tabla-movimientos .c-rubro { grid-area: rubro; }
+    .tabla-movimientos .c-tipo  { grid-area: tipo; align-self: center; }
+    .tabla-movimientos .c-fecha { grid-area: fecha; align-self: center; text-align: right; font-size: 0.82rem; white-space: normal; }
+    .tabla-movimientos .c-acc   { grid-area: acc; margin-top: 6px; }
+    .tabla-movimientos .c-acc .btn-action { width: 100%; }
+
+    .tabla-movimientos .c-tipo .btn-action {
+        min-height: 0;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    /* ----- Categorías ----- */
+    .data-table--cards.tabla-categorias tr {
+        grid-template-columns: 1fr;
+    }
+
+    .tabla-categorias .c-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text, #1F1B3A);
+    }
+
+    .tabla-categorias .c-desc {
+        font-size: 0.9rem;
+        color: var(--muted, #5B5580);
+    }
+
+    .tabla-categorias .c-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+        white-space: normal;
+    }
+
+    .tabla-categorias .c-actions .btn-action {
+        flex: 1 1 0;
+    }
+}
+
+/* Celulares muy angostos: monto y fecha caben sin cortarse */
+@media (max-width: 360px) {
+    .data-table--cards tr {
+        padding: 12px;
+    }
+
+    .tabla-movimientos .c-monto {
+        font-size: 1.05rem;
+    }
+}

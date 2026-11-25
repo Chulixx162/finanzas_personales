@@ -15,6 +15,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
     <link rel="stylesheet" href="../../public/css/layout.css">
     <link rel="stylesheet" href="../../public/css/alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/alerts.css') ?>">
     <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
+    <link rel="stylesheet" href="../../public/css/responsive_cards.css?v=<?= filemtime(__DIR__ . '/../../public/css/responsive_cards.css') ?>">
 </head>
 
 <body>
@@ -49,7 +50,7 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
         </div>
 
         <div class="card table-card">
-            <table class="data-table" id="categoriesTable">
+            <table class="data-table data-table--cards tabla-categorias" id="categoriesTable">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -65,13 +66,13 @@ require_once __DIR__ . '/../../controllers/categoriesController.php';
                     <?php else: ?>
                         <?php foreach ($categorias as $cat): ?>
                             <tr>
-                                <td class="category-name">
+                                <td class="category-name c-name">
                                     <?= htmlspecialchars($cat['nombre']) ?>
                                 </td>
-                                <td>
+                                <td class="c-desc">
                                     <?= htmlspecialchars($cat['descripcion'] ?? 'Sin descripción') ?>
                                 </td>
-                                <td class="text-right actions-cell">
+                                <td class="text-right actions-cell c-actions">
                                     <a href="editar.php?id=<?= urlencode($cat['id']) ?>"
                                         class="btn-action btn-edit" title="Editar">
                                         Editar

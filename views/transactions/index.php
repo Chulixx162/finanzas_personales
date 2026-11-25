@@ -39,6 +39,7 @@ $saldo = $totalIngresos - $totalGastos;
     <link rel="stylesheet" href="../../public/css/alerts.css">
     <link rel="stylesheet" href="../../public/css/filters.css?v=<?= filemtime(__DIR__ . '/../../public/css/filters.css') ?>">
     <link rel="stylesheet" href="../../public/css/movement_alerts.css?v=<?= filemtime(__DIR__ . '/../../public/css/movement_alerts.css') ?>">
+    <link rel="stylesheet" href="../../public/css/responsive_cards.css?v=<?= filemtime(__DIR__ . '/../../public/css/responsive_cards.css') ?>">
 </head>
 
 <body>
@@ -146,7 +147,7 @@ $saldo = $totalIngresos - $totalGastos;
         </p>
 
         <div class="card table-card">
-            <table class="data-table" id="movimientosTable">
+            <table class="data-table data-table--cards tabla-movimientos" id="movimientosTable">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -168,11 +169,11 @@ $saldo = $totalIngresos - $totalGastos;
                                 data-tipo="<?= $h($mov['tipo']) ?>"
                                 data-categoria="<?= $h($mov['categoria_nombre']) ?>"
                                 data-monto="<?= $h((float) $mov['monto']) ?>">
-                                <td style="white-space: nowrap; color: var(--muted);"><?= $fecha($mov['fecha']) ?></td>
-                                <td>
+                                <td class="c-fecha"><?= $fecha($mov['fecha']) ?></td>
+                                <td class="c-desc">
                                     <span class="category-name"><?= $h($mov['descripcion'] ?: 'Sin descripción') ?></span>
                                 </td>
-                                <td>
+                                <td class="c-rubro">
                                     <span class="category-name" style="display: block; font-size: 0.95rem; font-weight: 700; color: var(--text);">
                                         <?= $h($mov['rubro_nombre']) ?>
                                     </span>
@@ -180,15 +181,15 @@ $saldo = $totalIngresos - $totalGastos;
                                         <?= $h($mov['categoria_nombre']) ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="c-tipo">
                                     <span class="btn-action" style="cursor: default; pointer-events: none; background: rgba(<?= $mov['tipo'] === 'ingreso' ? '16, 185, 129' : '239, 68, 68' ?>, 0.12); color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
                                         <?= ucfirst($mov['tipo']) ?>
                                     </span>
                                 </td>
-                                <td class="text-right" style="font-weight: 800; color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
+                                <td class="text-right c-monto" style="font-weight: 800; color: <?= $mov['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
                                     <?= $mov['tipo'] === 'ingreso' ? '+' : '-' ?><?= $moneda($mov['monto']) ?>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-right c-acc">
                                     <a href="edit.php?id=<?= (int) $mov['id_movimiento'] ?>"
                                         class="btn-action btn-edit" title="Editar movimiento"
                                         aria-label="Editar el movimiento del <?= $h($fecha($mov['fecha'])) ?>">

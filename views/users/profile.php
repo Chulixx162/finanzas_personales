@@ -193,7 +193,15 @@ $errores = [
                                                                             aria-label="Ver <?= $h($doc['titulo']) ?>">Ver</a>
                                                                     <?php endif; ?>
                                                                     <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=descargar') ?>"
-                                                                        aria-label="Descargar <?= $h($doc['titulo']) ?>">Descargar</a>
+                                                                        aria-label="Descargar <?= $h($doc['titulo']) ?><?= $doc['extension'] === 'MD' ? ' en Markdown' : '' ?>"><?= $doc['extension'] === 'MD' ? 'Descargar .md' : 'Descargar' ?></a>
+                                                                    <?php if ($doc['extension'] === 'MD'): ?>
+                                                                        <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=word') ?>"
+                                                                            target="_blank" rel="noopener"
+                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?> en Word">Word</a>
+                                                                        <a class="manx-link manx-link-alt" href="<?= $h($ruta . '&modo=pdf') ?>"
+                                                                            target="_blank" rel="noopener"
+                                                                            aria-label="Descargar <?= $h($doc['titulo']) ?> en PDF">PDF</a>
+                                                                    <?php endif; ?>
                                                                 </span>
                                                                 <span class="manx-size"><?= $h($doc['tamano']) ?></span>
                                                             <?php else: ?>
