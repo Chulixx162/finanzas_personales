@@ -227,11 +227,11 @@ a.user-chip:focus-visible,
 
 .footer-inner {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 4fr) repeat(3, minmax(0, 2fr));
+  gap: 40px;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 64px 24px 48px;
+  padding: 56px 24px 40px;
 }
 
 .footer-brand p {
@@ -257,17 +257,21 @@ a.user-chip:focus-visible,
 .site-footer .brand-link { color: #fff; }
 .site-footer .brand-link:hover { text-decoration: none; }
 
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
+.footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.12); }
 
-.footer-bottom p {
+.footer-bottom-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
   max-width: 1160px;
   margin: 0 auto;
   padding: 20px 24px;
   font-size: 13px;
   color: var(--soft);
 }
+
+.footer-bottom-inner p { margin: 0; }
 
 /* ---------- Responsive ---------- */
 /* El navbar tiene 7 enlaces + nombre + "Cerrar sesión": necesita ~1100px y un
@@ -312,8 +316,14 @@ a.user-chip:focus-visible,
   .nav-profile + .nav-toggle { margin-left: 0; }
 }
 
-@media (max-width: 860px) {
-  .footer-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px 32px; }
+@media (max-width: 960px) {
+  .footer-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 40px 20px 28px; }
+  .footer-bottom-inner { flex-direction: column; padding: 18px 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -44,6 +44,14 @@ if ($usuario && password_verify($password, $usuario['contrasena'])) {
     registrar_actividad();
     unset($_SESSION['sesion_expirada']);
 
+    // "Recordarme": si no lo marcó, se limpia cualquier cookie anterior.
+    require_once __DIR__ . '/../models/rememberModel.php';
+    if (!empty($_POST['remember'])) {
+        recordarme_crear((int) $usuario['id_usuario'], (string) $usuario['contrasena']);
+    } else {
+        recordarme_olvidar();
+    }
+
     // Abrir el Dashboard (la vista llama al controlador).
     redirigir('views/users/dashboard.php');
     exit;

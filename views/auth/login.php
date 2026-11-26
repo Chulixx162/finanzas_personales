@@ -81,7 +81,7 @@ $server_error_msg   = $error_messages[$error]['msg'] ?? '';
                         <label for="password">Contraseña</label>
                         <div class="input-wrap">
                             <input id="password" name="password" type="password" autocomplete="current-password" required>
-                            <button type="button" class="toggle" data-target="password" aria-label="Mostrar contraseña">Mostrar</button>
+                            <button type="button" class="toggle" data-target="password" aria-label="Mostrar contraseña" aria-pressed="false">Mostrar</button>
                         </div>
                         <p class="error" id="password-error" role="alert"></p>
                     </div>

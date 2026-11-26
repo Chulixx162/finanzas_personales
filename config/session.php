@@ -58,6 +58,7 @@ function iniciar_sesion_segura(): void
     session_start();
 
     expirar_si_inactiva();
+    restaurar_sesion_recordada();
 }
 
 /**
@@ -81,6 +82,38 @@ function expirar_si_inactiva(): void
 
         $_SESSION['sesion_expirada'] = true;
     }
+}
+
+/**
+ * Si no hay sesión pero existe una cookie "Recordarme" válida, inicia la sesión.
+ * No actúa si la sesión acaba de expirar por inactividad (RNF-05).
+ */
+function restaurar_sesion_recordada(): void
+{
+    if (
+        isset($_SESSION['user_id']) ||
+        !empty($_SESSION['sesion_expirada']) ||
+        empty($_COOKIE['recordarme'])
+    ) {
+        return;
+    }
+
+    require_once __DIR__ . '/../models/rememberModel.php';
+
+    $usuario = recordarme_autenticar();
+    if (!$usuario) {
+        return;
+    }
+
+    if (!headers_sent()) {
+        session_regenerate_id(true);
+    }
+
+    $_SESSION['user_id']     = (int) $usuario['id_usuario'];
+    $_SESSION['user_nombre'] = $usuario['nombre'];
+    $_SESSION['user_email']  = $usuario['correo'];
+
+    registrar_actividad();
 }
 
 /**
@@ -170,6 +203,9 @@ function requerir_login(): int
  */
 function destruir_sesion(): void
 {
+    require_once __DIR__ . '/../models/rememberModel.php';
+    recordarme_olvidar();
+
     $_SESSION = [];
 
     if (ini_get('session.use_cookies')) {

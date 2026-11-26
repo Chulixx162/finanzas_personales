@@ -1,37 +1,51 @@
 <?php
 // views/layouts/footer.php
-// Pie de página. Usa $base igual que el navbar.
+// Pie de página. Carga config/app.php por sí mismo para que funcione
+// también en login y registro, que no lo incluyen.
+
+require_once __DIR__ . '/../../config/app.php';
 
 $logueado = isset($_SESSION['user_id']);
 $base     = app_base();
 
 $h = fn($texto) => htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 
-$logoDestino = $logueado
-    ? 'views/users/dashboard.php'
-    : 'public/index.php';
+$logoDestino = $logueado ? 'views/users/dashboard.php' : 'public/index.php';
+
 if ($logueado) {
-    $enlaces = [
-        ['Inicio', 'views/users/dashboard.php'],
+    $navegacion = [
+        ['Inicio',       'views/users/dashboard.php'],
         ['Movimientos',  'views/transactions/index.php'],
         ['Categorías',   'views/categories/index.php'],
         ['Rubros',       'views/rubros/index.php'],
         ['Presupuestos', 'views/presupuestos/index.php'],
-        ['Terminos de uso', 'views/legal/terms_of_use.php'],
-        ['Política de privacidad', 'views/legal/privacy_policies.php']
+    ];
+    $cuenta = [
+        ['Mi perfil', 'views/users/profile.php'],
     ];
 } else {
-    $enlaces = [
-        ['Inicio',         'public/index.php'],
-        ['Funciones',      'public/index.php#funciones'],
-        ['Cómo funciona',  'public/index.php#como-funciona'],
+    $navegacion = [
+        ['Inicio',               'public/index.php'],
+        ['Funciones',            'public/index.php#funciones'],
+        ['Cómo funciona',        'public/index.php#como-funciona'],
         ['Equipo de desarrollo', 'public/index.php#equipo'],
-        ['Crea tu cuenta',  'views/auth/register.php'],
+    ];
+    $cuenta = [
+        ['Crea tu cuenta', 'views/auth/register.php'],
         ['Inicia sesión',  'views/auth/login.php'],
-        ['Terminos de uso', 'views/legal/terms_of_use.php'],
-        ['Política de privacidad', 'views/legal/privacy_policies.php']
     ];
 }
+
+$legal = [
+    ['Términos de uso',        'views/legal/terms_of_use.php'],
+    ['Política de privacidad', 'views/legal/privacy_policies.php'],
+];
+
+$columnas = [
+    'Navegación' => $navegacion,
+    'Cuenta'     => $cuenta,
+    'Legal'      => $legal,
+];
 ?>
 <footer class="site-footer on-dark">
     <div class="footer-inner">
@@ -49,28 +63,25 @@ if ($logueado) {
             <p>Registra tus ingresos y gastos, reparte tu presupuesto entre categorías y sabe cuánto te queda.</p>
         </div>
 
-        <nav class="footer-col" aria-label="Enlaces del sitio">
-            <h2>Navegación</h2>
-            <ul>
-                <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
-                    <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-        </nav>
-
-        <div class="footer-col">
-            <h2>Información</h2>
-            <ul class="footer-facts">
-                <li>Valores en pesos colombianos (COP)</li>
-                <li>Datos personales tratados según la Ley 1581 de 2012</li>
-                <li>Neiva, Huila</li>
-            </ul>
-        </div>
+        <?php foreach ($columnas as $titulo => $enlaces): ?>
+            <nav class="footer-col" aria-label="<?= $h($titulo) ?>">
+                <h2><?= $h($titulo) ?></h2>
+                <ul>
+                    <?php foreach ($enlaces as [$etiqueta, $ruta]): ?>
+                        <li><a href="<?= $h($base . $ruta) ?>"><?= $h($etiqueta) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+        <?php endforeach; ?>
     </div>
 
     <div class="footer-bottom">
-        <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
+        <div class="footer-bottom-inner">
+            <p>© <?= date('Y') ?> Finanzas. Proyecto académico del programa ADSO, SENA, ficha 3407799.</p>
+            <p>Valores en COP · Datos tratados según la Ley 1581 de 2012 · Neiva, Huila</p>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="<?= $h($base) ?>public/js/alerts.js" defer></script>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?= $h($base) ?>public/js/alerts.js" defer></script>
