@@ -98,7 +98,7 @@ $catValues = json_encode(array_values($gastosPorCategoria));
                         <?= ($presupuestoRestante >= 0 ? '+' : '') . $moneda($presupuestoRestante) ?>
                     </div>
                 <?php else: ?>
-                    <div class="amount" style="color: #94a3b8; font-size: 14px;">No definido</div>
+                    <div class="amount" style="color: #475569; font-size: 14px;">No definido</div>
                 <?php endif; ?>
             </div>
         </section>
@@ -127,7 +127,7 @@ $catValues = json_encode(array_values($gastosPorCategoria));
             <tbody>
                 <?php if (empty($movimientos)): ?>
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #475569;">
                             No hay movimientos registrados que coincidan con los criterios seleccionados.
                         </td>
                     </tr>
@@ -144,7 +144,7 @@ $catValues = json_encode(array_values($gastosPorCategoria));
                                 <div class="item-title"><?= $h($m['rubro_nombre']) ?></div>
                                 <div class="item-category"><?= $h($m['categoria_nombre']) ?></div>
                             </td>
-                            <td style="color: #64748b;"><?= $h($m['descripcion'] ?: '—') ?></td>
+                            <td style="color: #334155;"><?= $h($m['descripcion'] ?: '—') ?></td>
                             <td class="text-right amount-cell <?= $m['tipo'] === 'ingreso' ? 'amount-ingreso' : 'amount-gasto' ?>">
                                 <?= $m['tipo'] === 'ingreso' ? '+' : '-' ?><?= $moneda($m['monto']) ?>
                             </td>
@@ -192,7 +192,7 @@ $catValues = json_encode(array_values($gastosPorCategoria));
                     peligro: '#d94a4a',
                     exito: '#299764',
                     borde: '#e0e5ed',
-                    texto: '#687386',
+                    texto: '#334155',
                     morado: '#8b78c6',
                     teal: '#4e9da6'
                 };

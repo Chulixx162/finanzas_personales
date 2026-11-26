@@ -33,7 +33,7 @@
         peligro: color('--danger', '#d94a4a'),
         exito: color('--success', '#299764'),
         borde: color('--border', '#e0e5ed'),
-        texto: color('--muted', '#687386'),
+        texto: color('--muted', '#433D66'),
     };
 
     const dinero = {

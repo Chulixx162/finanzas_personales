@@ -51,9 +51,9 @@
 
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
-.hero-note { margin: 16px 0 0; font-size: 13px; color: var(--soft); }
+.hero-note { margin: 16px 0 0; font-size: 13px; color: var(--soft-2); }
 
-.hero-caption { margin: 14px 0 0; font-size: 12px; color: var(--soft); text-align: center; }
+.hero-caption { margin: 14px 0 0; font-size: 12px; color: var(--soft-2); text-align: center; }
 
 /* Tarjeta de presupuesto (el elemento protagonista) */
 .plan {

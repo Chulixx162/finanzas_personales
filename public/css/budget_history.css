@@ -198,7 +198,8 @@
 
 .usage-hint {
     margin: 6px 0 0;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
     color: var(--text-muted);
 }
 

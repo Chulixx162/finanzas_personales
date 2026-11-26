@@ -14,7 +14,7 @@
   --surface: #FFFFFF;
   --border: #E4DFF7;
   --text: #1F1B3A;
-  --muted: #5B5580;
+  --muted: #433D66;
   --danger: #B91C1C;
   --radius: 12px;
 }
@@ -183,6 +183,11 @@ input[type="password"] {
 
 input:hover {
   border-color: var(--soft);
+}
+
+input::placeholder {
+  color: var(--muted);
+  opacity: 1;
 }
 
 input:focus-visible,

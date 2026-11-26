@@ -7,7 +7,7 @@
     --bg-card: #FFFFFF;
     --border-color: #221e1e8c;
     --text-main: #1F1B3A;
-    --text-muted: #5B5580;
+    --text-muted: #433D66;
     --accent-primary: #6D28D9;
     --accent-hover: #5B21B6;
     --danger-color: #B91C1C;
@@ -261,6 +261,12 @@ body {
 
 .form-group input:focus {
     border-color: var(--accent-primary);
+}
+
+.form-group input::placeholder,
+.search-box input::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
 }
 
 .form-actions {

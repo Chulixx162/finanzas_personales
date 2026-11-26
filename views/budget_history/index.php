@@ -27,6 +27,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
 
     <?php require_once __DIR__ . '/../layouts/navbar.php'; ?>
 
+    
     <main class="container">
         <div class="page-header">
             <div>
@@ -227,15 +228,15 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
     <section class="history-summary" aria-label="Resumen financiero del periodo" style="margin-bottom: 24px;">
         <div class="card summary-card">
             <p class="summary-label">Total Ingresos</p>
-            <p class="summary-value" style="color: #10b981;"><?= $moneda($reporteMensual['totalIngresos']) ?></p>
+            <p class="summary-value" style="color: #15803D;"><?= $moneda($reporteMensual['totalIngresos']) ?></p>
         </div>
         <div class="card summary-card">
             <p class="summary-label">Total Gastos</p>
-            <p class="summary-value" style="color: #ef4444;"><?= $moneda($reporteMensual['totalGastos']) ?></p>
+            <p class="summary-value" style="color: #B91C1C;"><?= $moneda($reporteMensual['totalGastos']) ?></p>
         </div>
         <div class="card summary-card">
             <p class="summary-label">Balance del Periodo</p>
-            <p class="summary-value" style="color: <?= $reporteMensual['balance'] >= 0 ? '#10b981' : '#ef4444' ?>;">
+            <p class="summary-value" style="color: <?= $reporteMensual['balance'] >= 0 ? '#15803D' : '#B91C1C' ?>;">
                 <?= $moneda($reporteMensual['balance']) ?>
             </p>
         </div>
@@ -263,11 +264,11 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                             <td><?= $h(date('d/m/Y', strtotime($t['fecha']))) ?></td>
                             <td class="category-name"><?= $h($t['descripcion']) ?></td>
                             <td>
-                                <span class="badge" style="padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; background: <?= $t['tipo'] === 'ingreso' ? 'rgba(16, 185, 129, 0.1); color: #10b981;' : 'rgba(239, 68, 68, 0.1); color: #ef4444;' ?>">
+                                <span class="badge" style="padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; background: <?= $t['tipo'] === 'ingreso' ? '#DCFCE7; color: #15803D;' : '#FEE2E2; color: #B91C1C;' ?>">
                                     <?= ucfirst($t['tipo']) ?>
                                 </span>
                             </td>
-                            <td class="text-right" style="font-weight: 600; color: <?= $t['tipo'] === 'ingreso' ? '#10b981' : '#ef4444' ?>;">
+                            <td class="text-right" style="font-weight: 600; color: <?= $t['tipo'] === 'ingreso' ? '#15803D' : '#B91C1C' ?>;">
                                 <?= ($t['tipo'] === 'gasto' ? '-' : '+') . $moneda($t['monto']) ?>
                             </td>
                         </tr>
@@ -360,7 +361,7 @@ $fechaHora = fn($valor) => date('d/m/Y H:i', strtotime($valor));
                     <button type="submit" name="action" value="export_csv" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem;">
                         Descargar CSV
                     </button>
-                    <button type="submit" name="action" value="export_pdf" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem; background-color: #ef4444; border-color: #ef4444;">
+                    <button type="submit" name="action" value="export_pdf" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 10px 4px; font-size: 0.9rem; background-color: #B91C1C; border-color: #B91C1C;">
                         Descargar PDF
                     </button>
                 </div>
