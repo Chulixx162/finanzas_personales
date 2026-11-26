@@ -83,5 +83,14 @@ $columnas = [
     </div>
 </footer>
 
+<div id="global-loader" class="global-loader" role="status" aria-live="polite">
+    <div class="global-loader__spinner"></div>
+    <span class="global-loader__texto">Cargando datos...</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../public/js/alerts.js" defer></script>
+<script src="../../public/js/loader.js" defer></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $h($base) ?>public/js/alerts.js" defer></script>
